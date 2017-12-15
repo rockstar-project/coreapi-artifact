@@ -1,10 +1,10 @@
-package com.ibmcloud.kickster.template;
+package com.rockstar.artifact.config;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
@@ -13,19 +13,43 @@ import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.SimpleHelpers;
 
-import com.reprezen.kaizen.oasparser.OpenApi3Parser;
-import com.reprezen.kaizen.oasparser.model3.Contact;
-import com.reprezen.kaizen.oasparser.model3.Info;
-import com.reprezen.kaizen.oasparser.model3.OpenApi3;
-import com.reprezen.kaizen.oasparser.val.ValidationResults.ValidationItem;
-import com.rockstar.artifact.model.InvalidSchemaException;
-import com.rockstar.artifact.model.Model;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.rockstar.artifact.SampleArtifacts;
+import com.rockstar.artifact.model.TemplateDefinition;
+import com.rockstar.artifact.model.TemplateDefinitionRegistry;
 import com.rockstar.artifact.util.CheckUtils;
 import com.rockstar.artifact.util.WordUtils;
 
-public class TrimouTemplateTest {
+@Configuration
+public class ServiceConfig {
 	
-	public static MustacheEngine templateEngine() throws Exception {
+	@Bean
+	public TemplateDefinitionRegistry templateDefinitionRegistry() throws Exception {
+		TemplateDefinitionRegistry templateDefinitionRegistry = null;
+		CollectionType definitionCollectionType = null;
+		List<TemplateDefinition> templateDefinitionList = null;
+		ObjectMapper jsonMapper = new ObjectMapper();
+	    jsonMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+	    jsonMapper.setSerializationInclusion(Include.NON_NULL);
+		
+		definitionCollectionType = jsonMapper.getTypeFactory().constructCollectionType(List.class, TemplateDefinition.class);
+		templateDefinitionList = jsonMapper.readValue(this.workspaceResource().getInputStream(), definitionCollectionType);
+		templateDefinitionRegistry = new TemplateDefinitionRegistry();
+		templateDefinitionRegistry.registerTemplateDefinitions(templateDefinitionList);
+	
+		return templateDefinitionRegistry;
+	}
+	
+	@Bean
+	public ClassPathResource workspaceResource() throws Exception {
+		return new ClassPathResource("definitions.json");
+	}
+	
+	@Bean
+	public MustacheEngine templateEngine() throws Exception {
 		MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder()
 				.setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true)
 	        	.setProperty(EngineConfigurationKey.PRECOMPILE_ALL_TEMPLATES, true)
@@ -99,56 +123,9 @@ public class TrimouTemplateTest {
         return builder.build();
 	}
 	
-	public static Model buildModel() throws Exception {
-		Model model = new Model();
-		String specUri = "https://app.swaggerhub.com/apis/kickster/storage/1.0.0/swagger.yaml";
-		Map<String, String> options = new HashMap<String, String> ();
-		
-		options.put("datastore", "mysql");
-		options.put("web", "hateoas");
-		options.put("discovery", "eureka");
-		
-		model.setType("coreapi");
-		model.setNamespace("spirit");
-		model.setOrganization("ibmcloud");
-		model.setOptions(options);
-		model.setPackageName("com.ibmcloud.spirit");
-		
-		OpenApi3 openapi3Model = new OpenApi3Parser().parse(new URI(specUri), true);
-		if (!openapi3Model.isValid()) {
-			for (ValidationItem item : openapi3Model.getValidationItems()) {
-				throw new InvalidSchemaException(item.getMsg());
-			}
-		} else {
-			Contact contact = null;
-			Info info = null;
-			
-			info = openapi3Model.getInfo();
-			if (info != null) {
-				model.setVersion(info.getVersion());
-				contact = info.getContact();
-				if (contact != null) {
-					model.setContact(contact.getEmail());
-				}
-			}
-			model.setClassname("spirit");
-			model.setSchema(openapi3Model.getSchema("Spirit"));
-		}
-		
-		return model;
+	@Bean(initMethod="generateAll")
+	public SampleArtifacts sampleArtifacts() throws Exception {
+		return new SampleArtifacts(this.templateDefinitionRegistry(), this.templateEngine());
 	}
-	
-    public static void main(String args[]) {
-      
-      try {
-        System.out.println(templateEngine().getMustache("playground/pojo").render(buildModel()));
-      } catch (Exception ex) {
-    	  ex.printStackTrace();
-      }
-	}
-    
- 
 
 }
-
-
