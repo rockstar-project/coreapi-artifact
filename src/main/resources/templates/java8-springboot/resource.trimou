@@ -1,0 +1,58 @@
+package {{packageName}}.web;
+
+public class {{capitalize classname}}Resource {
+	
+	{{#fields}}
+	{{#value}}
+	{{#isEq type "string" }}
+	private String {{camelcase key}};
+	{{/isEq}}
+	{{#isEq type "number" }}
+	private Integer {{camelcase key}};
+	{{/isEq}}
+	{{#isEq type "integer" }}
+	private Integer {{camelcase key}};
+	{{/isEq}}
+	{{#isEq type "boolean" }}
+	private Boolean {{camelcase key}};
+	{{/isEq}}
+	{{/value}}
+	{{/fields}}
+	
+	public {{capitalize classname}}Resource() {
+	}
+	
+	{{#fields}}{{#value}}
+	{{#isEq type "string" }}
+	public String get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	
+	public void set{{capitalizeCamelcase key}}(String {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}
+	
+	{{#isEq type "number" }}
+	public Integer get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	
+	public void set{{capitalizeCamelcase key}}(Integer {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}
+	
+	{{#isEq type "integer" }}
+	public Integer get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	
+	public void set{{capitalizeCamelcase key}}(Integer {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}
+	
+	{{/value}}
+	{{/fields}}	
+}

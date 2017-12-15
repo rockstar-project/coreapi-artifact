@@ -1,0 +1,13 @@
+export APP_HOME=$HOME/workspace-{{namespace}}api
+export DOCKER_USER=
+export DOCKER_PASSWORD=
+export DOCKER_NAMESPACE={{namespace}}
+export DOCKER_REGISTRY=
+export GITHUB_NAME=
+export GITHUB_EMAIL=
+export GITHUB_USER=
+export GITHUB_PASSWORD=
+export DATASTORE_USER=kickster
+export DATASTORE_PASSWORD=kickster123
+export MESSAGING_USER=kickster
+export MESSAGING_PASSWORD=kickster123

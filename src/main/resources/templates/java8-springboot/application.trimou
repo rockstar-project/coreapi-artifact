@@ -1,0 +1,22 @@
+spring:
+  profiles: docker
+  {{#isEq options.datastore "mysql" }}
+  datasource:
+    platform: mysql
+    driver-class-name:  com.mysql.jdbc.Driver
+  {{/isEq}}
+  {{#isEq options.datastore "mysql" }}
+  jpa:
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  {{/isEq}}
+{{#isEq options.discovery "eureka" }}
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl: 
+      defaultZone: http://discovery:8761/eureka/
+{{/isEq}}

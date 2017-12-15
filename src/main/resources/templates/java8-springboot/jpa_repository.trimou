@@ -1,0 +1,11 @@
+package {{packageName}}.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import {{packageName}}.model.{{capitalize classname}};
+
+public interface {{capitalize classname}}Repository extends JpaRepository<{{capitalize classname}}, String> {
+
+	{{#if uniqueItems.size}}
+	public {{capitalize classname}} findBy{{#uniqueItems}}{{capitalize key}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/uniqueItems}}({{#uniqueItems}}{{#value}}{{#isEq type "string" }}String{{/isEq}} {{camelcase key}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/value}}{{/uniqueItems}});
+	{{/if}}
+}

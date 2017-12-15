@@ -1,0 +1,14 @@
+.DS_Store
+.settings
+.springBeans
+.classpath
+.project
+bin
+/build
+target/
+logs/
+*.log
+*-schema.json
+nodes-module/
+config.xml
+.keys

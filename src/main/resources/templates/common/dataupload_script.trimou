@@ -1,0 +1,27 @@
+#!/bin/bash -e
+
+PAUSE=true
+if [[ $1 == "-n" ]] ; then
+  PAUSE=false
+  shift
+fi
+
+function docurl() {
+  echo "curl $headers $@"
+  if $PAUSE ; then read -s ; fi
+  echo -n '==> '
+  curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' $headers "$@" | jq -r .
+  echo ""
+  echo ""
+  if $PAUSE ; then read -s ; fi
+}
+
+base="http://localhost:8080/api"
+case $1 in
+    1)
+	docurl $base/pets
+	docurl $base/pets -X POST -d '{"tag": "dog", "name": "Snopy"}'
+	docurl $base/pets -X POST -d '{"tag": "cat", "name": "Garfield"}'
+	docurl $base/pets -X POST -d '{"tag": "rat", "name": "Remy"}'
+	;;
+esac

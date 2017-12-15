@@ -1,0 +1,123 @@
+package {{packageName}}.web;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import {{packageName}}.common.NotFoundException;
+import {{packageName}}.common.NotUniqueException;
+import {{packageName}}.model.{{capitalize classname}};
+import {{packageName}}.repository.{{capitalize classname}}Repository;
+
+@RestController
+@RequestMapping(value = "/{{pluralize classname}}", produces = "application/hal+json")
+public class {{capitalize classname}}Controller {
+
+	@Autowired
+	private {{capitalize classname}}ResourceAssembler resourceAssembler;
+
+	@Autowired
+	private {{capitalize classname}}Repository repository;
+
+	@GetMapping
+	public ResponseEntity<Resources<Object>> root() {
+		Resources<Object> objects = new Resources<>(Collections.emptyList());
+		URI uri = MvcUriComponentsBuilder
+				.fromMethodCall(MvcUriComponentsBuilder.on(getClass()).getCollection())
+				.build().toUri();
+		Link link = new Link(uri.toString(), "{{pluralize classname}}");
+		objects.add(link);
+		return ResponseEntity.ok(objects);
+	}
+
+	@GetMapping
+	public ResponseEntity<Resources<Resource<{{capitalize classname}}>>> getCollection() {
+		List<Resource<{{capitalize classname}}>> collect = this.repository.findAll().stream()
+				.map(resourceAssembler::toResource)
+				.collect(Collectors.<Resource<{{capitalize classname}}>>toList());
+		Resources<Resource<{{capitalize classname}}>> resources = new Resources<>(collect);
+		URI self = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+		resources.add(new Link(self.toString(), "self"));
+		return ResponseEntity.ok(resources);
+	}
+
+	@RequestMapping(method = RequestMethod.OPTIONS)
+	public ResponseEntity<?> options() {
+		return ResponseEntity
+				.ok()
+				.allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.HEAD, HttpMethod.OPTIONS,
+						HttpMethod.PUT, HttpMethod.DELETE).build();
+	}
+
+	@GetMapping(value = "/{id}")
+	ResponseEntity<Resource<{{capitalize classname}}>> get(@PathVariable String id) {
+		Resource<{{capitalize classname}}> resource = null;
+		{{capitalize classname}} existing = this.repository.findOne(id);
+		if (existing != null) {
+			resource = this.resourceAssembler.toResource(existing);
+		} else {
+			throw new NotFoundException("{{classname}} resource not found");
+		}
+		return ResponseEntity.ok(resource);
+	}
+
+	@PostMapping()
+	ResponseEntity<Resource<{{capitalize classname}}>> post(@RequestBody {{capitalize classname}} {{classname}}) {
+		{{#if uniqueItems.size}}
+		this.validateUnique({{classname}});
+		{{/if}}
+		{{capitalize classname}} new{{capitalize classname}} = this.repository.save({{classname}});
+		URI uri = MvcUriComponentsBuilder.fromController(getClass())
+				.path("/{{pluralize classname}}/{id}").buildAndExpand(new{{capitalize classname}}.getId()).toUri();
+		return ResponseEntity.created(uri).body(
+				this.resourceAssembler.toResource({{classname}}));
+	}
+
+	@DeleteMapping(value = "/{id}")
+	ResponseEntity<?> delete(@PathVariable String id) {
+		{{capitalize classname}} existing = this.repository.findOne(id);
+		if (existing != null) {
+			this.repository.delete(existing);
+		} else {
+			throw new NotFoundException("{{classname}} resource not found");
+		}
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Resource<{{capitalize classname}}>> put(@PathVariable String id, @RequestBody {{capitalize classname}} {{classname}}) {
+		{{classname}}.setId(id);
+		{{capitalize classname}} updated = this.repository.save({{classname}});
+		Resource<{{capitalize classname}}> resource = this.resourceAssembler
+				.toResource(updated);
+		URI selfLink = URI.create(ServletUriComponentsBuilder.fromCurrentRequest()
+				.toUriString());
+		return ResponseEntity.created(selfLink).body(resource);
+	}
+	
+    {{#if uniqueItems.size}}
+	private void validateUnique({{capitalize classname}} resource) {
+		Spirit existing = null;
+		
+		if (resource != null) {
+			existing = this.repository.findBy{{#uniqueItems}}{{capitalize key}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/uniqueItems}}({{#uniqueItems}}resource.get{{capitalize key}}(){{#iter.hasNext}}, {{/iter.hasNext}}{{/uniqueItems}});
+			if (existing != null) {
+				throw new NotUniqueException("{{classname}} already exists");
+			}
+		}
+	}
+	{{/if}}
+
+}

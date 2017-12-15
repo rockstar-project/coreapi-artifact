@@ -1,0 +1,439 @@
+[
+  {
+  	"slug": "java8-springboot",
+    "files": [
+      {
+        "slug": "java8-springboot/maven",
+        "name": "pom.xml"
+      },
+      {
+        "slug": "common/environment_var",
+        "name": ".env"
+      },
+      {
+        "slug": "java8-springboot/gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "slug": "java8-springboot/travis",
+        "name": ".travis.yml"
+      },
+      {
+        "slug": "common/postman_collection",
+        "name": "postman_collection.json"
+      },
+      {
+        "slug": "java8-springboot/readme",
+        "name": "README.md"
+      },
+      {
+        "slug": "java8-springboot/dockerfile",
+        "name": "Dockerfile"
+      },
+      {
+        "slug": "common/docker_compose",
+        "name": "docker-compose.yml"
+      },
+      {
+        "slug": "java8-springboot/deploy_script",
+        "name": "build_and_deploy.sh"
+      }
+    ],
+    "tags": [
+      "restapi",
+      "java8",
+      "springboot",
+      "hateoas",
+      "mysql"
+    ],
+    "directories": [
+      {
+        "base": "src/main/java",
+        "path": "root",
+        "files": [
+          {
+            "slug": "java8-springboot/restapi",
+            "name": "RestApiService.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "common",
+        "files": [
+          {
+            "slug": "java8-springboot/notfound_exception",
+            "name": "NotFoundException.java"
+          },
+          {
+            "slug": "java8-springboot/notunique_exception",
+            "name": "NotUniqueException.java"
+          },
+          {
+            "slug": "java8-springboot/error_handler",
+            "name": "ErrorHandler.java"
+          },
+          {
+            "slug": "java8-springboot/web_config",
+            "name": "WebConfig.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "web",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "java8-springboot/resource",
+            "name": "{name}Resource.java"
+          },
+          {
+            "slug": "java8-springboot/resource_assembler",
+            "name": "{name}ResourceAssembler.java"
+          },
+          {
+            "slug": "java8-springboot/hateoas_controller",
+            "name": "{name}Controller.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "model",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "java8-springboot/jpa_model",
+            "name": "{name}.java"
+          }
+        ]
+      },
+      {
+      	"base": "src/main/java",
+        "path": "repository",
+        "resolution": "Dynamic",
+       	"files": [
+      		{
+            	"slug": "java8-springboot/jpa_repository",
+            	"name": "{name}Repository.java"
+          	}
+      	]
+      },
+      {
+        "base": "src/main/resources",
+        "type": "properties",
+        "files": [
+          {
+            "slug": "java8-springboot/application",
+            "name": "application.yml"
+          },
+          {
+            "slug": "java8-springboot/bootstrap",
+            "name": "bootstrap.yml"
+          },
+          {
+            "slug": "java8-springboot/messages",
+            "name": "messages.properties"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "golang9-gorilla",
+    "files": [
+      {
+        "slug": "golang9-gorilla/readme",
+        "name": "README.md"
+      },
+      {
+        "slug": "golang9-gorilla/travis",
+        "name": ".travis.yml"
+      },
+      {
+        "slug": "golang9-gorilla/makefile",
+        "name": "Makefile"
+      },
+      {
+        "slug": "golang9-gorilla/dockerfile",
+        "name": "Dockerfile"
+      },
+      {
+        "slug": "common/docker_compose",
+        "name": "docker-compose.yml"
+      },
+      {
+        "slug": "golang9-gorilla/gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "slug": "golang9-gorilla/editor_config",
+        "name": ".editorconfig"
+      },
+      {
+        "slug": "golang9-gorilla/dockerfile_multi",
+        "name": "Dockerfile.multi"
+      },
+      {
+        "slug": "golang9-gorilla/gopkg",
+        "name": "Gopkg.toml"
+      }
+    ],
+    "directories": [
+      {
+        "path": "root",
+        "files": [
+          {
+            "slug": "golang9-gorilla/main",
+            "name": "handsongo.go"
+          }
+        ]
+      },
+      {
+        "path": "etc",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "golang9-gorilla/rest_api",
+            "name": "apiquery.sh"
+          },
+          {
+            "slug": "golang9-gorilla/dataset_1",
+            "name": "caroni.json"
+          },
+          {
+            "slug": "golang9-gorilla/dataset_2",
+            "name": "clairin.json"
+          },
+          {
+            "slug": "common/postman_collection",
+            "name": "{name}.postman_collection.json",
+            "naming_strategy": "Lowercase"
+          }
+        ]
+      },
+      {
+        "path": "model",
+        "files": [
+          {
+            "slug": "golang9-gorilla/mongo_model",
+            "name": "model.go"
+          }
+        ]
+      },
+      {
+        "path": "repository",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "golang9-gorilla/dao_factory",
+            "name": "{name}-dao-factory.go",
+            "naming_strategy": "Lowercase"
+          },
+          {
+            "slug": "golang9-gorilla/dao_mock",
+            "name": "{name}-dao-mock.go",
+            "naming_strategy": "Lowercase"
+          },
+          {
+            "slug": "golang9-gorilla/dao_mongo_test",
+            "name": "{name}-dao-mongo_test.go",
+            "naming_strategy": "Lowercase"
+          },
+          {
+            "slug": "golang9-gorilla/dao_mongo",
+            "name": "{name}-dao-mongo.go",
+            "naming_strategy": "Lowercase"
+          },
+          {
+            "slug": "golang9-gorilla/dao",
+            "name": "{name}-dao.go",
+            "naming_strategy": "Lowercase"
+          }
+        ]
+      },
+      {
+        "path": "web",
+        "files": [
+          {
+            "slug": "golang9-gorilla/controller",
+            "name": "controller.go"
+          },
+          {
+            "slug": "golang9-gorilla/router",
+            "name": "router.go"
+          },
+          {
+            "slug": "golang9-gorilla/statistics",
+            "name": "statistics-middleware.go"
+          },
+          {
+            "slug": "golang9-gorilla/utils",
+            "name": "utils.go"
+          },
+          {
+            "slug": "golang9-gorilla/web_server",
+            "name": "web-server.go"
+          },
+          {
+            "slug": "golang9-gorilla/web_test",
+            "name": "web_test.go"
+          }
+        ]
+      },
+      {
+        "path": "utils",
+        "files": [
+          {
+            "slug": "golang9-gorilla/logger",
+            "name": "logger.go"
+          },
+          {
+            "slug": "golang9-gorilla/time_track",
+            "name": "timetrack.go"
+          }
+        ]
+      },
+      {
+        "path": "statistics",
+        "files": [
+          {
+            "slug": "golang9-gorilla/statistics",
+            "name": "statistics.go"
+          },
+          {
+            "slug": "golang9-gorilla/statistics_test",
+            "name": "statistics_test.go"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "restapi",
+      "go",
+      "gorilla",
+      "mongodb"
+    ]
+  },
+  {
+  	"slug": "golang8-gin",
+    "files": [
+      {
+        "slug": "golang8-gin/readme",
+        "name": "README.md"
+      },
+      {
+        "slug": "golang8-gin/dockerfile",
+        "name": "Dockerfile"
+      }
+    ],
+    "directories": [
+      {
+        "path": "root",
+        "files": [
+          {
+            "slug": "golang8-gin/main",
+            "name": "main.go"
+          },
+          {
+            "slug": "golang8-gin/main_test",
+            "name": "main_test.go"
+          }
+        ]
+      },
+      {
+        "path": "app",
+        "files": [
+          {
+            "slug": "golang8-gin/web_controller",
+            "name": "app.go"
+          },
+          {
+            "slug": "golang8-gin/mysql_repository",
+            "name": "db.go"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "golang8",
+      "gin",
+      "mysql"
+    ]
+  },
+  {
+  	"slug": "nodejs-express",
+    "files": [
+      {
+        "slug": "nodejs-express/readme",
+        "name": "README.md"
+      },
+      {
+        "slug": "nodejs-express/package",
+        "name": "package.json"
+      }
+    ],
+    "directories": [
+      {
+        "path": "root",
+        "files": [
+          {
+            "slug": "nodejs-express/main",
+            "name": "server.js"
+          }
+        ]
+      },
+      {
+        "path": "config",
+        "files": [
+          {
+            "slug": "nodejs-express/application",
+            "name": "database.config.js"
+          }
+        ]
+      },
+      {
+        "base": "app",
+        "path": "controllers",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "nodejs-express/web_controller",
+            "name": "{name}.controller.js",
+            "naming_strategy": "Lowercase"
+          }
+        ]
+      },
+      {
+        "base": "app",
+        "path": "models",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "nodejs-express/model",
+            "name": "{name}.model.js",
+            "naming_strategy": "Lowercase"
+          }
+        ]
+      },
+      {
+        "base": "app",
+        "path": "routes",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "nodejs-express/routes",
+            "name": "{name}.routes.js",
+            "naming_strategy": "Lowercase"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "nodejs",
+      "express",
+      "mongodb"
+    ]
+  }
+]

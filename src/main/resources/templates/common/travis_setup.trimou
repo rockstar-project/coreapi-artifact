@@ -1,0 +1,16 @@
+#!/bin/bash
+
+travis endpoint --set-default -X -e "$TRAVIS_API_ENDPOINT"
+travis login -X -e "$TRAVIS_API_ENDPOINT" -g $GITHUB_TOKEN
+
+APPLICATION_DIR=~/{{application.settings.base_path}}/{{application.name}}
+{{#application.services}}
+SERVICE_DIR=$APPLICATION_DIR/{{type}}-{{name}}
+mkdir -p $SERVICE_DIR
+mustache metadata.json .travis-java.mustache > .travis.yml
+travis enable --repo {{github.org}}/{{github.repo}} --no-interactive
+travis encrypt DOCKER_USER=$DOCKER_USER --add env.global --repo {{github.org}}/{{github.repo}}
+travis encrypt DOCKER_PASSWORD=$DOCKER_PASSWORD --add env.global --repo {{github.org}}/{{github.repo}}
+mv .travis.yml $SERVICE_DIR/.travis.yml
+
+{{/application.services}}

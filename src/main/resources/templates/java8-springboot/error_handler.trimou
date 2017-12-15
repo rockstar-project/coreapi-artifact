@@ -1,0 +1,47 @@
+package {{packageName}}.common;
+
+import org.springframework.context.MessageSource;
+import org.springframework.hateoas.VndErrors;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.Optional;
+import javax.inject.Inject;
+
+@ControllerAdvice
+public class ErrorHandler {
+
+	@Inject private MessageSource messageSource;
+	
+	private final MediaType vndErrorMediaType = MediaType
+			.parseMediaType("application/vnd.error");
+
+	@ExceptionHandler(NotFoundException.class)
+	ResponseEntity<VndErrors> handleNotFoundException(NotFoundException notfoundex) {
+		return this.error(notfoundex, HttpStatus.NOT_FOUND,  notfoundex.getMessage());
+	}
+	
+	@ExceptionHandler(NotUniqueException.class)
+	ResponseEntity<VndErrors> handleNotUniqueException(NotUniqueException notuniqueex) {
+		return this.error(notuniqueex, HttpStatus.CONFLICT,  notuniqueex.getMessage());
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	ResponseEntity<VndErrors> assertionException(IllegalArgumentException illegalargex) {
+		return this.error(illegalargex, HttpStatus.BAD_REQUEST, illegalargex.getLocalizedMessage());
+	}
+
+	private <E extends Exception> ResponseEntity<VndErrors> error(E error,
+			HttpStatus httpStatus, String logref) {
+		String msg = Optional.of(error.getMessage()).orElse(
+				error.getClass().getSimpleName());
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(this.vndErrorMediaType);
+		return new ResponseEntity<>(new VndErrors(logref, msg), httpHeaders,
+				httpStatus);
+	}
+}

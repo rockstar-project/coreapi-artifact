@@ -1,0 +1,3 @@
+{{#isNotNull pattern}}
+@Pattern(regexp = "{{pattern}}"){{/isNotNull}}{{#isNotNull minLength maxLength logic="and"}}@Size(min={{minLength}}, max={{maxLength}}){{/isNotNull}}{{#isNotNull minLength}}{{#isNull maxLength}}@Size(min={{minLength}}){{/isNull}}{{/isNotNull}}{{#isNull minLength}}{{#isNotNull maxLength}}@Size(max={{maxLength}}){{/isNotNull}}{{/isNull}}{{#isEq type integer}}{{#isNotNull minimum}}
+@Min({{minimum}}){{/isNotNull}}{{#isNotNull maximum}}@Max({{maximum}}){{/isNotNull}}{{/isEq}}

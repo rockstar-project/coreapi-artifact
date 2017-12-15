@@ -1,0 +1,51 @@
+package {{packageName}}.model;
+
+{{$imports}}
+{{#fields}}
+{{#value}}
+{{>pojo_import}}
+{{/value}}
+{{/fields}}
+{{/imports}}
+
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.PrePersist;
+
+public class {{capitalize classname}} {
+
+	{{#enumfields}}
+	public enum {{snakecaseToCamelcase key}} { {{#value}}{{#enums}}{{.}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/enums}}{{/value}} };
+	{{/enumfields}}
+	
+	{{#fields}}
+	{{#value}}
+	{{>jpa_annotations}}
+	private {{>java_type}} {{camelcase key}};
+	{{/value}}
+	{{/fields}}
+	
+	public {{capitalize classname}}() {
+	}
+	
+	{{#fields}}
+	{{#value}}
+	public {{>java_type}} get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}({{>java_type}} {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/value}}
+	
+	{{/fields}}
+}
+{{+java_type}}{{#isEq type "string"}}{{#isEq format "date-time"}}DateTime{{/isEq}}{{#isEq format "uuid"}}String{{/isEq}}{{#unless format}}{{#isNotEq enums.size 0}}{{snakecaseToCamelcase key}}{{/isNotEq}}{{#isEq enums.size 0}}String{{/isEq}}{{/unless}}{{/isEq}}{{#isEq type "number"}}{{#isEq format "double"}}Double{{/isEq}}{{#isEq format "float"}}Float{{/isEq}}{{#unless format}}Double{{/unless}}{{/isEq}}{{#isEq type "integer"}}{{#isEq format "int32" }}Integer{{/isEq}}{{#isEq format "int64" }}Long{{/isEq}}{{#unless format}}Integer{{/unless}}{{/isEq}}{{#isEq type "boolean"}}Boolean{{/isEq}}{{#isEq type "object" }}Object{{/isEq}}{{#isEq type "array" }}List<Object>{{/isEq}}{{/java_type}}
+{{+pojo_import}}{{#isEq format "date-time"}}import org.joda.time.DateTime;{{/isEq}}{{/pojo_import}}
+{{+jpa_annotations}}
+@Column(name="{{uppercase key}}")
+{{/jpa_annotations}}

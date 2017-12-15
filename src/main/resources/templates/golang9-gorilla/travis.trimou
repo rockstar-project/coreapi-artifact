@@ -1,0 +1,15 @@
+language: go
+
+go:
+  - 1.7
+  - 1.8
+  - tip
+
+script:
+  - make build
+  - go get -u github.com/golang/lint/golint
+  - make lint
+
+branches:
+  except:
+  - start

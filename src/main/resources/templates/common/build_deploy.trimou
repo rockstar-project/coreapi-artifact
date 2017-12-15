@@ -1,0 +1,10 @@
+#!/bin/bash
+
+docker-compose stop {{namespace}}api && docker-compose rm -f {{namespace}}api
+docker rmi $DOCKER_NAMESPACE/{{type}}-{{namespace}}
+cd $APP_HOME/{{type}}-{{namespace}}/
+mvn clean package
+docker build -t $DOCKER_NAMESPACE/{{type}}-{{namespace}} .
+cd -
+docker-compose up -d {{namespace}}api
+docker-compose logs --follow {{namespace}}api

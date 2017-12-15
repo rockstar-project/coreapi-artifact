@@ -1,0 +1,23 @@
+package {{packageName}}.web;
+
+import java.net.URI;
+
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceAssembler;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+
+import {{packageName}}.model.Spirit;
+
+@Component
+class {{capitalize classname}}ResourceAssembler implements ResourceAssembler<{{capitalize classname}}, Resource<{{capitalize classname}}>> {
+
+	@Override
+	public Resource<{{capitalize classname}}> toResource({{capitalize classname}} {{classname}}) {
+		Resource<{{capitalize classname}}> resource = new Resource<>({{classname}});
+		URI selfUri = MvcUriComponentsBuilder.fromMethodCall(MvcUriComponentsBuilder.on({{capitalize classname}}Controller.class).get({{classname}}.getId())).buildAndExpand().toUri();
+		resource.add(new Link(selfUri.toString(), "self"));
+		return resource;
+	}
+}

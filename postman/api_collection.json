@@ -1,0 +1,259 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Artifacts API",
+		"_postman_id": "328d4b25-1fca-9599-2d90-a0253a2ab168",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Artifacts",
+			"request": {
+				"url": "{{KICKSTER_ENDPOINT_URL}}/artifacts",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{IDP_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Artifact",
+			"request": {
+				"url": "{{KICKSTER_ENDPOINT_URL}}/artifacts",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{IDP_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"oauth2\",\n    \"title\": \"Spring Cloud Security\",\n    \"caption\": \"Building Secure Apps & Services\",\n    \"status\": \"active\",\n    \"description\": \"Create secured systems that implement common patterns like single sign on, token relay and token exchange.\",\n    \"thumbnail\": \"http://placehold.it/350x250\",\n    \"group\": \"deploy\",\n    \"featured\": true,\n    \"owner\": \"ssiddiq\",\n    \"visibility\": \"public\",\n    \"tags\": [\n      \"SSO\",\n      \"Authorization\",\n      \"Security\",\n      \"OAuth2\"\n    ]\n  }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Artifact",
+			"request": {
+				"url": "{{KICKSTER_ENDPOINT_URL}}/artifacts/{{API_DEFINITION_TEMPLATE_ID}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{IDP_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Artifact",
+			"request": {
+				"url": "{{KICKSTER_ENDPOINT_URL}}/artifacts/{{API_DEFINITION_TEMPLATE_ID}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{IDP_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"title\": \"Spring Cloud Security Services\",\n    \"caption\": \"Secure Apps & Services\",\n    \"thumbnail\": \"http://placehold.it/350x200\"\n  }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Artifact",
+			"request": {
+				"url": "{{KICKSTER_ENDPOINT_URL}}/artifacts/{{API_DEFINITION_TEMPLATE_ID}}",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{IDP_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Codes",
+			"request": {
+				"url": "{{KICKSTER_ENDPOINT_URL}}/artifacts/codes",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{IDP_TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Token (Password Grant)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"IDP_TOKEN\", jsonData.access_token);"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"username": "{{IDP_CLIENT_ID}}",
+						"password": "{{IDP_CLIENT_SECRET}}",
+						"saveHelperData": true,
+						"showPassword": false
+					}
+				},
+				"url": "{{IDP_ENDPOINT_URL}}/token",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "username",
+							"value": "{{APP_USER}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "{{APP_PASSWORD}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,163 @@
+package {{packageName}}.model;
+
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.PrePersist;
+
+import org.joda.time.DateTime;
+
+@Entity
+@Table(name="{{camelcaseToUpperSnakecase classname}}")
+public class {{capitalize classname}} {
+
+	{{#enumfields}}
+	public enum {{snakecaseToCamelcase key}} { {{#value}}{{#enums}}{{.}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/enums}}{{/value}} };
+	{{/enumfields}}
+	
+	{{#fields}}
+	{{#value}}
+	@Column(name="{{uppercase key}}")
+	{{#isEq type "string"}}
+	{{#isEq format "date-time" }}
+	@org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime {{camelcase key}};
+	{{/isEq}}
+	{{#isEq format "uuid"}}
+	@Id
+	private String {{camelcase key}};
+	{{/isEq}}
+	{{#unless format}}
+	{{#isNotEq enums.size 0}}
+	private {{snakecaseToCamelcase key}} {{camelcase key}};
+	{{/isNotEq}}
+	{{#isEq enums.size 0}}
+	private String {{camelcase key}};
+	{{/isEq}}
+	{{/unless}}
+	{{/isEq}}
+	{{#isEq type "number"}}
+	{{#isEq format "double" }}
+	private Double {{camelcase key}};
+	{{/isEq}}{{#isEq format "float"}}
+	private Float {{camelcase key}};
+	{{/isEq}}
+	{{#unless format}}private Double {{camelcase key}};{{/unless}}
+	{{/isEq}}
+	{{#isEq type "integer" }}
+	{{#isEq format "int32" }}
+	private Integer {{camelcase key}};
+	{{/isEq}}
+	{{#isEq format "int64" }}
+	private Long {{camelcase key}}
+	{{/isEq}}
+	{{#unless format}}private Integer {{camelcase key}};{{/unless}}
+	{{/isEq}}
+	{{#isEq type "boolean" }}
+	private Boolean {{camelcase key}};
+	{{/isEq}}
+	{{#isEq type "object" }}
+	private Object {{camelcase key}};
+	{{/isEq}}
+	{{#isEq type "array" }}
+	private List<Object> {{camelcase key}};
+	{{/isEq}}
+	{{/value}}
+	
+	{{/fields}}
+	public {{capitalize classname}}() {
+	}
+	
+	{{#fields}}{{#value}}
+	{{#isEq type "string" }}
+	{{#isEq format "date-time"}}
+	public DateTime get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(DateTime {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}{{#isEq format "uuid" }}
+	public String get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(String {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}
+	{{#unless format}}
+	{{#isNotEq enums.size 0}}
+	public {{snakecaseToCamelcase key}} get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}({{snakecaseToCamelcase key}} {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isNotEq}}
+	{{#isEq enums.size 0}}
+	public String get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(String {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}
+	{{/unless}}
+	{{/isEq}}
+	{{#isEq type "number" }}{{#isEq format "double" }}
+	public Double get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(Double {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}{{#isEq format "float" }}
+	public Float get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(Float {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}{{/isEq}}
+	{{#isEq type "integer"}}{{#isNull format }}
+	public Integer get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(Integer {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isNull}}{{#isEq format "int32" }}
+	public Integer get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(Integer {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}{{#isEq format "int64" }}
+	public Long get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(Long {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}{{/isEq}}
+	{{#isEq type "boolean" }}
+	public Boolean get{{capitalizeCamelcase key}}() {
+		return this.{{camelcase key}};
+	}
+	public void set{{capitalizeCamelcase key}}(Boolean {{camelcase key}}) {
+		this.{{camelcase key}} = {{camelcase key}};
+	}
+	{{/isEq}}{{/value}}{{/fields}}
+	
+	@PrePersist
+	public void assignId() {
+		if (this.getId() == null || this.getId().isEmpty()) {
+			this.setId(UUID.randomUUID().toString());
+		}
+	}
+}
+
