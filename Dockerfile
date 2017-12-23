@@ -1,5 +1,5 @@
 FROM ibmcom/ibmjava
-MAINTAINER IBM Kickster Team
+MAINTAINER Rockstar Team
 
 VOLUME /tmp
 ADD target/coreapi-artifact-1.0.0-SNAPSHOT.jar coreapi-artifact.jar

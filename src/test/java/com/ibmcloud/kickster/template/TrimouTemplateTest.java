@@ -131,8 +131,8 @@ public class TrimouTemplateTest {
 					model.setContact(contact.getEmail());
 				}
 			}
-			model.setClassname("spirit");
-			model.setSchema(openapi3Model.getSchema("Spirit"));
+			model.setClassname("volume");
+			model.setSchema(openapi3Model.getSchema("Volume"));
 		}
 		
 		return model;

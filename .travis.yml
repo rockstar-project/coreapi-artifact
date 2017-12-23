@@ -10,8 +10,8 @@ services:
 
 script:
   - mvn clean package
-  - docker build -t $DOCKER_REGISTRY/$DOCKER_NAMESPACE/coreapi-artifact .
+  - docker build -t $DOCKER_NAMESPACE/coreapi-artifact .
 
 after_success:
-  - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD $DOCKER_REGISTRY
-  - docker push $DOCKER_REGISTRY/$DOCKER_NAMESPACE/coreapi-artifact
+  - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+  - docker push $DOCKER_NAMESPACE/coreapi-artifact
