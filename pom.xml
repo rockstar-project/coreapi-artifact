@@ -39,21 +39,16 @@
 	</dependencyManagement>
 
 	<dependencies>
-        <!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+        <dependency>
+			<groupId>com.auth0</groupId>
+		  	<artifactId>auth0-spring-security-api</artifactId>
+		  	<version>1.0.0-rc.3</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-		</dependency> -->
-		
 		<dependency>
 		    <groupId>com.reprezen.kaizen</groupId>
 		    <artifactId>openapi-parser</artifactId>
 		    <version>${openapi-parser.version}</version>
 		</dependency>
-		
 		<dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-parser</artifactId>
