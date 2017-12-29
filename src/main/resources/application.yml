@@ -6,9 +6,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery:8761/eureka/
-auth0:
-  issuer: https://rockstar.auth0.com/
-  audience: https://api.rock-star.io/artifacts
 logging:
   level:
     com.auth0.spring.security: DEBUG
