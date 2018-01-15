@@ -3,9 +3,11 @@ version: '2'
 services:
   artifactapi:
     build: .
-    image: kickster/coreapi-artifact
+    image: $DOCKER_NAMESPACE/coreapi-artifact
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - AUTH0_ISSUER=https://rockstar.auth0.com/
+      - AUTH0_AUDIENCE=http://api.rock-star.io/v1
       - EUREKA_CLIENT_ENABLED=false
     ports:
       - 8080
