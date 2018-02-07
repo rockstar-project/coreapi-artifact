@@ -5,7 +5,7 @@
     <parent>
     	<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.7.RELEASE</version>
+		<version>{{frameworkVersion}}</version>
 		<relativePath/>
     </parent>
     
@@ -16,10 +16,12 @@
     
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		{{#isEq languageVersion "8"}}
 		<java.version>1.8</java.version>
+		{{/isEq}}
 		<jadira-usertype.version>5.0.0.GA</jadira-usertype.version>
-		{{#isEq options.messaging "nats"}}
-		<nats-client-spring.version>0.6.6</nats-client-spring.version>
+		{{#isEq messagingValue "nats"}}
+		<nats-client-spring.version>messagingOptionVersion</nats-client-spring.version>
 		{{/isEq}}
 	</properties>
 
@@ -36,44 +38,30 @@
 	</dependencyManagement>
     
     <dependencies>
-    	{{#isEq options.messaging "nats"}}
+    	{{#isEq messagingValue "nats"}}
     	<dependency>
     		<groupId>com.github.cloudfoundry-community</groupId>
     		<artifactId>nats-client-spring</artifactId>
     		<version>${nats-client-spring.version}</version>
 		</dependency>
 		{{/isEq}}
-		{{#isEq options.messaging "rabbitmq"}}
+		{{#isEq messagingValue "rabbitmq"}}
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
         </dependency>
 		{{/isEq}}
-    	{{#isEq options.discovery "eureka"}}
-    	<dependency>
+    		{{#isEq discoveryValue "eureka"}}
+    		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka</artifactId>
 		</dependency>
 		{{/isEq}}
-    	{{#isEq options.web "datarest"}}
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-rest</artifactId>
-        </dependency>
-        {{/isEq}}
-        {{#isEq options.web "hateoas"}}
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
-		{{/isEq}}
-		{{#isEq options.web "webmvc"}}
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-		{{/isEq}}
-        {{#isEq options.datastore "h2" }}
+        {{#isEq datastoreValue "h2" }}
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -83,7 +71,7 @@
             <artifactId>h2</artifactId>
         </dependency>
         {{/isEq}}
-        {{#isEq options.datastore "mysql" }}
+        {{#isEq datastoreValue "mysql" }}
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -94,7 +82,7 @@
 			<scope>runtime</scope>
 		</dependency>
 		{{/isEq}}
-		{{#isEq options.datastore "cassandra" }}
+		{{#isEq datastoreValue "cassandra" }}
         <dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-data-cassandra</artifactId>
@@ -106,7 +94,7 @@
 			<scope>test</scope>
 		</dependency>
 		{{/isEq}}
-		{{#isEq options.datastore "mongodb" }}
+		{{#isEq datastoreValue "mongodb" }}
 		<dependency>
   			<groupId>org.springframework.boot</groupId>
   			<artifactId>spring-boot-starter-data-mongodb</artifactId>

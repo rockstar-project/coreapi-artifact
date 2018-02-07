@@ -18,6 +18,7 @@ import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.NotFoundException;
 import com.rockstar.artifact.model.ProjectGenerator;
+import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.model.TemplateDefinition;
 import com.rockstar.artifact.model.TemplateDefinitionRegistry;
 import com.rockstar.artifact.util.ZipUtils;
@@ -36,25 +37,45 @@ public class ArtifactServiceImpl implements ArtifactService {
 	private TemplateDefinitionRegistry templateDefinitionRegistry;
 	 
     public String createArtifact(ArtifactResource artifact) throws Exception {
-    	GeneratedProject project = null;
-    	TemplateDefinition templateDefinition = null;
-    	
-    	templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
-    	project = new ProjectGenerator(this.templateEngine)
-    			.withType(artifact.getType())
-    			.withLanguage(artifact.getLanguage())
-    			.withNamespace(artifact.getNamespace())
-    			.withOrganization(artifact.getOrganization())
-    			.withOptions(artifact.getOptions())
-    			.withDefinition(templateDefinition)
-    			.withSpec(artifact.getSpecification())
-    		.generate();
-    	
-    	String directory = this.createProjectFiles(project);
-        
-    	ZipUtils.zip(directory, directory + ".zip");
-    	FileUtils.deleteDirectory(new File(directory));
-        
+	    	GeneratedProject project = null;
+	    	TemplateDefinition templateDefinition = null;
+	    	Specification specification = null;
+	    	String specificationLocation = null;
+	    	
+	    	if (artifact != null) {
+		    	specification = artifact.getSpecification();
+		    	if (specification != null) {
+		    		specificationLocation = specification.getLocation();
+		    
+			    	templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
+			    	project = new ProjectGenerator(this.templateEngine)
+			    			.withType(artifact.getType())
+			    			.withLanguage(artifact.getLanguage())
+			    			.withNamespace(artifact.getNamespace())
+			    			.withOrganization(artifact.getOrganization())
+			    			.withDatastore(artifact.getDatastore())
+			    			.withHttp(artifact.getHttp())
+			    			.withMessaging(artifact.getMessaging())
+			    			.withDiscovery(artifact.getDiscovery())
+			    			.withMonitoring(artifact.getMonitoring())
+			    			.withSecurity(artifact.getSecurity())
+			    			.withTracing(artifact.getTracing())
+			    			.withCi(artifact.getCi())
+			    			.withCd(artifact.getCd())
+			    			.withRegistry(artifact.getRegistry())
+			    			.withScm(artifact.getScm())
+			    			.withBuild(artifact.getBuild())
+			    			.withTest(artifact.getTest())
+			    			.withDefinition(templateDefinition)
+			    			.withSpec(specificationLocation)
+			    		.generate();
+		    	
+			    	String directory = this.createProjectFiles(project);
+			        
+			    	ZipUtils.zip(directory, directory + ".zip");
+			    	FileUtils.deleteDirectory(new File(directory));
+		    	}
+	    	}
         return project.getId();
     }
     

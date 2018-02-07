@@ -1,18 +1,18 @@
 spring:
   profiles: docker
-  {{#isEq options.datastore "mysql" }}
+  {{#isEq datastoreValue "mysql" }}
   datasource:
     platform: mysql
     driver-class-name:  com.mysql.jdbc.Driver
   {{/isEq}}
-  {{#isEq options.datastore "mysql" }}
+  {{#isEq datastoreValue "mysql" }}
   jpa:
     hibernate:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   {{/isEq}}
-{{#isEq options.discovery "eureka" }}
+{{#isEq discoveryValue "eureka" }}
 eureka:
   instance:
     prefer-ip-address: true

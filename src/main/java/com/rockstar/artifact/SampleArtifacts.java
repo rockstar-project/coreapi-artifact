@@ -2,8 +2,6 @@ package com.rockstar.artifact;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.trimou.engine.MustacheEngine;
@@ -11,6 +9,8 @@ import org.trimou.engine.MustacheEngine;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.ProjectGenerator;
+import com.rockstar.artifact.model.SelectedValue;
+import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.model.TemplateDefinition;
 import com.rockstar.artifact.model.TemplateDefinitionRegistry;
 import com.rockstar.artifact.util.ZipUtils;
@@ -34,38 +34,68 @@ public class SampleArtifacts {
 	}
 	
 	public void generateAll(String specUri) throws Exception {
-		this.generateJava8SpringbootProject(specUri);
-		this.generateGolang8GinProject(specUri);
-		this.generateGolang9GorillaProject(specUri);
-		this.generateNodejsExpressProject(specUri);
+		this.generateJavaSpringbootProject(specUri);
+		//this.generateGolang8GinProject(specUri);
+		//this.generateGolang9GorillaProject(specUri);
+		//this.generateNodejsExpressProject(specUri);
 	}
 	
-	public void generateJava8SpringbootProject(String specUri) throws Exception {
-		Map<String, String> options = new HashMap<String, String> ();
+	public void generateJavaSpringbootProject(String specUri) throws Exception {
+
+		SelectedValue language = new SelectedValue();
+		language.setValue("java");
+		language.setVersion("8");
 		
-		String type = "coreapi";
-		String language = "java8";
-		String namespace = "spirit";
-		String framework = "springboot";
-		String organization = "ibmcloud";
+		SelectedValue framework = new SelectedValue();
+		framework.setValue("springboot");
+		framework.setVersion("1.5.9");
 		
-		options.put("datastore", "mysql");
-		options.put("web", "hateoas");
-		options.put("discovery", "eureka");
+		String type = "restapi";
+		String namespace = "storage";
+		String organization = "gravitant";
+		
+		SelectedValue datastoreOption = new SelectedValue();
+		datastoreOption.setValue("mysql");
+		datastoreOption.setVersion("8.5");
+		
+		SelectedValue buildOption = new SelectedValue();
+		buildOption.setValue("maven");
+		buildOption.setVersion("3.5.2");
+		
+		SelectedValue ciOption = new SelectedValue();
+		ciOption.setValue("travis");
+		ciOption.setVersion("Hosted");
+		
+		SelectedValue registryOption = new SelectedValue();
+		registryOption.setValue("docker");
+		registryOption.setVersion("Hosted");
+		
+		SelectedValue discoveryOption = new SelectedValue();
+		discoveryOption.setValue("eureka");
+		discoveryOption.setVersion("1.5.9");
 		
 		ArtifactResource artifact = new ArtifactResource();
+		Specification spec = new Specification();
+		spec.setLocation(specUri);
+		spec.setType("openapi");
+		spec.setVersion("3");
 		
 		artifact.setType(type);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
 		artifact.setNamespace(namespace);
-		artifact.setSpecification(specUri);
+		artifact.setSpecification(spec);
+		artifact.setDatastore(datastoreOption);
+		artifact.setDiscovery(discoveryOption);
+		artifact.setRegistry(registryOption);
+		artifact.setBuild(buildOption);
+		artifact.setCi(ciOption);
 		
 		this.generateProject(artifact);
 	}
 	
-	public void generateGolang8GinProject(String specUri) {
+	/*public void generateGolang8GinProject(String specUri) {
 		String type = "coreapi";
 		String language = "golang8";
 		String namespace = "spirit";
@@ -76,13 +106,17 @@ public class SampleArtifacts {
 		options.put("datastore", "mysql");
 		
 		ArtifactResource artifact = new ArtifactResource();
+		Specification spec = new Specification();
+		spec.setLocation(specUri);
+		spec.setType("openapi");
+		spec.setVersion("3");
 		
 		artifact.setType(type);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
 		artifact.setNamespace(namespace);
-		artifact.setSpecification(specUri);
+		artifact.setSpecification(spec);
 		
 		this.generateProject(artifact);
 		
@@ -99,13 +133,17 @@ public class SampleArtifacts {
 		options.put("datastore", "mongodb");
 		
 		ArtifactResource artifact = new ArtifactResource();
+		Specification spec = new Specification();
+		spec.setLocation(specUri);
+		spec.setType("openapi");
+		spec.setVersion("3");
 		
 		artifact.setType(type);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
 		artifact.setNamespace(namespace);
-		artifact.setSpecification(specUri);
+		artifact.setSpecification(spec);
 		
 		this.generateProject(artifact);
 		
@@ -122,18 +160,22 @@ public class SampleArtifacts {
 		options.put("datastore", "mongodb");
 		
 		ArtifactResource artifact = new ArtifactResource();
+		Specification spec = new Specification();
+		spec.setLocation(specUri);
+		spec.setType("openapi");
+		spec.setVersion("3");
 		
 		artifact.setType(type);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
 		artifact.setNamespace(namespace);
-		artifact.setSpecification(specUri);
+		artifact.setSpecification(spec);
 		
 		this.generateProject(artifact);
 		
 	}
-	
+	*/
 	private void generateProject(ArtifactResource artifact) {
 		try {
 			TemplateDefinition templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
@@ -142,9 +184,15 @@ public class SampleArtifacts {
 	    			.withLanguage(artifact.getLanguage())
 	    			.withNamespace(artifact.getNamespace())
 	    			.withOrganization(artifact.getOrganization())
-	    			.withOptions(artifact.getOptions())
+	    			.withDatastore(artifact.getDatastore())
+	    			.withBuild(artifact.getBuild())
+	    			.withHttp(artifact.getHttp())
+	    			.withRegistry(artifact.getRegistry())
+	    			.withMessaging(artifact.getMessaging())
+	    			.withDiscovery(artifact.getDiscovery())
+	    			.withCi(artifact.getCi())
 	    			.withDefinition(templateDefinition)
-	    			.withSpec(artifact.getSpecification())
+	    			.withSpec(artifact.getSpecification().getLocation())
 				.generate();
 			
 			

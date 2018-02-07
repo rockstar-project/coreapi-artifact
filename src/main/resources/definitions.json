@@ -1,9 +1,9 @@
 [
   {
-  	"slug": "java8-springboot",
+  	"slug": "restapi-java-springboot",
     "files": [
       {
-        "slug": "java8-springboot/maven",
+        "slug": "restapi-java-springboot/maven",
         "name": "pom.xml"
       },
       {
@@ -11,11 +11,11 @@
         "name": ".env"
       },
       {
-        "slug": "java8-springboot/gitignore",
+        "slug": "restapi-java-springboot/gitignore",
         "name": ".gitignore"
       },
       {
-        "slug": "java8-springboot/travis",
+        "slug": "restapi-java-springboot/travis",
         "name": ".travis.yml"
       },
       {
@@ -23,11 +23,11 @@
         "name": "postman_collection.json"
       },
       {
-        "slug": "java8-springboot/readme",
+        "slug": "restapi-java-springboot/readme",
         "name": "README.md"
       },
       {
-        "slug": "java8-springboot/dockerfile",
+        "slug": "restapi-java-springboot/dockerfile",
         "name": "Dockerfile"
       },
       {
@@ -35,15 +35,14 @@
         "name": "docker-compose.yml"
       },
       {
-        "slug": "java8-springboot/deploy_script",
+        "slug": "restapi-java-springboot/deploy_script",
         "name": "build_and_deploy.sh"
       }
     ],
     "tags": [
       "restapi",
-      "java8",
+      "java",
       "springboot",
-      "hateoas",
       "mysql"
     ],
     "directories": [
@@ -52,7 +51,7 @@
         "path": "root",
         "files": [
           {
-            "slug": "java8-springboot/restapi",
+            "slug": "restapi-java-springboot/restapi",
             "name": "RestApiService.java"
           }
         ]
@@ -62,19 +61,19 @@
         "path": "common",
         "files": [
           {
-            "slug": "java8-springboot/notfound_exception",
+            "slug": "restapi-java-springboot/notfound_exception",
             "name": "NotFoundException.java"
           },
           {
-            "slug": "java8-springboot/notunique_exception",
+            "slug": "restapi-java-springboot/notunique_exception",
             "name": "NotUniqueException.java"
           },
           {
-            "slug": "java8-springboot/error_handler",
+            "slug": "restapi-java-springboot/error_handler",
             "name": "ErrorHandler.java"
           },
           {
-            "slug": "java8-springboot/web_config",
+            "slug": "restapi-java-springboot/web_config",
             "name": "WebConfig.java"
           }
         ]
@@ -85,15 +84,15 @@
         "resolution": "Dynamic",
         "files": [
           {
-            "slug": "java8-springboot/resource",
+            "slug": "restapi-java-springboot/resource",
             "name": "{name}Resource.java"
           },
           {
-            "slug": "java8-springboot/resource_assembler",
+            "slug": "restapi-java-springboot/resource_assembler",
             "name": "{name}ResourceAssembler.java"
           },
           {
-            "slug": "java8-springboot/hateoas_controller",
+            "slug": "restapi-java-springboot/hateoas_controller",
             "name": "{name}Controller.java"
           }
         ]
@@ -104,7 +103,7 @@
         "resolution": "Dynamic",
         "files": [
           {
-            "slug": "java8-springboot/jpa_model",
+            "slug": "restapi-java-springboot/jpa_model",
             "name": "{name}.java"
           }
         ]
@@ -115,7 +114,7 @@
         "resolution": "Dynamic",
        	"files": [
       		{
-            	"slug": "java8-springboot/jpa_repository",
+            	"slug": "restapi-java-springboot/jpa_repository",
             	"name": "{name}Repository.java"
           	}
       	]
@@ -125,15 +124,15 @@
         "type": "properties",
         "files": [
           {
-            "slug": "java8-springboot/application",
+            "slug": "restapi-java-springboot/application",
             "name": "application.yml"
           },
           {
-            "slug": "java8-springboot/bootstrap",
+            "slug": "restapi-java-springboot/bootstrap",
             "name": "bootstrap.yml"
           },
           {
-            "slug": "java8-springboot/messages",
+            "slug": "restapi-java-springboot/messages",
             "name": "messages.properties"
           }
         ]

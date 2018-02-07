@@ -26,7 +26,7 @@ $ source .env
 $ docker-machine create -d virtualbox --virtualbox-memory 4096 {{type}}-{{namespace}}-vb-node
 $ eval $(docker-machine env {{type}}-{{namespace}}-vb-node)
 ```
-{{#isEq options.datastore "mysql" }}
+{{#isEq options.datastore.value "mysql" }}
 #### Run MySQL database
 
 ```
@@ -42,7 +42,7 @@ docker-compose -f docker-compose.develop.yml exec templatemysql /bin/bash
 mysql --user=kickster --password=kickster123 --database=kickster_db_template < template/schema.sql
 mysql --user=kickster --password=kickster123 --database=kickster_db_template < template/seed.sql
 ```
-{{#isEq options.discovery "eureka" }}
+{{#isEq options.discovery.value "eureka" }}
 #### Run Discovery Service
 
 ```bash

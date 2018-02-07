@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -27,7 +26,6 @@ public class ProjectGenerator {
 	private static final String NAME_PLACEHOLDER = "{name}";
 	
 	private OpenApi3 spec;
-	private String language;
 	private Model model;
 	private TemplateDefinition projectTemplate;
 	private MustacheEngine engine;
@@ -50,9 +48,15 @@ public class ProjectGenerator {
 		return this;
 	}
 	
-	public ProjectGenerator withLanguage(String language) {
-		CheckUtils.checkArgumentNotNullOrEmpty(language);
-		this.language = language;
+	public ProjectGenerator withLanguage(SelectedValue language) {
+		this.model.setLanguageValue(language.getValue());
+		this.model.setLanguageVersion(language.getVersion());
+		return this;
+	}
+	
+	public ProjectGenerator withFramework(SelectedValue framework) {
+		this.model.setFrameworkValue(framework.getValue());
+		this.model.setFrameworkVersion(framework.getVersion());
 		return this;
 	}
 	
@@ -92,14 +96,88 @@ public class ProjectGenerator {
 		return this;
 	}
 	
-	public ProjectGenerator withOptions(Map<String, String> options) {
-		this.model.setOptions(options);
-		return this;
+	public ProjectGenerator withDatastore(SelectedValue option) {
+		this.model.setDatastoreValue(option.getValue());
+	    this.model.setDatastoreVersion(option.getVersion());
+	    return this;
 	}
 	
+	public ProjectGenerator withHttp(SelectedValue option) {
+		this.model.setHttpValue(option.getValue());
+	    this.model.setHttpVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withMessaging(SelectedValue option) {
+		this.model.setMessagingValue(option.getValue());
+	    this.model.setMessagingVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withDiscovery(SelectedValue option) {
+		this.model.setDiscoveryValue(option.getValue());
+	    this.model.setDiscoveryVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withTracing(SelectedValue option) {
+		this.model.setTracingValue(option.getValue());
+	    this.model.setTracingVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withMonitoring(SelectedValue option) {
+		this.model.setMonitoringValue(option.getValue());
+	    this.model.setMonitoringVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withSecurity(SelectedValue option) {
+		this.model.setSecurityValue(option.getValue());
+	    this.model.setSecurityVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withCi(SelectedValue option) {
+		this.model.setCiValue(option.getValue());
+	    this.model.setCiVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withCd(SelectedValue option) {
+		this.model.setCdValue(option.getValue());
+	    this.model.setCdVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withScm(SelectedValue option) {
+		this.model.setScmValue(option.getValue());
+	    this.model.setScmVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withRegistry(SelectedValue option) {
+		this.model.setRegistryValue(option.getValue());
+	    this.model.setRegistryVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withBuild(SelectedValue option) {
+		this.model.setBuildValue(option.getValue());
+	    this.model.setBuildVersion(option.getVersion());
+	    return this;
+	}
+	
+	public ProjectGenerator withTest(SelectedValue option) {
+		this.model.setTestValue(option.getValue());
+	    this.model.setTestVersion(option.getVersion());
+	    return this;
+	}
+	
+	
 	public GeneratedProject generate() throws Exception {
-    	GeneratedProject project = null;
-    	List<GeneratedFile> files = null;
+		GeneratedProject project = null;
+		List<GeneratedFile> files = null;
     	
         files = new ArrayList<GeneratedFile>();
         files.addAll(this.generateFiles());
@@ -114,9 +192,9 @@ public class ProjectGenerator {
     }
 	
 	public List<GeneratedFile> generateFiles() throws Exception {
-    	List<GeneratedFile> files = new ArrayList<GeneratedFile>();
+    		List<GeneratedFile> files = new ArrayList<GeneratedFile>();
 		for (TemplateFile file: projectTemplate.getFiles()) {
-    		files.add(this.generateFile(null, file, ""));   
+    			files.add(this.generateFile(null, file, ""));   
         }
 		return files;
 	}
@@ -133,21 +211,20 @@ public class ProjectGenerator {
 		    	for (TemplateFile file: directory.getFiles()) {
 					this.model.setPackageName(this.resolvePackagename());
 					
-					
-					switch (directory.getResolution()) {
-				        case Static:
-				        	generatedFiles.add(this.generateFile(directory, file, ""));
-				        	break;
-				        case Dynamic:
-				        	for (String current : this.spec.getSchemas().keySet()) {
-				    			this.model.setClassname(StringUtils.lowerCase(current));
-				    			this.model.setSchema(this.spec.getSchema(current));
-					        	generatedFiles.add(this.generateFile(directory, file, current));
-				    		}
-				        	break;
-				        default:
-				        	throw new IllegalArgumentException("missing file resolution method");
-			        }
+				switch (directory.getResolution()) {
+			        case Static:
+			        	generatedFiles.add(this.generateFile(directory, file, ""));
+			        	break;
+			        case Dynamic:
+			        	for (String current : this.spec.getSchemas().keySet()) {
+			    			this.model.setClassname(StringUtils.lowerCase(current));
+			    			this.model.setSchema(this.spec.getSchema(current));
+				        	generatedFiles.add(this.generateFile(directory, file, current));
+			    		}
+			        	break;
+			        default:
+			        	throw new IllegalArgumentException("missing file resolution method");
+		        }
 		    	}
     		}
     	}
@@ -163,19 +240,19 @@ public class ProjectGenerator {
 		generatedFile = new GeneratedFile();
 		generatedFile.setSlug(file.getSlug());
 		generatedFile.setFilename(this.resolveFilename(file, arg));
-    	generatedFile.setPath(this.resolveOutputPath(directory));
-    	generatedFile.setContent(template.render(this.model));
+		generatedFile.setPath(this.resolveOutputPath(directory));
+		generatedFile.setContent(template.render(this.model));
     	
-    	return generatedFile;
+    		return generatedFile;
 	}
 	
 	private Mustache getTemplate(String name) throws Exception {
 		Mustache template = null;
-    	template = engine.getMustache(name);
-    	if (template == null) {
-    		throw new NotFoundException("template", name);
-    	}
-    	return template;
+	    	template = engine.getMustache(name);
+	    	if (template == null) {
+	    		throw new NotFoundException("template", name);
+	    	}
+	    	return template;
 		
 	}
 	
@@ -190,7 +267,7 @@ public class ProjectGenerator {
 		CheckUtils.checkArgumentNotNull(file);
 		resolvedName = file.getName();
 		
-		if (StringUtils.isNotEmpty(this.language) && StringUtils.isNotEmpty(arg)) {
+		if (StringUtils.isNotEmpty(arg)) {
 			
 			switch (file.getNamingStrategy()) {
 				case Capitalize:
@@ -220,8 +297,8 @@ public class ProjectGenerator {
 			outputPath = "";
 		} else {
 			directoryPath = directory.getPath();
-			switch (this.language) {
-				case "java8":
+			switch (this.model.getLanguageValue()) {
+				case "java":
 					basePathBuilder.append(PACKAGE_PREFIX);
 					basePathBuilder.append(File.separator);
 					basePathBuilder.append(this.model.getOrganization());
@@ -246,8 +323,8 @@ public class ProjectGenerator {
 	private String resolvePackagename() {
 		StringBuilder packageNameBuilder = new StringBuilder();
 		
-		switch (this.language) {
-			case "java8":
+		switch (this.model.getLanguageValue()) {
+			case "java":
 				packageNameBuilder.append(PACKAGE_PREFIX);
 				packageNameBuilder.append(".");
 				packageNameBuilder.append(this.model.getOrganization());

@@ -1,9 +1,6 @@
-package com.ibmcloud.kickster.template;
+package com.rockstar.artifact;
 
 import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.util.StringUtils;
 import org.trimou.engine.MustacheEngine;
@@ -102,17 +99,27 @@ public class TrimouTemplateTest {
 	public static Model buildModel() throws Exception {
 		Model model = new Model();
 		String specUri = "https://app.swaggerhub.com/apis/kickster/storage/1.0.0/swagger.yaml";
-		Map<String, String> options = new HashMap<String, String> ();
 		
-		options.put("datastore", "mysql");
-		options.put("web", "hateoas");
-		options.put("discovery", "eureka");
+		model.setLanguageValue("java");
+		model.setLanguageVersion("8");
 		
-		model.setType("coreapi");
-		model.setNamespace("spirit");
-		model.setOrganization("ibmcloud");
-		model.setOptions(options);
-		model.setPackageName("com.ibmcloud.spirit");
+		model.setFrameworkValue("springboot");
+		model.setFrameworkVersion("1.5.9");
+		
+		model.setDatastoreValue("mysql");
+		model.setDatastoreVersion("8.5");
+		
+		model.setHttpValue("http");
+		model.setHttpVersion("8.5.27");
+		
+		model.setDiscoveryValue("eureka");
+		model.setDiscoveryVersion("1.5.9");
+		
+		model.setType("restapi");
+		model.setNamespace("storage");
+		model.setOrganization("gravitant");
+		
+		model.setPackageName("com.gravitant.storage");
 		
 		OpenApi3 openapi3Model = new OpenApi3Parser().parse(new URI(specUri), true);
 		if (!openapi3Model.isValid()) {

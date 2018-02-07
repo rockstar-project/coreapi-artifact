@@ -1,5 +1,12 @@
 package {{packageName}}.model;
 
+{{#fields}}
+{{#value}}
+{{#isEq type "array" }}
+	import java.util.List;
+{{/isEq}}
+{{/value}}
+{{/fields}}
 import java.util.UUID;
 
 import javax.persistence.Column;
