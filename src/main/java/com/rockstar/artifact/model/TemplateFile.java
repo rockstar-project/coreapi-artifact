@@ -8,6 +8,7 @@ public class TemplateFile {
 	private String slug;
 	private String name;
 	private NamingStrategy namingStrategy;
+	private String rule;
 	
 	public TemplateFile() {
 		this.name = DEFAULT_NAME;
@@ -36,6 +37,14 @@ public class TemplateFile {
 
 	public void setNamingStrategy(NamingStrategy namingStrategy) {
 		this.namingStrategy = namingStrategy;
+	}
+
+	public String getRule() {
+		return rule;
+	}
+
+	public void setRule(String rule) {
+		this.rule = rule;
 	}
 	
 }

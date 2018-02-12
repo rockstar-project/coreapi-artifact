@@ -1,5 +1,5 @@
 FROM ibmcom/ibmjava
-MAINTAINER IBM Kickster Team
+MAINTAINER {{capitalize organization}} Team
 
 VOLUME /tmp
 ADD target/{{type}}-{{namespace}}-1.0.0-SNAPSHOT.jar {{type}}-{{namespace}}.jar

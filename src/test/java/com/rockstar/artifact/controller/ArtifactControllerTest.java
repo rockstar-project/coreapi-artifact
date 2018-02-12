@@ -2,9 +2,6 @@ package com.rockstar.artifact.controller;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,7 +27,7 @@ import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.web.ArtifactResource;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = RestApiService.class)
 @AutoConfigureMockMvc
@@ -53,7 +50,6 @@ public class ArtifactControllerTest {
 		spec.setVersion("3");
 		
 	    	artifact = new ArtifactResource();
-	    	Map<String, SelectedValue> options = new HashMap<String, SelectedValue>();
 	    	
 	    	SelectedValue language = new SelectedValue();
 		language.setValue("java");
@@ -67,33 +63,41 @@ public class ArtifactControllerTest {
 		datastoreOption.setValue("mysql");
 		datastoreOption.setVersion("8.5");
 		
-		SelectedValue buildOption = new SelectedValue();
-		buildOption.setValue("maven");
-		buildOption.setVersion("3.5.2");
-		
 		SelectedValue httpOption = new SelectedValue();
 		httpOption.setValue("tomcat");
 		httpOption.setVersion("8.5.20");
-		
-		SelectedValue ciOption = new SelectedValue();
-		ciOption.setValue("travis");
-		ciOption.setVersion("Hosted");
-		
-		SelectedValue registryOption = new SelectedValue();
-		registryOption.setValue("docker");
-		registryOption.setVersion("Hosted");
 		
 		SelectedValue discoveryOption = new SelectedValue();
 		discoveryOption.setValue("eureka");
 		discoveryOption.setVersion("1.5.9");
 		
-		options.put("datastore", datastoreOption);
-		options.put("http", httpOption);
-		options.put("build", buildOption);
-		options.put("ci", ciOption);
-		options.put("registry", registryOption);
-		options.put("discovery", discoveryOption);
-			
+		SelectedValue securityOption = new SelectedValue();
+		securityOption.setValue("auth0");
+		securityOption.setVersion("Hosted");
+		
+		SelectedValue ciOption = new SelectedValue();
+		ciOption.setValue("travis");
+		ciOption.setVersion("Hosted");
+		
+		SelectedValue cdOption = new SelectedValue();
+		cdOption.setValue("dockercloud");
+		cdOption.setVersion("Hosted");
+		
+		SelectedValue registryOption = new SelectedValue();
+		registryOption.setValue("docker");
+		registryOption.setVersion("Hosted");
+		
+		SelectedValue scmOption = new SelectedValue();
+		scmOption.setValue("github");
+		scmOption.setVersion("Hosted");
+		
+		SelectedValue buildOption = new SelectedValue();
+		buildOption.setValue("maven");
+		buildOption.setVersion("3.5.2");
+		
+		SelectedValue testOption = new SelectedValue();
+		testOption.setValue("postman");
+		testOption.setVersion("0.0.0");
 	    
 	    	artifact.setNamespace("storage");
 	    	artifact.setOrganization("gravitant");
@@ -104,9 +108,13 @@ public class ArtifactControllerTest {
 	    	artifact.setDatastore(datastoreOption);
 	    	artifact.setHttp(httpOption);
 		artifact.setDiscovery(discoveryOption);
-		artifact.setRegistry(registryOption);
-		artifact.setBuild(buildOption);
+		artifact.setSecurity(securityOption);
 		artifact.setCi(ciOption);
+		artifact.setCd(cdOption);
+		artifact.setRegistry(registryOption);
+		artifact.setScm(scmOption);
+		artifact.setBuild(buildOption);
+		artifact.setTest(testOption);
     }
 	
 	@Test

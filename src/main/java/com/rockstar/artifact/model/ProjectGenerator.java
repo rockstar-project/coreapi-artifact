@@ -8,6 +8,11 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 
@@ -97,80 +102,106 @@ public class ProjectGenerator {
 	}
 	
 	public ProjectGenerator withDatastore(SelectedValue option) {
-		this.model.setDatastoreValue(option.getValue());
-	    this.model.setDatastoreVersion(option.getVersion());
+		if (option != null) {
+			this.model.setDatastoreValue(option.getValue());
+			this.model.setDatastoreVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withHttp(SelectedValue option) {
-		this.model.setHttpValue(option.getValue());
-	    this.model.setHttpVersion(option.getVersion());
+		if (option != null) {
+			this.model.setHttpValue(option.getValue());
+			this.model.setHttpVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withMessaging(SelectedValue option) {
-		this.model.setMessagingValue(option.getValue());
-	    this.model.setMessagingVersion(option.getVersion());
+		if (option != null) {
+			this.model.setMessagingValue(option.getValue());
+			this.model.setMessagingVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withDiscovery(SelectedValue option) {
-		this.model.setDiscoveryValue(option.getValue());
-	    this.model.setDiscoveryVersion(option.getVersion());
+		if (option != null) {
+			this.model.setDiscoveryValue(option.getValue());
+			this.model.setDiscoveryVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withTracing(SelectedValue option) {
-		this.model.setTracingValue(option.getValue());
-	    this.model.setTracingVersion(option.getVersion());
+		if (option != null) {
+			this.model.setTracingValue(option.getValue());
+			this.model.setTracingVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withMonitoring(SelectedValue option) {
-		this.model.setMonitoringValue(option.getValue());
-	    this.model.setMonitoringVersion(option.getVersion());
+		if (option != null) {
+			this.model.setMonitoringValue(option.getValue());
+			this.model.setMonitoringVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withSecurity(SelectedValue option) {
-		this.model.setSecurityValue(option.getValue());
-	    this.model.setSecurityVersion(option.getVersion());
+		if (option != null) {
+			this.model.setSecurityValue(option.getValue());
+			this.model.setSecurityVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withCi(SelectedValue option) {
-		this.model.setCiValue(option.getValue());
-	    this.model.setCiVersion(option.getVersion());
+		if (option != null) {
+			this.model.setCiValue(option.getValue());
+			this.model.setCiVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withCd(SelectedValue option) {
-		this.model.setCdValue(option.getValue());
-	    this.model.setCdVersion(option.getVersion());
+		if (option != null) {
+			this.model.setCdValue(option.getValue());
+			this.model.setCdVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withScm(SelectedValue option) {
-		this.model.setScmValue(option.getValue());
-	    this.model.setScmVersion(option.getVersion());
+		if (option != null) {
+			this.model.setScmValue(option.getValue());
+			this.model.setScmVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withRegistry(SelectedValue option) {
-		this.model.setRegistryValue(option.getValue());
-	    this.model.setRegistryVersion(option.getVersion());
+		if (option != null) {
+			this.model.setRegistryValue(option.getValue());
+			this.model.setRegistryVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withBuild(SelectedValue option) {
-		this.model.setBuildValue(option.getValue());
-	    this.model.setBuildVersion(option.getVersion());
+		if (option != null) {
+			this.model.setBuildValue(option.getValue());
+			this.model.setBuildVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
 	public ProjectGenerator withTest(SelectedValue option) {
-		this.model.setTestValue(option.getValue());
-	    this.model.setTestVersion(option.getVersion());
+		if (option != null) {
+			this.model.setTestValue(option.getValue());
+			this.model.setTestVersion(option.getVersion());
+		}
 	    return this;
 	}
 	
@@ -192,42 +223,53 @@ public class ProjectGenerator {
     }
 	
 	public List<GeneratedFile> generateFiles() throws Exception {
+		GeneratedFile generatedFile = null;
     		List<GeneratedFile> files = new ArrayList<GeneratedFile>();
 		for (TemplateFile file: projectTemplate.getFiles()) {
-    			files.add(this.generateFile(null, file, ""));   
+			generatedFile = this.generateFile(null, file, "");
+			if (generatedFile != null) {
+    				files.add(generatedFile);   
+			}
         }
 		return files;
 	}
 	
 	public List<GeneratedFile> generateCode(String type) throws Exception {
-    	List<GeneratedFile> generatedFiles = null;
-    	Directory directory = null;
+		List<GeneratedFile> generatedFiles = null;
+		Directory directory = null;
+		GeneratedFile generatedFile = null;
     	
-    	if (type != null) {
-    		directory = projectTemplate.getDirectoryByPath(type);
-    		generatedFiles = new ArrayList<GeneratedFile>();
-    	
-    		if (directory != null) {
-		    	for (TemplateFile file: directory.getFiles()) {
-					this.model.setPackageName(this.resolvePackagename());
-					
-				switch (directory.getResolution()) {
-			        case Static:
-			        	generatedFiles.add(this.generateFile(directory, file, ""));
-			        	break;
-			        case Dynamic:
-			        	for (String current : this.spec.getSchemas().keySet()) {
-			    			this.model.setClassname(StringUtils.lowerCase(current));
-			    			this.model.setSchema(this.spec.getSchema(current));
-				        	generatedFiles.add(this.generateFile(directory, file, current));
-			    		}
-			        	break;
-			        default:
-			        	throw new IllegalArgumentException("missing file resolution method");
-		        }
-		    	}
-    		}
-    	}
+	    	if (type != null) {
+	    		directory = projectTemplate.getDirectoryByPath(type);
+	    		generatedFiles = new ArrayList<GeneratedFile>();
+	    	
+	    		if (directory != null) {
+			    	for (TemplateFile file: directory.getFiles()) {
+						this.model.setPackageName(this.resolvePackagename());
+						
+					switch (directory.getResolution()) {
+				        case Static:
+				        		generatedFile = this.generateFile(directory, file, "");
+				        		if (generatedFile != null) {
+				        			generatedFiles.add(generatedFile);
+				        		}
+				        		break;
+				        case Dynamic:
+					        	for (String current : this.spec.getSchemas().keySet()) {
+					    			this.model.setClassname(StringUtils.lowerCase(current));
+					    			this.model.setSchema(this.spec.getSchema(current));
+					    			generatedFile = this.generateFile(directory, file, current);
+					    			if (generatedFile != null) {
+					    				generatedFiles.add(generatedFile);
+					    			}
+					    		}
+					        	break;
+				        default:
+				        		throw new IllegalArgumentException("missing file resolution method");
+			        }
+			    	}
+	    		}
+	    	}
 		return generatedFiles;
        
 	}
@@ -237,13 +279,30 @@ public class ProjectGenerator {
 		Mustache template = null;
 		
 		template = this.getTemplate(file.getSlug());
-		generatedFile = new GeneratedFile();
-		generatedFile.setSlug(file.getSlug());
-		generatedFile.setFilename(this.resolveFilename(file, arg));
-		generatedFile.setPath(this.resolveOutputPath(directory));
-		generatedFile.setContent(template.render(this.model));
-    	
+		
+		if (this.includeFile(file)) {
+			generatedFile = new GeneratedFile();
+			generatedFile.setSlug(file.getSlug());
+			generatedFile.setFilename(this.resolveFilename(file, arg));
+			generatedFile.setPath(this.resolveOutputPath(directory));
+			generatedFile.setContent(template.render(this.model));
+		}
     		return generatedFile;
+	}
+	
+	private Boolean includeFile(TemplateFile file) {
+		boolean result = false;
+		if (file != null) {
+			if (StringUtils.isNotEmpty(file.getRule())) {
+				ExpressionParser expressionParser = new SpelExpressionParser();
+				Expression expression = expressionParser.parseExpression(file.getRule());
+				result = expression.getValue(this.model, Boolean.class);
+				System.out.println("slug: " + file.getSlug() + ", result: " + result);
+			} else {
+				result = true;
+			}
+		}
+		return result;
 	}
 	
 	private Mustache getTemplate(String name) throws Exception {

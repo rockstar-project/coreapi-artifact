@@ -20,7 +20,8 @@
       },
       {
         "slug": "common/postman_collection",
-        "name": "postman_collection.json"
+        "name": "postman_collection.json",
+        "rule": "testValue == 'postman'"
       },
       {
         "slug": "restapi-java-springboot/readme",
@@ -58,19 +59,12 @@
       },
       {
         "base": "src/main/java",
-        "path": "common",
+        "path": "config",
         "files": [
           {
-            "slug": "restapi-java-springboot/notfound_exception",
-            "name": "NotFoundException.java"
-          },
-          {
-            "slug": "restapi-java-springboot/notunique_exception",
-            "name": "NotUniqueException.java"
-          },
-          {
-            "slug": "restapi-java-springboot/error_handler",
-            "name": "ErrorHandler.java"
+            "slug": "restapi-java-springboot/auth0_security",
+            "name": "SecurityConfig.java",
+            "rule": "securityValue == 'auth0'"
           },
           {
             "slug": "restapi-java-springboot/web_config",
@@ -94,30 +88,50 @@
           {
             "slug": "restapi-java-springboot/hateoas_controller",
             "name": "{name}Controller.java"
+          },
+          {
+            "slug": "restapi-java-springboot/error_handler",
+            "name": "ErrorHandler.java"
           }
         ]
       },
       {
         "base": "src/main/java",
-        "path": "model",
+        "path": "service",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "restapi-java-springboot/notfound_exception",
+            "name": "NotFoundException.java"
+          },
+          {
+            "slug": "restapi-java-springboot/notunique_exception",
+            "name": "NotUniqueException.java"
+          },
+          {
+            	  "slug": "restapi-java-springboot/service_interface",
+            	  "name": "{name}Service.java"
+          	}
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "domain",
         "resolution": "Dynamic",
         "files": [
           {
             "slug": "restapi-java-springboot/jpa_model",
             "name": "{name}.java"
-          }
-        ]
-      },
-      {
-      	"base": "src/main/java",
-        "path": "repository",
-        "resolution": "Dynamic",
-       	"files": [
-      		{
-            	"slug": "restapi-java-springboot/jpa_repository",
-            	"name": "{name}Repository.java"
-          	}
-      	]
+          },
+          {
+	        	 "slug": "restapi-java-springboot/jpa_repository",
+	        	 "name": "{name}Repository.java"
+	      },
+	      {
+	        	 "slug": "restapi-java-springboot/service_impl",
+	        	 "name": "{name}ServiceImpl.java"
+	      }
+       ]
       },
       {
         "base": "src/main/resources",

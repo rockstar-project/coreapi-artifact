@@ -58,9 +58,17 @@ public class SampleArtifacts {
 		datastoreOption.setValue("mysql");
 		datastoreOption.setVersion("8.5");
 		
+		SelectedValue securityOption = new SelectedValue();
+		securityOption.setValue("auth0");
+		securityOption.setVersion("Hosted");
+		
 		SelectedValue buildOption = new SelectedValue();
 		buildOption.setValue("maven");
 		buildOption.setVersion("3.5.2");
+		
+		SelectedValue testOption = new SelectedValue();
+		testOption.setValue("postman");
+		testOption.setVersion("0.0.0");
 		
 		SelectedValue ciOption = new SelectedValue();
 		ciOption.setValue("travis");
@@ -88,9 +96,11 @@ public class SampleArtifacts {
 		artifact.setSpecification(spec);
 		artifact.setDatastore(datastoreOption);
 		artifact.setDiscovery(discoveryOption);
+		artifact.setSecurity(securityOption);
 		artifact.setRegistry(registryOption);
-		artifact.setBuild(buildOption);
 		artifact.setCi(ciOption);
+		artifact.setBuild(buildOption);
+		artifact.setTest(testOption);
 		
 		this.generateProject(artifact);
 	}
@@ -185,12 +195,14 @@ public class SampleArtifacts {
 	    			.withNamespace(artifact.getNamespace())
 	    			.withOrganization(artifact.getOrganization())
 	    			.withDatastore(artifact.getDatastore())
-	    			.withBuild(artifact.getBuild())
 	    			.withHttp(artifact.getHttp())
-	    			.withRegistry(artifact.getRegistry())
+	    			.withSecurity(artifact.getSecurity())
 	    			.withMessaging(artifact.getMessaging())
 	    			.withDiscovery(artifact.getDiscovery())
 	    			.withCi(artifact.getCi())
+	    			.withRegistry(artifact.getRegistry())
+	    			.withBuild(artifact.getBuild())
+	    			.withTest(artifact.getTest())
 	    			.withDefinition(templateDefinition)
 	    			.withSpec(artifact.getSpecification().getLocation())
 				.generate();

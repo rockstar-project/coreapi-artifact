@@ -5,7 +5,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +28,6 @@ public class ArtifactController {
 	@RequestMapping(method=RequestMethod.POST )
 	public ResponseEntity<Void> createArtifact(@RequestBody @Valid ArtifactResource  artifact) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
-		System.out.println(ReflectionToStringBuilder.toString(artifact));
 		headers.setLocation(linkTo(ArtifactController.class).slash(this.artifactService.createArtifact(artifact)).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}

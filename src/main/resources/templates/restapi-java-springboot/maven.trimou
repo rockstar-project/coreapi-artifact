@@ -38,11 +38,18 @@
 	</dependencyManagement>
     
     <dependencies>
-    	{{#isEq messagingValue "nats"}}
-    	<dependency>
-    		<groupId>com.github.cloudfoundry-community</groupId>
-    		<artifactId>nats-client-spring</artifactId>
-    		<version>${nats-client-spring.version}</version>
+        {{#isEq securityValue "auth0"}}
+    		<dependency>
+			<groupId>com.auth0</groupId>
+		  	<artifactId>auth0-spring-security-api</artifactId>
+		  	<version>1.0.0-rc.3</version>
+		</dependency>
+		{{/isEq}}
+    		{{#isEq messagingValue "nats"}}
+	    	<dependency>
+	    		<groupId>com.github.cloudfoundry-community</groupId>
+	    		<artifactId>nats-client-spring</artifactId>
+	    		<version>${nats-client-spring.version}</version>
 		</dependency>
 		{{/isEq}}
 		{{#isEq messagingValue "rabbitmq"}}
