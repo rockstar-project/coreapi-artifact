@@ -9,7 +9,7 @@ services:
   - docker
 
 script:
-  - mvn clean package
+  - mvn clean package -Dmaven.test.skip=true
   - docker build -t $DOCKER_NAMESPACE/coreapi-artifact .
 
 after_success:
