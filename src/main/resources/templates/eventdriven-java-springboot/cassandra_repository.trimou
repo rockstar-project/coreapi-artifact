@@ -1,0 +1,9 @@
+package {{packageName}}.repository;
+
+import {{packageName}}.domain.{{capitalize classname}};
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.UUID;
+
+public interface {{capitalize classname}}Repository extends CrudRepository<{{capitalize classname}}, UUID> {
+}

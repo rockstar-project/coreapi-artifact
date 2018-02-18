@@ -34,13 +34,68 @@ public class SampleArtifacts {
 	}
 	
 	public void generateAll(String specUri) throws Exception {
-		this.generateJavaSpringbootProject(specUri);
+		this.generateJavaSpringbootRestApi(specUri);
+		this.generateJavaSpringbootEventListener(specUri);
 		//this.generateGolang8GinProject(specUri);
 		//this.generateGolang9GorillaProject(specUri);
 		//this.generateNodejsExpressProject(specUri);
 	}
 	
-	public void generateJavaSpringbootProject(String specUri) throws Exception {
+	public void generateJavaSpringbootEventListener(String specUri) throws Exception {
+		SelectedValue language = new SelectedValue();
+		language.setValue("java");
+		language.setVersion("8");
+		
+		SelectedValue framework = new SelectedValue();
+		framework.setValue("springboot");
+		framework.setVersion("2.0.0.M7");
+		
+		String type = "eventdriven";
+		String namespace = "product";
+		String organization = "springframeworkguru";
+		
+		SelectedValue datastoreOption = new SelectedValue();
+		datastoreOption.setValue("mysql");
+		datastoreOption.setVersion("8.5");
+		
+		SelectedValue buildOption = new SelectedValue();
+		buildOption.setValue("maven");
+		buildOption.setVersion("3.5.2");
+		
+		SelectedValue testOption = new SelectedValue();
+		testOption.setValue("postman");
+		testOption.setVersion("0.0.0");
+		
+		SelectedValue ciOption = new SelectedValue();
+		ciOption.setValue("travis");
+		ciOption.setVersion("Hosted");
+		
+		SelectedValue registryOption = new SelectedValue();
+		registryOption.setValue("docker");
+		registryOption.setVersion("Hosted");
+		
+		ArtifactResource artifact = new ArtifactResource();
+		Specification spec = new Specification();
+		spec.setLocation(specUri);
+		spec.setType("jsonschema");
+		spec.setVersion("Draft 4");
+		
+		artifact.setType(type);
+		artifact.setLanguage(language);
+		artifact.setFramework(framework);
+		artifact.setOrganization(organization);
+		artifact.setNamespace(namespace);
+		artifact.setSpecification(spec);
+		artifact.setDatastore(datastoreOption);
+		artifact.setRegistry(registryOption);
+		artifact.setCi(ciOption);
+		artifact.setBuild(buildOption);
+		artifact.setTest(testOption);
+		
+		this.generateProject(artifact);
+	}
+	
+	public void generateJavaSpringbootRestApi(String specUri) throws Exception {
 
 		SelectedValue language = new SelectedValue();
 		language.setValue("java");

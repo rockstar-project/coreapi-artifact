@@ -1,0 +1,18 @@
+package {{packageName}}.services;
+
+import java.util.List;
+
+import {{packageName}}.domain.{{capitalize classname}};
+
+public interface {{capitalize classname}}Service {
+
+    List<{{capitalize classname}}> listAll();
+
+    {{capitalize classname}} getById(Long id);
+
+    {{capitalize classname}} saveOrUpdate({{capitalize classname}} {{classname}});
+
+    void delete(Long id);
+
+    void send{{capitalize classname}}Message(String id);
+}

@@ -1,0 +1,7 @@
+package {{packageName}}.repository;
+
+import {{packageName}}.domain.{{capitalize classname}};
+import org.springframework.data.neo4j.repository.Neo4jRepository;
+
+public interface {{capitalize classname}}Repository extends Neo4jRepository<{{capitalize classname}}, Long> {
+}

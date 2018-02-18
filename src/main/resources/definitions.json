@@ -1,6 +1,181 @@
 [
   {
-  	"slug": "restapi-java-springboot",
+    "slug": "eventdriven-java-springboot",
+    "files": [
+      {
+        "slug": "eventdriven-java-springboot/maven",
+        "name": "pom.xml"
+      },
+      {
+        "slug": "common/environment_var",
+        "name": ".env"
+      },
+      {
+        "slug": "eventdriven-java-springboot/gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "slug": "eventdriven-java-springboot/travis",
+        "name": ".travis.yml"
+      },
+      {
+        "slug": "eventdriven-java-springboot/readme",
+        "name": "README.md"
+      },
+      {
+        "slug": "eventdriven-java-springboot/dockerfile",
+        "name": "Dockerfile"
+      },
+      {
+        "slug": "eventdriven-java-springboot/docker_compose",
+        "name": "docker-compose.yml"
+      },
+      {
+        "slug": "eventdriven-java-springboot/deploy_script",
+        "name": "build_and_deploy.sh"
+      }
+    ],
+    "tags": [
+      "eventdriven",
+      "java",
+      "springboot",
+      "mysql"
+    ],
+    "directories": [
+      {
+        "base": "src/main/java",
+        "path": "root",
+        "files": [
+          {
+            "slug": "eventdriven-java-springboot/event_driven",
+            "name": "MessageListenerApp.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "listener",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "eventdriven-java-springboot/listener",
+            "name": "{name}MessageListener.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "service",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "eventdriven-java-springboot/service_impl",
+            "name": "{name}ServiceImpl.java"
+          },
+          {
+            "slug": "eventdriven-java-springboot/service_interface",
+            "name": "{name}Service.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "repository",
+        "resolution": "Dynamic",
+        "files": [
+          {
+            "slug": "eventdriven-java-springboot/mysql_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'mysql'"
+          },
+          {
+            "slug": "eventdriven-java-springboot/cassandra_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'cassandra'"
+          },
+          {
+            "slug": "eventdriven-java-springboot/neo4j_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'neo4j'"
+          },
+          {
+            "slug": "eventdriven-java-springboot/mongodb_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'mongodb'"
+          },
+          {
+            "slug": "eventdriven-java-springboot/redis_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'redis'"
+          },
+          {
+            "slug": "eventdriven-java-springboot/mariadb_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'mariadb'"
+          },
+          {
+            "slug": "eventdriven-java-springboot/postgresql_repository",
+            "name": "{name}Repository.java",
+            "rule": "datastoreValue == 'postgresql'"
+          }
+        ]
+      },
+      {
+        "base": "src/main/java",
+        "path": "domain",
+        "resolution": "Dynamic",
+        "files": [
+          {
+          	"rule": "datastoreValue == 'mysql'",
+            "slug": "eventdriven-java-springboot/mysql_model",
+            "name": "{name}.java"
+          },
+          {
+          	"rule": "datastoreValue == 'mongodb'",
+            "slug": "eventdriven-java-springboot/mongodb_model",
+            "name": "{name}.java"
+          },
+          {
+          	"rule": "datastoreValue == 'cassandra'",
+            "slug": "eventdriven-java-springboot/cassandra_model",
+            "name": "{name}.java"
+          },
+          {
+          	"rule": "datastoreValue == 'mariadb'",
+            "slug": "eventdriven-java-springboot/mariadb_model",
+            "name": "{name}.java"
+          },
+          {
+          	"rule": "datastoreValue == 'postgresql'",
+            "slug": "eventdriven-java-springboot/postgresql_model",
+            "name": "{name}.java"
+          },
+          {
+          	"rule": "datastoreValue == 'redis'",
+            "slug": "eventdriven-java-springboot/redis_model",
+            "name": "{name}.java"
+          },
+          {
+          	"rule": "datastoreValue == 'neo4j'",
+            "slug": "eventdriven-java-springboot/neo4j_model",
+            "name": "{name}.java"
+          }
+        ]
+      },
+      {
+        "base": "src/main/resources",
+        "type": "properties",
+        "files": [
+          {
+            "slug": "eventdriven-java-springboot/application_properties",
+            "name": "application.properties"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "restapi-java-springboot",
     "files": [
       {
         "slug": "restapi-java-springboot/maven",
@@ -109,9 +284,9 @@
             "name": "NotUniqueException.java"
           },
           {
-            	  "slug": "restapi-java-springboot/service_interface",
-            	  "name": "{name}Service.java"
-          	}
+            "slug": "restapi-java-springboot/service_interface",
+            "name": "{name}Service.java"
+          }
         ]
       },
       {
@@ -124,14 +299,14 @@
             "name": "{name}.java"
           },
           {
-	        	 "slug": "restapi-java-springboot/jpa_repository",
-	        	 "name": "{name}Repository.java"
-	      },
-	      {
-	        	 "slug": "restapi-java-springboot/service_impl",
-	        	 "name": "{name}ServiceImpl.java"
-	      }
-       ]
+            "slug": "restapi-java-springboot/jpa_repository",
+            "name": "{name}Repository.java"
+          },
+          {
+            "slug": "restapi-java-springboot/service_impl",
+            "name": "{name}ServiceImpl.java"
+          }
+        ]
       },
       {
         "base": "src/main/resources",
@@ -330,7 +505,7 @@
     ]
   },
   {
-  	"slug": "golang8-gin",
+    "slug": "golang8-gin",
     "files": [
       {
         "slug": "golang8-gin/readme",
@@ -376,7 +551,7 @@
     ]
   },
   {
-  	"slug": "nodejs-express",
+    "slug": "nodejs-express",
     "files": [
       {
         "slug": "nodejs-express/readme",
