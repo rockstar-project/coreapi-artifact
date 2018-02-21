@@ -1,9 +1,0 @@
-package {{packageName}}.repository;
-
-import {{packageName}}.model.{{capitalize entity}};
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface {{capitalize classname}}Repository extends MongoRepository<{{capitalize classname}}, String> {
-}

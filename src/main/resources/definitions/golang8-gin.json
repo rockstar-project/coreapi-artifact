@@ -1,0 +1,46 @@
+{
+    "slug": "golang8-gin",
+    "files": [
+      {
+        "slug": "golang8-gin/readme",
+        "name": "README.md"
+      },
+      {
+        "slug": "golang8-gin/dockerfile",
+        "name": "Dockerfile"
+      }
+    ],
+    "directories": [
+      {
+        "path": "root",
+        "files": [
+          {
+            "slug": "golang8-gin/main",
+            "name": "main.go"
+          },
+          {
+            "slug": "golang8-gin/main_test",
+            "name": "main_test.go"
+          }
+        ]
+      },
+      {
+        "path": "app",
+        "files": [
+          {
+            "slug": "golang8-gin/web_controller",
+            "name": "app.go"
+          },
+          {
+            "slug": "golang8-gin/mysql_repository",
+            "name": "db.go"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "golang8",
+      "gin",
+      "mysql"
+    ]
+  }

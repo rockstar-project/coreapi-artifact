@@ -2,6 +2,7 @@ package com.rockstar.artifact.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URI;
 
 import javax.inject.Inject;
 
@@ -14,16 +15,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.trimou.engine.MustacheEngine;
 
+import com.reprezen.kaizen.oasparser.OpenApi3Parser;
+import com.reprezen.kaizen.oasparser.model3.OpenApi3;
+import com.rockstar.artifact.codegen.model.ArtifactDefinition;
+import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.NotFoundException;
-import com.rockstar.artifact.model.ProjectGenerator;
-import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.model.TemplateDefinition;
-import com.rockstar.artifact.model.TemplateDefinitionRegistry;
 import com.rockstar.artifact.util.ZipUtils;
 import com.rockstar.artifact.web.ArtifactResource;
-
 
 @Service
 public class ArtifactServiceImpl implements ArtifactService {
@@ -35,46 +36,45 @@ public class ArtifactServiceImpl implements ArtifactService {
 	
 	@Inject
 	private TemplateDefinitionRegistry templateDefinitionRegistry;
+	
+	@Inject
+	private OpenApiToArtifactDefinition openApiToDefinitionConverter;
 	 
     public String createArtifact(ArtifactResource artifact) throws Exception {
 	    	GeneratedProject project = null;
 	    	TemplateDefinition templateDefinition = null;
-	    	Specification specification = null;
-	    	String specificationLocation = null;
-	    	
+		ArtifactDefinition artifactDefinition = null;
 	    	if (artifact != null) {
-		    	specification = artifact.getSpecification();
-		    	if (specification != null) {
-		    		specificationLocation = specification.getLocation();
-		    
-			    	templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
-			    	project = new ProjectGenerator(this.templateEngine)
-			    			.withType(artifact.getType())
-			    			.withLanguage(artifact.getLanguage())
-			    			.withNamespace(artifact.getNamespace())
-			    			.withOrganization(artifact.getOrganization())
-			    			.withDatastore(artifact.getDatastore())
-			    			.withHttp(artifact.getHttp())
-			    			.withMessaging(artifact.getMessaging())
-			    			.withDiscovery(artifact.getDiscovery())
-			    			.withMonitoring(artifact.getMonitoring())
-			    			.withSecurity(artifact.getSecurity())
-			    			.withTracing(artifact.getTracing())
-			    			.withCi(artifact.getCi())
-			    			.withCd(artifact.getCd())
-			    			.withRegistry(artifact.getRegistry())
-			    			.withScm(artifact.getScm())
-			    			.withBuild(artifact.getBuild())
-			    			.withTest(artifact.getTest())
-			    			.withDefinition(templateDefinition)
-			    			.withSpec(specificationLocation)
-			    		.generate();
-		    	
-			    	String directory = this.createProjectFiles(project);
-			        
-			    	ZipUtils.zip(directory, directory + ".zip");
-			    	FileUtils.deleteDirectory(new File(directory));
-		    	}
+		   
+	    		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
+	    		artifactDefinition = this.openApiToDefinitionConverter.convert(openApi);
+		    	templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
+		    	project = new ProjectGenerator(this.templateEngine)
+		    			.withArchitecture(artifact.getArchitecture())
+		    			.withLanguage(artifact.getLanguage())
+		    			.withNamespace(artifact.getNamespace())
+		    			.withOrganization(artifact.getOrganization())
+		    			.withDatastore(artifact.getDatastore())
+		    			.withHttp(artifact.getHttp())
+		    			.withMessaging(artifact.getMessaging())
+		    			.withDiscovery(artifact.getDiscovery())
+		    			.withMonitoring(artifact.getMonitoring())
+		    			.withSecurity(artifact.getSecurity())
+		    			.withTracing(artifact.getTracing())
+		    			.withCi(artifact.getCi())
+		    			.withCd(artifact.getCd())
+		    			.withRegistry(artifact.getRegistry())
+		    			.withScm(artifact.getScm())
+		    			.withBuild(artifact.getBuild())
+		    			.withTest(artifact.getTest())
+		    			.withDefinition(templateDefinition)
+		    			.withApiSpec(artifactDefinition)
+		    		.generate();
+	    	
+		    	String directory = this.createProjectFiles(project);
+		        
+		    	ZipUtils.zip(directory, directory + ".zip");
+		    	FileUtils.deleteDirectory(new File(directory));
 	    	}
         return project.getId();
     }

@@ -1,23 +1,16 @@
 package com.rockstar.artifact.model;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import com.reprezen.kaizen.oasparser.jsonoverlay.Reference;
-import com.reprezen.kaizen.oasparser.model3.Schema;
+import com.rockstar.artifact.codegen.model.ArtifactDefinition;
 
 public class Model {
 	
 	private String packageName;
 	private String version;
 	private String contact;
-	private String type;
+	private String architecture;
 	private String namespace;
 	private String organization;
-	private Schema schema;
+	private ArtifactDefinition artifact;
 	private String classname;
 	private String languageValue;
 	private String languageVersion;
@@ -61,12 +54,12 @@ public class Model {
 		this.organization = organization;
 	}
 
-	public String getType() {
-		return type;
+	public String getArchitecture() {
+		return architecture;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setArchitecture(String architecture) {
+		this.architecture = architecture;
 	}
 
 	public String getNamespace() {
@@ -108,108 +101,13 @@ public class Model {
 	public void setContact(String contact) {
 		this.contact = contact;
 	}
-	
-	public Schema getSchema() {
-		return this.schema;
+
+	public ArtifactDefinition getArtifact() {
+		return artifact;
 	}
 
-	public void setSchema(Schema schema) {
-		this.schema = schema;
-	}
-
-	public Set<Map.Entry<String, Schema>> getFields() {
-		Set<Map.Entry<String,Schema>> entrySet = new HashSet<Map.Entry<String, Schema>> ();
-		Map<String, Schema> properties = this.schema.getProperties();
-		if (properties != null && !properties.isEmpty()) {
-			
-			for (Entry<String, Schema> current : properties.entrySet()) {
-				
-				if (this.schema.getPropertyReference(current.getKey()) == null) {
-					entrySet.add(current);
-				}
-			}
-		}
-		return entrySet;
-	}
-	
-	public Set<Map.Entry<String, Schema>> getRequiredFields() {
-		Collection<String> requiredFields = null;
-		Set<Map.Entry<String,Schema>> entrySet = new HashSet<Map.Entry<String, Schema>> ();
-		Map<String, Schema> properties = this.schema.getProperties();
-		if (properties != null && !properties.isEmpty()) {
-			requiredFields = this.schema.getRequiredFields();
-			
-			for (Entry<String, Schema> current : properties.entrySet()) {
-				
-				if (requiredFields != null && requiredFields.contains(current.getKey())) {
-					
-						entrySet.add(current);
-					
-				}
-			}
-		}
-		return entrySet;
-	}
-	
-	public Set<Map.Entry<String, Schema>> getNonRequiredFields() {
-		Collection<String> requiredFields = null;
-		Set<Map.Entry<String,Schema>> entrySet = new HashSet<Map.Entry<String, Schema>> ();
-		Map<String, Schema> properties = this.schema.getProperties();
-		if (properties != null && !properties.isEmpty()) {
-			requiredFields = this.schema.getRequiredFields();
-			
-			for (Entry<String, Schema> current : properties.entrySet()) {
-				
-				if (requiredFields != null && !requiredFields.contains(current.getKey())) {
-					
-						entrySet.add(current);
-					
-				}
-			}
-		}
-		return entrySet;
-	}
-	
-	public Set<Map.Entry<String, Reference>> getReferenceFields() {
-		Map<String, Reference> referenceFields = new HashMap<String, Reference>();
-		Set<Map.Entry<String,Reference>> entrySet = new HashSet<Map.Entry<String, Reference>> ();
-		Map<String, Schema> properties = this.schema.getProperties();
-		if (properties != null && !properties.isEmpty()) {
-			
-			for (Entry<String, Schema> current : properties.entrySet()) {
-				if (this.schema.getPropertyReference(current.getKey()) != null) {
-					referenceFields.put(current.getKey(), this.schema.getPropertyReference(current.getKey()));
-				}
-			}
-			for (Entry<String, Reference> current : referenceFields.entrySet()) {
-				entrySet.add(current);
-			}
-		}
-		return entrySet;
-	}
-	
-	public Set<Map.Entry<String,Schema>> getEnumfields() {
-		Set<Map.Entry<String,Schema>> entrySet = new HashSet<Map.Entry<String, Schema>> ();
-		for (Entry<String, Schema> current : this.getFields()) {
-			Schema property = current.getValue();
-			if (property.hasEnums()) {
-				entrySet.add(current);
-			}
-		}
-		
-		return entrySet;
-	}
-	
-	public Set<Map.Entry<String,Schema>> getUniqueItems() {
-		Set<Map.Entry<String,Schema>> entrySet = new HashSet<Map.Entry<String, Schema>> ();
-		for (Entry<String, Schema> current : this.getFields()) {
-			Schema property = current.getValue();
-			if (property.isUniqueItems()) {
-				entrySet.add(current);
-			}
-		}
-		
-		return entrySet;
+	public void setArtifact(ArtifactDefinition artifact) {
+		this.artifact = artifact;
 	}
 
 	public String getLanguageValue() {
@@ -451,6 +349,4 @@ public class Model {
 	public void setTestVersion(String testVersion) {
 		this.testVersion = testVersion;
 	}
-	
-
 }

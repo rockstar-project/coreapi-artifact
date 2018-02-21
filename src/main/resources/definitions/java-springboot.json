@@ -1,0 +1,237 @@
+{
+  "slug": "java-springboot",
+  "files": [
+    {
+      "slug": "java-springboot/maven",
+      "name": "pom.xml"
+    },
+    {
+      "slug": "java-springboot/gitignore",
+      "name": ".gitignore"
+    },
+    {
+      "slug": "java-springboot/travis",
+      "name": ".travis.yml"
+    },
+    {
+      "slug": "java-springboot/readme",
+      "name": "README.md"
+    },
+    {
+      "slug": "java-springboot/dockerfile",
+      "name": "Dockerfile"
+    }
+  ],
+  "tags": [
+    "restapi",
+    "java",
+    "springboot",
+    "mysql"
+  ],
+  "directories": [
+    {
+      "base": "src/main/java",
+      "path": "root",
+      "files": [
+        {
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/restapi",
+          "name": "RestApiService.java"
+        },
+        {
+          "rule": "architecture == 'eventdriven'",
+          "slug": "java-springboot/event_driven",
+          "name": "MessageListenerApp.java"
+        }
+      ]
+    },
+    {
+      "base": "src/main/java",
+      "path": "config",
+      "files": [
+        {
+          "rule": "securityValue == 'auth0'",
+          "slug": "java-springboot/auth0_security",
+          "name": "SecurityConfig.java"
+        },
+        {
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/web_config",
+          "name": "WebConfig.java"
+        },
+        {
+          "rule": "architecture == 'eventdriven'",
+          "slug": "java-springboot/message_config",
+          "name": "MessagingConfig.java"
+        }
+      ]
+    },
+    {
+      "base": "src/main/java",
+      "path": "web",
+      "resolution": "Dynamic",
+      "files": [
+        {
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/resource",
+          "name": "{name}Resource.java"
+        },
+        {
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/resource_assembler",
+          "name": "{name}ResourceAssembler.java"
+        },
+        {
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/hateoas_controller",
+          "name": "{name}Controller.java"
+        },
+        {
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/error_handler",
+          "name": "ErrorHandler.java"
+        }
+      ]
+    },
+    {
+      "base": "src/main/java",
+      "path": "messaging",
+      "resolution": "Dynamic",
+      "files": [
+        {
+          "rule": "architecture == 'eventdriven'",
+          "slug": "java-springboot/message_listener",
+          "name": "{name}MessageListener.java"
+        }
+      ]
+    },
+    {
+      "base": "src/main/java",
+      "path": "service",
+      "resolution": "Dynamic",
+      "files": [
+        {
+          "slug": "java-springboot/notfound_exception",
+          "name": "NotFoundException.java"
+        },
+        {
+          "slug": "java-springboot/notunique_exception",
+          "name": "NotUniqueException.java"
+        },
+        {
+          "slug": "java-springboot/service_interface",
+          "name": "{name}Service.java"
+        },
+        {
+          "slug": "java-springboot/service_impl",
+          "name": "{name}ServiceImpl.java"
+        }
+      ]
+    },
+    {
+      "base": "src/main/java",
+      "path": "domain",
+      "resolution": "Dynamic",
+      "files": [
+        {
+          "rule": "datastoreValue == 'mysql'",
+          "slug": "java-springboot/mysql_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'cassandra'",
+          "slug": "java-springboot/cassandra_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'mongodb'",
+          "slug": "java-springboot/mongodb_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'neo4j'",
+          "slug": "java-springboot/neo4j_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'redis'",
+          "slug": "java-springboot/redis_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'mariadb'",
+          "slug": "java-springboot/mariadb_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'postgresql'",
+          "slug": "java-springboot/postgresql_model",
+          "name": "{name}.java"
+        },
+        {
+          "rule": "datastoreValue == 'couchdb'",
+          "slug": "java-springboot/couchdb_model",
+          "name": "{name}.java"
+        },
+        {
+          "slug": "java-springboot/mysql_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'mysql'"
+        },
+        {
+          "slug": "java-springboot/cassandra_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'cassandra'"
+        },
+        {
+          "slug": "java-springboot/neo4j_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'neo4j'"
+        },
+        {
+          "slug": "java-springboot/mongodb_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'mongodb'"
+        },
+        {
+          "slug": "java-springboot/redis_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'redis'"
+        },
+        {
+          "slug": "java-springboot/mariadb_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'mariadb'"
+        },
+        {
+          "slug": "java-springboot/postgresql_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'postgresql'"
+        },
+        {
+          "slug": "java-springboot/couchdb_repository",
+          "name": "{name}Repository.java",
+          "rule": "datastoreValue == 'couchdb'"
+        }
+      ]
+    },
+    {
+      "base": "src/main/resources",
+      "type": "properties",
+      "files": [
+        {
+          "slug": "java-springboot/application",
+          "name": "application.yml"
+        },
+        {
+          "slug": "java-springboot/bootstrap",
+          "name": "bootstrap.yml"
+        },
+        {
+          "slug": "java-springboot/messages",
+          "name": "messages.properties"
+        }
+      ]
+    }
+  ]
+}

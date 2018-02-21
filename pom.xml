@@ -24,6 +24,7 @@
         <jsonschematopojo.version>0.4.23</jsonschematopojo.version>
         <trimou.version>2.4.0.Final</trimou.version>
         <openapi-parser.version>0.0.2.201710151503</openapi-parser.version>
+        <raml-parser-version>1.0.0</raml-parser-version>
 	</properties>
 
 	<dependencyManagement>
@@ -55,6 +56,12 @@
             <version>${swagger-parser.version}</version>
             <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+		    <groupId>org.raml</groupId>
+		    <artifactId>raml-parser-2</artifactId>
+		    <version>${raml-parser-version}</version>
+		</dependency>
        
         <dependency>
             <groupId>io.swagger</groupId>

@@ -1,7 +1,0 @@
-package {{packageName}}.repository;
-
-import {{packageName}}.model.{{capitalize classname}};
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-
-public interface {{capitalize classname}}Repository extends ElasticsearchRepository<{{capitalize classname}}, String> {
-}

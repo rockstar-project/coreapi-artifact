@@ -1,0 +1,23 @@
+{
+  "slug": "common",
+  "files": [
+    {
+      "slug": "environment_var",
+      "name": ".env"
+    },
+    {
+      "rule": "testValue == 'postman'",
+      "slug": "postman_collection",
+      "name": "postman_collection.json"
+    },
+    {
+      "rule": "registryValue == 'docker'",
+      "slug": "docker_compose",
+      "name": "docker-compose.yml"
+    },
+    {
+      "slug": "deploy_script",
+      "name": "build_and_deploy.sh"
+    }
+  ]
+}

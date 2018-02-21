@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  {{namespace}}api:
+  {{namespace}}{{type}}:
     build: .
     image: $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{type}}-{{namespace}}
     environment:
@@ -13,6 +13,12 @@ services:
       {{/isEq}}
       {{#isEq datastoreValue "elasticsearch" }}
       - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES={{namespace}}elasticsearch:9300
+      {{/isEq}}
+      {{#isEq messagingValue "rabbitmq" }}
+      - SPRING_RABBITMQ_HOST=127.0.0.1
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=${MESSAGING_USER}
+      - SPRING_RABBITMQ_PASSWORD=${MESSAGING_PASSWORD}
       {{/isEq}}
     links:
       - {{namespace}}{{datastoreValue}}
@@ -34,3 +40,13 @@ services:
       - "9200:9200"
       - "9300:9300"
   {{/isEq}}
+  {{#isEq messagingValue "rabbitmq"}}
+  messagebroker:
+  	image: "rabbitmq:3-management"
+  	environment:
+      - RABBITMQ_DEFAULT_USER=${MESSAGING_USER}
+    	  - RABBITMQ_DEFAULT_PASS=${MESSAGING_PASSWORD}
+  	ports:
+    	  - "15672:15672"
+    	  - "5672:5672"
+ {{/isEq}}

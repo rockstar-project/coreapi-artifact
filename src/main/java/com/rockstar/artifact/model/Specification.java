@@ -3,16 +3,19 @@ package com.rockstar.artifact.model;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.rockstar.artifact.annotation.SupportSpec;
+
+@SupportSpec
 public class Specification {
 	
 	private String location;
+	private String content;
 	private String type;
 	private String version;
 	
 	public Specification() {
 	}
 
-	@NotEmpty
 	public String getLocation() {
 		return location;
 	}
@@ -37,6 +40,14 @@ public class Specification {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String toString() {

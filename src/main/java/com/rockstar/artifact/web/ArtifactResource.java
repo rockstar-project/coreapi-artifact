@@ -15,7 +15,7 @@ public class ArtifactResource extends ResourceSupport  {
 	
 	private String namespace;
 	private String organization;
-	private String type;
+	private String architecture;
 	private SelectedValue language;
 	private SelectedValue framework;
 	private Specification specification;
@@ -46,12 +46,12 @@ public class ArtifactResource extends ResourceSupport  {
 	}
 
 	@NotEmpty
-	public String getType() {
-		return type;
+	public String getArchitecture() {
+		return architecture;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setArchitecture(String architecture) {
+		this.architecture = architecture;
 	}
 
 	@NotNull
@@ -94,7 +94,7 @@ public class ArtifactResource extends ResourceSupport  {
 	}
 	
 	public String getSlug() {
-		return String.format("%s-%s-%s", this.type, this.language.getValue(), this.framework.getValue());
+		return String.format("%s-%s", this.language.getValue(), this.framework.getValue());
 	}
 
 	public SelectedValue getDatastore() {

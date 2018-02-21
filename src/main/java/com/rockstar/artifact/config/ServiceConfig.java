@@ -1,10 +1,10 @@
 package com.rockstar.artifact.config;
 
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
@@ -16,36 +16,55 @@ import org.trimou.handlebars.SimpleHelpers;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import com.rockstar.artifact.SampleArtifacts;
+import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
 import com.rockstar.artifact.model.TemplateDefinition;
-import com.rockstar.artifact.model.TemplateDefinitionRegistry;
+import com.rockstar.artifact.service.TemplateDefinitionRegistry;
 import com.rockstar.artifact.util.CheckUtils;
 import com.rockstar.artifact.util.WordUtils;
 
 @Configuration
 public class ServiceConfig {
 	
+	@Autowired
+	private ApplicationContext applicationContext;
+	
+	@Autowired
+	private OpenApiToArtifactDefinition openApiToDefinitionConverter;
+	
 	@Bean
 	public TemplateDefinitionRegistry templateDefinitionRegistry() throws Exception {
 		TemplateDefinitionRegistry templateDefinitionRegistry = null;
-		CollectionType definitionCollectionType = null;
-		List<TemplateDefinition> templateDefinitionList = null;
 		ObjectMapper jsonMapper = new ObjectMapper();
 	    jsonMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 	    jsonMapper.setSerializationInclusion(Include.NON_NULL);
 		
-		definitionCollectionType = jsonMapper.getTypeFactory().constructCollectionType(List.class, TemplateDefinition.class);
-		templateDefinitionList = jsonMapper.readValue(this.workspaceResource().getInputStream(), definitionCollectionType);
-		templateDefinitionRegistry = new TemplateDefinitionRegistry();
-		templateDefinitionRegistry.registerTemplateDefinitions(templateDefinitionList);
-	
+	    TemplateDefinition templateDefinition = null;
+	    templateDefinitionRegistry = null;
+	    Resource[] definitionResources = null;
+	    String resourceKey = null;
+	    
+	    definitionResources = this.workspaceDefinitionResources();
+	    if (definitionResources != null && definitionResources.length > 0) {
+	    		System.out.println("total template definition found: " + definitionResources.length);
+	    		templateDefinitionRegistry = new TemplateDefinitionRegistry();
+		    for (Resource currentResource : definitionResources) {
+		    		try {
+			    		templateDefinition = jsonMapper.readValue(currentResource.getInputStream(), TemplateDefinition.class);
+			    		resourceKey = StringUtils.split(currentResource.getFilename(), ".")[0];
+			    		templateDefinitionRegistry.registerTemplateDefinition(resourceKey, templateDefinition);
+		    		} catch (Exception exception) {
+		    			System.out.println(resourceKey + " definitions not registered: " + exception.getMessage());
+		    		}
+		    }
+	    }
+	   
 		return templateDefinitionRegistry;
 	}
 	
 	@Bean
-	public ClassPathResource workspaceResource() throws Exception {
-		return new ClassPathResource("definitions.json");
+	public Resource[] workspaceDefinitionResources() throws Exception {
+		return this.applicationContext.getResources("classpath*:definitions/*.json");
 	}
 	
 	@Bean
@@ -125,7 +144,7 @@ public class ServiceConfig {
 	
 	@Bean(initMethod="generateAll")
 	public SampleArtifacts sampleArtifacts() throws Exception {
-		return new SampleArtifacts(this.templateDefinitionRegistry(), this.templateEngine());
+		return new SampleArtifacts(this.templateDefinitionRegistry(), this.templateEngine(), this.openApiToDefinitionConverter);
 	}
 
 }

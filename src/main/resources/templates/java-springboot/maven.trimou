@@ -1,0 +1,212 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+    	<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>{{frameworkVersion}}</version>
+		<relativePath/>
+    </parent>
+    
+    <groupId>com.{{organization}}.{{namespace}}</groupId>
+	<artifactId>{{type}}-{{namespace}}</artifactId>
+    <version>{{version}}-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    
+    <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		{{#isEq languageVersion "8"}}
+		<java.version>1.8</java.version>
+		{{/isEq}}
+		<jadira-usertype.version>5.0.0.GA</jadira-usertype.version>
+		{{#isEq messagingValue "nats"}}
+		<nats-client-spring.version>{{messagingOptionVersion}}</nats-client-spring.version>
+		{{/isEq}}
+		{{#isEq messagingValue "kafka"}}
+		<spring-kafka.version>1.2.2.RELEASE</spring-kafka.version>
+		{{/isEq}}
+		{{#isEq datastoreValue "postgresql"}}
+		<postgresql.version>9.4-1206-jdbc42</postgresql.version>
+		{{/isEq}}
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-dependencies</artifactId>
+	            <version>Camden.SR5</version>
+	            <type>pom</type>
+            	<scope>import</scope>
+        	</dependency>
+		</dependencies>
+	</dependencyManagement>
+    
+    <dependencies>
+    		{{#isEq type "restapi"}}
+    		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+        {{/isEq}}
+        {{#isEq securityValue "auth0"}}
+    		<dependency>
+			<groupId>com.auth0</groupId>
+		  	<artifactId>auth0-spring-security-api</artifactId>
+		  	<version>1.0.0-rc.3</version>
+		</dependency>
+		{{/isEq}}
+    		{{#isEq discoveryValue "eureka"}}
+    		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq messagingValue "nats"}}
+	    	<dependency>
+	    		<groupId>com.github.cloudfoundry-community</groupId>
+	    		<artifactId>nats-client-spring</artifactId>
+	    		<version>${nats-client-spring.version}</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq messagingValue "rabbitmq"}}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq messagingValue "kafka"}}
+		<dependency>
+      		<groupId>org.springframework.kafka</groupId>
+      		<artifactId>spring-kafka</artifactId>
+      		<version>${spring-kafka.version}</version>
+    		</dependency>
+    		{{/isEq}}
+		{{#isEq datastoreValue "postgresql" }}
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "mysql" }}
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "mariadb" }}
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>1.1.9</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "cassandra" }}
+        <dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-cassandra</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.cassandraunit</groupId>
+			<artifactId>cassandra-unit-spring</artifactId>
+			<version>3.0.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "mongodb" }}
+		<dependency>
+  			<groupId>org.springframework.boot</groupId>
+  			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
+        </dependency>
+        {{/isEq}}
+        {{#isEq datastoreValue "neo4j" }}
+        <dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-neo4j</artifactId>
+		</dependency>
+		<dependency> <!-- If you're using the HTTP driver -->
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-http-driver</artifactId>
+		</dependency>
+        {{/isEq}}
+        {{#isEq datastoreValue "redis" }}
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-redis</artifactId>
+			<version>1.4.4.RELEASE</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "couchdb" }}
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-couchbase</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "h2" }}
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        {{/isEq}}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.jadira.usertype</groupId>
+		    <artifactId>usertype.core</artifactId>
+		    <version>${jadira-usertype.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>

@@ -1,41 +1,43 @@
 package com.rockstar.artifact;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.net.URI;
 
-import org.apache.commons.io.FileUtils;
 import org.trimou.engine.MustacheEngine;
 
-import com.rockstar.artifact.model.GeneratedFile;
-import com.rockstar.artifact.model.GeneratedProject;
-import com.rockstar.artifact.model.ProjectGenerator;
+import com.reprezen.kaizen.oasparser.OpenApi3Parser;
+import com.reprezen.kaizen.oasparser.model3.OpenApi3;
+import com.rockstar.artifact.codegen.model.ArtifactDefinition;
+import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
 import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.model.TemplateDefinition;
-import com.rockstar.artifact.model.TemplateDefinitionRegistry;
-import com.rockstar.artifact.util.ZipUtils;
+import com.rockstar.artifact.service.TemplateDefinitionRegistry;
 import com.rockstar.artifact.web.ArtifactResource;
 
 public class SampleArtifacts {
 	
 	public static final String DEFAULT_SPEC_URI = "https://api.swaggerhub.com/apis/salsiddiqui0/spirit/1.0.0/swagger.json";
 	public static final String STORAGE_SPEC_URI = "https://api.swaggerhub.com/apis/kickster/storage/1.0.0/swagger.json";
+	public static final String COLLECTION_SPEC_URI = "https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json";
+	public static final String PRODUCT_JSON_SCHEMA = "";
 	
 	private TemplateDefinitionRegistry templateDefinitionRegistry;
 	private MustacheEngine templateEngine;
+	private OpenApiToArtifactDefinition openApiConverter;
 	
-	public SampleArtifacts(TemplateDefinitionRegistry templateDefinitionRegistry, MustacheEngine templateEngine) {
+	public SampleArtifacts(TemplateDefinitionRegistry templateDefinitionRegistry, MustacheEngine templateEngine, OpenApiToArtifactDefinition openApiToDefinitionConverter) {
 		this.templateDefinitionRegistry = templateDefinitionRegistry;
 		this.templateEngine = templateEngine;
+		this.openApiConverter = openApiToDefinitionConverter;
 	}
 	
 	public void generateAll() throws Exception {
-		this.generateAll(STORAGE_SPEC_URI);
+		this.generateAll(COLLECTION_SPEC_URI);
 	}
 	
 	public void generateAll(String specUri) throws Exception {
 		this.generateJavaSpringbootRestApi(specUri);
-		this.generateJavaSpringbootEventListener(specUri);
+		//this.generateJavaSpringbootEventListener(specUri);
 		//this.generateGolang8GinProject(specUri);
 		//this.generateGolang9GorillaProject(specUri);
 		//this.generateNodejsExpressProject(specUri);
@@ -50,7 +52,7 @@ public class SampleArtifacts {
 		framework.setValue("springboot");
 		framework.setVersion("2.0.0.M7");
 		
-		String type = "eventdriven";
+		String architecture = "eventdriven";
 		String namespace = "product";
 		String organization = "springframeworkguru";
 		
@@ -77,10 +79,12 @@ public class SampleArtifacts {
 		ArtifactResource artifact = new ArtifactResource();
 		Specification spec = new Specification();
 		spec.setLocation(specUri);
-		spec.setType("jsonschema");
-		spec.setVersion("Draft 4");
+		//spec.setType("jsonschema");
+		//spec.setVersion("draft-4");
+		spec.setType("openapi");
+		spec.setVersion("3");
 		
-		artifact.setType(type);
+		artifact.setArchitecture(architecture);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
@@ -105,7 +109,7 @@ public class SampleArtifacts {
 		framework.setValue("springboot");
 		framework.setVersion("1.5.9");
 		
-		String type = "restapi";
+		String architecture = "restapi";
 		String namespace = "storage";
 		String organization = "gravitant";
 		
@@ -143,7 +147,7 @@ public class SampleArtifacts {
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
-		artifact.setType(type);
+		artifact.setArchitecture(architecture);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
@@ -161,7 +165,7 @@ public class SampleArtifacts {
 	}
 	
 	/*public void generateGolang8GinProject(String specUri) {
-		String type = "coreapi";
+		String architecture = "coreapi";
 		String language = "golang8";
 		String namespace = "spirit";
 		String framework = "gin";
@@ -176,7 +180,7 @@ public class SampleArtifacts {
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
-		artifact.setType(type);
+		artifact.setArchitecture(architecture);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
@@ -188,7 +192,7 @@ public class SampleArtifacts {
 	}
 	
 	public void generateGolang9GorillaProject(String specUri) {
-		String type = "coreapi";
+		String architecture = "coreapi";
 		String language = "golang9";
 		String namespace = "spirit";
 		String framework = "gorilla";
@@ -203,7 +207,7 @@ public class SampleArtifacts {
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
-		artifact.setType(type);
+		artifact.setArchitecture(architecture);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
@@ -215,7 +219,7 @@ public class SampleArtifacts {
 	}
 	
 	public void generateNodejsExpressProject(String specUri) {
-		String type = "coreapi";
+		String architecture = "coreapi";
 		String language = "nodejs";
 		String namespace = "spirit";
 		String framework = "express";
@@ -230,7 +234,7 @@ public class SampleArtifacts {
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
-		artifact.setType(type);
+		artifact.setArchitecture(architecture);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);
 		artifact.setOrganization(organization);
@@ -244,6 +248,10 @@ public class SampleArtifacts {
 	private void generateProject(ArtifactResource artifact) {
 		try {
 			TemplateDefinition templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
+			OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
+			ArtifactDefinition artifactDefinition = this.openApiConverter.convert(openApi);
+			System.out.println(artifactDefinition);
+			/**
 			GeneratedProject project = new ProjectGenerator(this.templateEngine)
 	    			.withType(artifact.getType())
 	    			.withLanguage(artifact.getLanguage())
@@ -259,7 +267,7 @@ public class SampleArtifacts {
 	    			.withBuild(artifact.getBuild())
 	    			.withTest(artifact.getTest())
 	    			.withDefinition(templateDefinition)
-	    			.withSpec(artifact.getSpecification().getLocation())
+	    			.withApiSpec(artifactDefinition)
 				.generate();
 			
 			
@@ -281,9 +289,10 @@ public class SampleArtifacts {
 			}
 			
 			ZipUtils.zip(outputPath, outputPath + ".zip");
-	    	FileUtils.deleteDirectory(new File(outputPath));
+	    		FileUtils.deleteDirectory(new File(outputPath));
 	        
 	        System.out.println(outputPath + ".zip");
+	        */
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

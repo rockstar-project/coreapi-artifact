@@ -2,6 +2,8 @@ package com.rockstar.artifact;
 
 import java.net.URI;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.util.StringUtils;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
@@ -11,10 +13,10 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.SimpleHelpers;
 
 import com.reprezen.kaizen.oasparser.OpenApi3Parser;
-import com.reprezen.kaizen.oasparser.model3.Contact;
-import com.reprezen.kaizen.oasparser.model3.Info;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
 import com.reprezen.kaizen.oasparser.val.ValidationResults.ValidationItem;
+import com.rockstar.artifact.codegen.model.ArtifactDefinition;
+import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
 import com.rockstar.artifact.model.InvalidSchemaException;
 import com.rockstar.artifact.model.Model;
 import com.rockstar.artifact.util.CheckUtils;
@@ -98,7 +100,7 @@ public class TrimouTemplateTest {
 	
 	public static Model buildModel() throws Exception {
 		Model model = new Model();
-		String specUri = "https://app.swaggerhub.com/apis/kickster/storage/1.0.0/swagger.yaml";
+		String specUri = "https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json";
 		
 		model.setLanguageValue("java");
 		model.setLanguageVersion("8");
@@ -115,31 +117,23 @@ public class TrimouTemplateTest {
 		model.setDiscoveryValue("eureka");
 		model.setDiscoveryVersion("1.5.9");
 		
-		model.setType("restapi");
+		model.setArchitecture("restapi");
 		model.setNamespace("storage");
 		model.setOrganization("gravitant");
 		
-		model.setPackageName("com.gravitant.storage");
+		model.setPackageName("com.rockstar.api");
 		
-		OpenApi3 openapi3Model = new OpenApi3Parser().parse(new URI(specUri), true);
-		if (!openapi3Model.isValid()) {
-			for (ValidationItem item : openapi3Model.getValidationItems()) {
+		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(specUri), true);
+		if (!openApi.isValid()) {
+			for (ValidationItem item : openApi.getValidationItems()) {
 				throw new InvalidSchemaException(item.getMsg());
 			}
 		} else {
-			Contact contact = null;
-			Info info = null;
 			
-			info = openapi3Model.getInfo();
-			if (info != null) {
-				model.setVersion(info.getVersion());
-				contact = info.getContact();
-				if (contact != null) {
-					model.setContact(contact.getEmail());
-				}
-			}
-			model.setClassname("volume");
-			model.setSchema(openapi3Model.getSchema("Volume"));
+			OpenApiToArtifactDefinition converter = new OpenApiToArtifactDefinition();
+			ArtifactDefinition restapiDefinition = converter.convert(openApi);
+			
+			System.out.println(ReflectionToStringBuilder.toString(restapiDefinition, ToStringStyle.MULTI_LINE_STYLE));
 		}
 		
 		return model;
@@ -148,13 +142,13 @@ public class TrimouTemplateTest {
     public static void main(String args[]) {
       
       try {
-        System.out.println(templateEngine().getMustache("playground/pojo").render(buildModel()));
+    	  	buildModel();
+       // System.out.println(templateEngine().getMustache("playground/pojo").render(buildModel()));
       } catch (Exception ex) {
     	  ex.printStackTrace();
       }
 	}
-    
- 
+  
 
 }
 
