@@ -40,34 +40,43 @@ public class OpenApiTypeToAttributeType implements Converter<Schema, AttributeTy
 								attributeType = AttributeType.String;
 								break;
 						}
+					} else {
+						attributeType = AttributeType.String;
 					}
-					attributeType = AttributeType.String;
 					break;
 				case "integer":
-					switch (formatStr) {
-						case "int32":
-							attributeType = AttributeType.Integer;
-							break;
-						case "int64":
-							attributeType = AttributeType.Long;
-							break;
-						default:
-							attributeType = AttributeType.Integer;
-							break;
+					if (formatStr != null) {
+						switch (formatStr) {
+							case "int32":
+								attributeType = AttributeType.Integer;
+								break;
+							case "int64":
+								attributeType = AttributeType.Long;
+								break;
+							default:
+								attributeType = AttributeType.Integer;
+								break;
+						}
+					} else {
+						attributeType = AttributeType.Integer;
 					}
+					break;
 				case "number":
-					switch (formatStr) {
-						case "float":
-							attributeType = AttributeType.Float;
-							break;
-						case "double":
-							attributeType = AttributeType.Double;
-							break;
-						default:
-							attributeType = AttributeType.Double;
-							break;
+					if (formatStr != null) {
+						switch (formatStr) {
+							case "float":
+								attributeType = AttributeType.Float;
+								break;
+							case "double":
+								attributeType = AttributeType.Double;
+								break;
+							default:
+								attributeType = AttributeType.Double;
+								break;
+						}
+					} else {
+						attributeType = AttributeType.Double;
 					}
-					attributeType = AttributeType.Double;
 					break;
 				case "boolean":
 					attributeType = AttributeType.Boolean;

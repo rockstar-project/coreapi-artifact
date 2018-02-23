@@ -1,43 +1,61 @@
 package com.rockstar.artifact.codegen.model;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-public class ControllerDefinition {
+public class ControllerDefinition implements Definition {
 	
-	private ResourceDefinition resource;
-	private ServiceDefinition service;
-	private SearchDefinition search;
+	private String name;
+	private Definition resource;
+	private Definition service;
+	private Definition search;
 	
 	public ControllerDefinition() {
 	}
 	
-	public ResourceDefinition getResource() {
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Definition getResource() {
 		return resource;
 	}
 
-	public void setResource(ResourceDefinition resource) {
+	public void setResource(Definition resource) {
 		this.resource = resource;
 	}
 
-	public ServiceDefinition getService() {
+	public Definition getService() {
 		return service;
 	}
 
-	public void setService(ServiceDefinition service) {
+	public void setService(Definition service) {
 		this.service = service;
 	}
 
-	public SearchDefinition getSearch() {
+	public Definition getSearch() {
 		return search;
 	}
 
-	public void setSearch(SearchDefinition search) {
+	public void setSearch(Definition search) {
 		this.search = search;
 	}
 
 	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+		StringBuilder controllerStringBuilder = new StringBuilder();
+		
+		controllerStringBuilder.append("Controller name = " + (this.name != null ? this.name : "not specified") + "\n");
+		if (this.resource != null) {
+			controllerStringBuilder.append(resource);
+		}
+		if (this.service != null) {
+			controllerStringBuilder.append(service);
+		}
+		if (this.search != null) {
+			controllerStringBuilder.append(search);
+		}
+		return controllerStringBuilder.toString();
 	}
 }
  

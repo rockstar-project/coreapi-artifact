@@ -1,0 +1,90 @@
+package {{packageName}}.web;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+{{#definition}}
+import {{packageName}}.domain.{{capitalize service.entity.name}};
+import {{packageName}}.service.{{capitalize search.name}}Search;
+import {{packageName}}.service.{{capitalize service.name}}Service;
+
+@RestController
+@RequestMapping("/{{pluralize name}}")
+public class {{capitalize name}}Controller {
+
+    @Autowired
+    private {{capitalize service.name}}Service {{service.name}}Service;
+    
+    @Autowired
+    private {{capitalize resource.name}}ResourceAssembler {{resource.name}}ResourceAssembler;
+
+   	@GetMapping
+   	public HttpEntity<PagedResources<{{capitalize resource.name}}Resource>> search({{capitalize resource.name}}Search searchCriteria,
+				@PageableDefault(page = 0, size = 10, sort="name") Pageable pageable, 
+				PagedResourcesAssembler<{{capitalize resource.name}}> pageResourcesAssembler) {
+		
+		Page<{{capitalize resource.name}}> {{capitalize resource.name}}Page = null;
+		PagedResources<{{capitalize resource.name}}Resource> {{capitalize resource.name}}ResourcePage = null;
+		{{capitalize resource.name}}Page = this.{{service.name}}Service.search(searchCriteria, pageable);
+		
+		{{capitalize resource.name}}ResourcePage = pageResourcesAssembler.toResource({{capitalize resource.name}}Page, this.{{resource.name}}ResourceAssembler);
+		return new ResponseEntity<PagedResources<{{capitalize resource.name}}Resource>>({{capitalize resource.name}}ResourcePage, HttpStatus.OK);
+	}
+    
+	@PostMapping
+	public HttpEntity<Void> create{{capitalize resource.name}}(@Valid @RequestBody {{capitalize resource.name}}Resource {{resource.name}}Resource) {
+    		HttpHeaders headers = null;
+    		{{capitalize service.entity.name}} new{{capitalize service.entity.name}} = null;
+    		{{capitalize service.entity.name}} updated{{capitalize service.entity.name}} = null;
+    		
+    		new{{capitalize service.entity.name}} = this.{{resource.name}}ResourceAssembler.fromResource({{resource.name}}Resource);
+    		updated{{capitalize service.entity.name}} = this.{{service.name}}Service.create{{capitalize service.name}}(new{{capitalize service.entity.name}});
+    		headers = new HttpHeaders();
+    		headers.setLocation(linkTo({{capitalize name}}Controller.class).slash(updated{{capitalize service.entity.name}}.getId()).toUri());
+    		
+    		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    	}
+
+    @GetMapping(value="/{id}")
+    public ResponseEntity<{{capitalize resource.name}}Resource> get{{capitalize resource.name}}ById(@PathVariable("id") String id) {
+    		{{capitalize resource.name}} {{service.entity.name}} = this.{{name}}Service.get{{capitalize name}}(id);
+		{{capitalize resource.name}}Resource {{resource.name}}Resource = this.{{resource.name}}ResourceAssembler.toResource({{resource.name}});
+		
+		return new ResponseEntity<{{capitalize name}}Resource>({{resource.name}}Resource, HttpStatus.OK);
+    }
+
+    @PatchMapping(value="/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update{{capitalize resource.name}}(@PathVariable("id") String id, @RequestBody {{capitalize name}} {{name}}) {
+    		{{name}}.setId(id);
+        this.{{service.name}}Service.update{{capitalize service.name}}({{name}});
+    }
+
+    @DeleteMapping(value="/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete{{capitalize resource.name}}(@PathVariable("id") String id) {
+        this.{{service.name}}Service.delete{{capitalize service.name}}(id);
+    }
+}
+{{/definition}}

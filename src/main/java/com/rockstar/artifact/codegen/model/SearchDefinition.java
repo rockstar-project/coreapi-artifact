@@ -1,16 +1,21 @@
 package com.rockstar.artifact.codegen.model;
-
+import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-public class SearchDefinition {
+public class SearchDefinition implements Definition {
 	
+	private String name;
 	private Collection<ParamDefinition> params;
-	private Collection<ParamDefinition> sorts;
 	
 	public SearchDefinition() {
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Collection<ParamDefinition> getParams() {
@@ -21,20 +26,44 @@ public class SearchDefinition {
 		this.params = params;
 	}
 
-	public Collection<ParamDefinition> getSorts() {
-		return sorts;
+	public Collection<ParamDefinition> getFilters() {
+		return this.getSearchParams(SearchParamType.Filter);
 	}
-
-	public void setSorts(Collection<ParamDefinition> sorts) {
-		this.sorts = sorts;
-	}
-
-	public boolean hasSortFields() {
-		return (this.getSorts() != null && !this.getSorts().isEmpty());
+	
+	public Collection<ParamDefinition> getSearchParams(SearchParamType paramType) {
+		Collection<ParamDefinition> filters = null;
+		
+		if (this.params != null && !this.params.isEmpty()) {
+			filters = new ArrayList<ParamDefinition> ();
+			for (ParamDefinition currentParam : this.params) {
+				
+				if (currentParam.getParamType().equals(paramType)) {
+					filters.add(currentParam);
+				}
+			}
+		}
+		return filters;
 	}
 	
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+		StringBuilder searchStringBuilder = new StringBuilder();
+		
+		searchStringBuilder.append("\nSearch Name: " + this.name + "\n");
+		searchStringBuilder.append("Parameters\n");
+
+		if (this.params != null && !this.params.isEmpty()) {
+			
+			for (ParamDefinition current: this.params) {
+				searchStringBuilder.append(current);
+				searchStringBuilder.append("\n");
+			}
+		} else {
+			searchStringBuilder.append(" - 0 found");
+		}
+		
+		searchStringBuilder.append("\n");
+		
+		return searchStringBuilder.toString();
 	}
 
 }

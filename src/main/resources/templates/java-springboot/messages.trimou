@@ -1,0 +1,7 @@
+URL.collectionResource.image=
+NotEmpty.collectionResource.image=
+ValidEnum.collectionResourcce.visibility=
+NotEmpty.collectionResource.visibility=
+Size.collectionResource.name=
+Pattern.collectionResource.name=
+NotEmpty.collectionResource.name=

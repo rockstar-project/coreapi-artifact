@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,6 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 		FieldDefinition field = null;
 		Collection<RelationshipDefinition> relationships = null;
 		Collection<FieldDefinition> fields = null;
-		RelationshipDefinition relationshipDefinition = null;
 		Schema propertySchema = null;
 		String propertyType = null;
 		String propertyName = null;
@@ -40,26 +40,40 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 					propertySchema = schemaEntry.getValue();
 					propertyType = propertySchema.getType();
 					
-					switch (propertyType) {
-						case "object":
-							// TODO
-							break;
-						case "array":
+					if (propertyType != null) {
+						if (propertyType.equalsIgnoreCase("array")) {
 							Schema itemsSchema = propertySchema.getItemsSchema();
 							if (itemsSchema != null) {
-								relationshipDefinition = new RelationshipDefinition();
-								relationshipDefinition.setType(RelationshipType.OneToMany);
-								relationshipDefinition.setRelatedEntity(this.convert(itemsSchema));
-								relationships.add(relationshipDefinition);
+								RelationshipDefinition oneToManyRelationship = null;
+								EntityDefinition childEntity = new EntityDefinition();
+								childEntity.setName(StringUtils.uncapitalize(propertyName));
+								
+								oneToManyRelationship = new RelationshipDefinition();
+								oneToManyRelationship.setType(RelationshipType.OneToMany);
+								oneToManyRelationship.setChild(childEntity);
+								relationships.add(oneToManyRelationship);
 							}
-							break;
-						default:
-							field = this.openApiSchemaToFieldDefinition.convert(propertySchema);
-							field.setName(propertyName);
-							fields.add(field);
-							break;
+						}
+						
+						field = this.openApiSchemaToFieldDefinition.convert(propertySchema);
+						field.setName(propertyName);
+						if ( propertySchema.getUniqueItems() != null && propertySchema.getUniqueItems()) {
+							field.setUnique(propertySchema.getUniqueItems());
+						}
+						
+						fields.add(field);
+					} else {
+						EntityDefinition childEntity = null;
+						RelationshipDefinition oneToOneRelationship = null;
+						
+						childEntity = new EntityDefinition();
+						childEntity.setName(propertyName);
+						
+						oneToOneRelationship = new RelationshipDefinition();
+						oneToOneRelationship.setChild(childEntity);
+						oneToOneRelationship.setType(RelationshipType.OneToOne);
+						relationships.add(oneToOneRelationship);
 					}
-	
 				}
 				
 			}

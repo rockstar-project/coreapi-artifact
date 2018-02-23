@@ -8,7 +8,6 @@ import com.rockstar.artifact.model.Specification;
 
 public class SupportedSpecValidator implements ConstraintValidator<SupportSpec, Specification> {
 
-	@Override
 	public void initialize(SupportSpec type) {
 		
 	}
@@ -52,6 +51,8 @@ public class SupportedSpecValidator implements ConstraintValidator<SupportSpec, 
 						case "draft-4":
 							break;
 						case "draft-6":
+							break;
+						case "draft-7":
 							break;
 						default:
 							isValid = false;

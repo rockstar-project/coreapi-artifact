@@ -1,0 +1,8 @@
+package {{packageName}}.repository;
+
+import org.springframework.data.repository.CrudRepository;
+
+import {{packageName}}.domain.{{capitalize classname}};
+
+public interface {{capitalize classname}}Repository extends CrudRepository<{{capitalize classname}}, Long> {
+}

@@ -7,13 +7,6 @@
 * Download & Install [Docker Toolbox](https://www.docker.com/products/docker-toolbox) on your computer.
 * Click Docker Quickstart Terminal icon to open command line console
 
-#### Download Source Code
-
-```
-$ git clone https://github.ibm.com/kickster/{{type}}-{{namespace}}.git
-$ cd {{type}}-{{namespace}}
-```
-
 #### Configure Environment
 
 ```
@@ -23,10 +16,10 @@ $ source .env
 #### Start virtual machine
 
 ```
-$ docker-machine create -d virtualbox --virtualbox-memory 4096 {{type}}-{{namespace}}-vb-node
-$ eval $(docker-machine env {{type}}-{{namespace}}-vb-node)
+$ docker-machine create -d virtualbox --virtualbox-memory 4096 {{architecture}}-{{namespace}}-vb-node
+$ eval $(docker-machine env {{architecture}}-{{namespace}}-vb-node)
 ```
-{{#isEq options.datastore.value "mysql" }}
+{{#isEq datastoreValue "mysql" }}
 #### Run MySQL database
 
 ```
@@ -58,7 +51,7 @@ docker-compose -f docker-compose.develop.yml up -d {{namespace}}api
 #### Connect to the API endpoint
 
 ```bash
-curl http://$(docker-machine ip {{type}}-{{namespace}}-vb-node):8080/templates | jq .
+curl http://$(docker-machine ip {{architecture}}-{{namespace}}-vb-node):8080/templates | jq .
 ```
 
 #### Verify Cassandra Datastore Installation
@@ -75,9 +68,9 @@ select * from storage;
 
 ```bash
 docker-compose stop {{namespace}}api && docker-compose rm -f {{namespace}}api
-docker rmi $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{type}}-{{namespace}}
+docker rmi $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{architecture}}-{{namespace}}
 mvn clean package
-docker build -t $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{type}}-{{namespace}} .
+docker build -t $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{architecture}}-{{namespace}} .
 docker-compose up -d {{namespace}}api
 docker-compose logs --follow {{namespace}}api
 ```

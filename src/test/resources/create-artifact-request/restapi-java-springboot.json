@@ -1,0 +1,70 @@
+{
+  "namespace": "ecommerce",
+  "organization": "codefly",
+  "architecture": "restapi",
+  "framework": {
+    "value": "springboot",
+    "version": "1.5.9"
+  },
+  "language": {
+    "value": "java",
+    "version": "8"
+  },
+  "specification": {
+    "type": "openapi",
+    "version": "3",
+    "location": "https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json"
+  },
+  "datastore": {
+    "value": "mongodb",
+    "version": "3.6"
+  },
+  "http": {
+    "value": "tomcat",
+    "version": "8.5.23"
+  },
+  "messaging": {
+    "value": "rabbitmq",
+    "version": "3.7.2"
+  },
+  "discovery": {
+    "value": "Eureka",
+    "version": "0.0"
+  },
+  "monitoring": {
+    "value": "grafana",
+    "version": "4.6.3"
+  },
+  "security": {
+    "value": "auth0",
+    "version": "Hosted"
+  },
+  "tracing": {
+    "value": "zipkin",
+    "version": "0.0"
+  },
+  "build": {
+    "value": "maven",
+    "version": "3.3.9"
+  },
+  "test": {
+    "value": "postman",
+    "version": "5.5.0"
+  },
+  "ci": {
+    "value": "travis",
+    "version": "Hosted"
+  },
+  "cd": {
+    "value": "dockercloud",
+    "version": "Hosted"
+  },
+  "scm": {
+    "value": "github",
+    "version": "Hosted"
+  },
+  "registry": {
+    "value": "dockerhub",
+    "version": "Hosted"
+  }
+}

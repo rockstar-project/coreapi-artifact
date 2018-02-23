@@ -2,6 +2,6 @@ FROM ibmcom/ibmjava
 MAINTAINER {{capitalize organization}} Team
 
 VOLUME /tmp
-ADD target/{{type}}-{{namespace}}-1.0.0-SNAPSHOT.jar {{type}}-{{namespace}}.jar
-RUN bash -c 'touch /{{type}}-{{namespace}}.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/{{type}}-{{namespace}}.jar"]
+ADD target/{{architecture}}-{{namespace}}-1.0.0-SNAPSHOT.jar {{architecture}}-{{namespace}}.jar
+RUN bash -c 'touch /{{architecture}}-{{namespace}}.jar'
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/{{architecture}}-{{namespace}}.jar"]

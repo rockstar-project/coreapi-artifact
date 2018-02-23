@@ -1,44 +1,57 @@
 package {{packageName}}.web;
 
-public class {{capitalize classname}}Resource {
+{{#definition}}
+{{#listType}}
+import java.util.Collection;
+{{/listType}}
+{{#dateTimeType}}
+import org.joda.time.DateTime;
+{{/dateTimeType}}
+{{#dateType}}
+import org.joda.time.LocalDate;
+{{/dateType}}
+{{#validConstraint}}
+import javax.validation.Valid;
+{{/validConstraint}}
+{{#sizeConstraint}}
+import javax.validation.constraints.Size;
+{{/sizeConstraint}}
+{{#notNullConstraint}}
+import javax.validation.constraints.NotNull;
+{{/notNullConstraint}}
+{{#patternConstraint}}
+import javax.validation.constraints.Pattern;
+{{/patternConstraint}}
+{{#URLConstraint}}
+import org.hibernate.validator.constraints.URL;
+{{/URLConstraint}}
+{{#notEmptyConstraint}}
+import org.hibernate.validator.constraints.NotEmpty;
+{{/notEmptyConstraint}}
+{{/definition}}
+import org.springframework.hateoas.ResourceSupport;
+
+{{#definition}}
+public class {{capitalize name}}Resource extends ResourceSupport {
 	
-	{{#fieldDeclarations}}
-	{{/fieldDeclarations}}
+	{{#attributes}}
+	{{#constraints}}
+	@{{type}}{{args}}
+	{{/constraints}}
+	private {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#arrayType}}Collection<String>{{/arrayType}}{{#objectType}}{{capitalize name}}{{/objectType}} {{name}};
 	
-	public {{capitalize classname}}Resource() {
+    {{/attributes}}
+	public {{capitalize name}}Resource() {
 	}
-	
-	{{#fields}}{{#value}}
-	{{#isEq type "string" }}
-	public String get{{capitalizeCamelcase key}}() {
-		return this.{{camelcase key}};
+
+	{{#attributes}}
+	public {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#arrayType}}Collection<String>{{/arrayType}}{{#objectType}}{{capitalize name}}{{/objectType}} get{{capitalize name}}() {
+		return this.{{name}};
 	}
-	
-	public void set{{capitalizeCamelcase key}}(String {{camelcase key}}) {
-		this.{{camelcase key}} = {{camelcase key}};
+	public void set{{capitalize name}}({{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#arrayType}}Collection<String>{{/arrayType}}{{#objectType}}{{capitalize name}}{{/objectType}} {{name}}) {
+		this.{{name}} = {{name}};
 	}
-	{{/isEq}}
-	
-	{{#isEq type "number" }}
-	public Integer get{{capitalizeCamelcase key}}() {
-		return this.{{camelcase key}};
-	}
-	
-	public void set{{capitalizeCamelcase key}}(Integer {{camelcase key}}) {
-		this.{{camelcase key}} = {{camelcase key}};
-	}
-	{{/isEq}}
-	
-	{{#isEq type "integer" }}
-	public Integer get{{capitalizeCamelcase key}}() {
-		return this.{{camelcase key}};
-	}
-	
-	public void set{{capitalizeCamelcase key}}(Integer {{camelcase key}}) {
-		this.{{camelcase key}} = {{camelcase key}};
-	}
-	{{/isEq}}
-	
-	{{/value}}
-	{{/fields}}	
+
+	{{/attributes}}
 }
+{{/definition}}

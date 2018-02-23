@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.reprezen.kaizen.oasparser.model3.Schema;
 import com.rockstar.artifact.codegen.model.AttributeDefinition;
+import com.rockstar.artifact.codegen.model.AttributeType;
 
 @Component
 public class OpenApiSchemaToAttributeDefinition implements Converter<Schema, AttributeDefinition> {
@@ -16,10 +17,11 @@ public class OpenApiSchemaToAttributeDefinition implements Converter<Schema, Att
 	
 	public AttributeDefinition convert(Schema schema) {
 		AttributeDefinition attributeDefinition = null;
-		
+		AttributeType attributeType = null;
 		if (schema != null) {
+			attributeType = this.openApiTypeToAttributeType.convert(schema);
 			attributeDefinition = new AttributeDefinition();
-			attributeDefinition.setType(this.openApiTypeToAttributeType.convert(schema));
+			attributeDefinition.setType(attributeType);
 			attributeDefinition.setConstraints(this.openApiSchemaToConstraintDefinition.convert(schema));
 		}
 		return attributeDefinition;

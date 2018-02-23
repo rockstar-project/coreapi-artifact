@@ -1,0 +1,56 @@
+package {{packageName}}.domain;
+
+{{#listType}}import java.util.Set;{{/listType}}
+import java.util.UUID;
+
+{{#definition}}
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+
+{{#dateTimeType}}import org.joda.time.DateTime;{{/dateTimeType}}
+{{#dateType}}import org.joda.time.LocalDate;{{/dateType}}
+
+@Entity
+@Table(name="{{camelcaseToUpperSnakecase name}}")
+public class {{capitalize name}} {
+	
+	@Id
+	@Column(name="ID")
+	private String id;
+	
+	{{#fields}}
+	{{#dateTimeType}}@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime"){{/dateTimeType}}
+	@Column(name="{{uppercase name}}")
+	private {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}} {{name}};
+	
+	{{/fields}}
+	public {{capitalize name}}() {
+	}
+	
+	public String getId() {
+		return this.id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+    
+    {{#fields}}
+	public {{type}} get{{capitalize name}}() {
+		return this.{{name}};
+	}
+	public void set{{capitalize name}}({{type}} {{name}}) {
+		this.{{name}} = {{name}};
+	}
+	
+	{{/fields}}
+	@PrePersist
+	public void assignId() {
+		if (this.getId() == null || this.getId().isEmpty()) {
+			this.setId(UUID.randomUUID().toString());
+		}
+	}
+}
+{{/definition}}

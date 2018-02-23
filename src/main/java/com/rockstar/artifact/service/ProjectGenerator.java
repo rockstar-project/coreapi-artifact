@@ -2,6 +2,7 @@ package com.rockstar.artifact.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 
-import com.rockstar.artifact.codegen.model.ArtifactDefinition;
+import com.rockstar.artifact.codegen.model.Definition;
+import com.rockstar.artifact.codegen.model.SpecDefinitions;
 import com.rockstar.artifact.model.Directory;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
@@ -28,10 +30,11 @@ import com.rockstar.artifact.util.WordUtils;
 public class ProjectGenerator {
 	
 	private static final String PACKAGE_PREFIX = "com";
-	private static final String PACKAGE_PLACEHOLDER = "com.{organization}.{namespace}";
-	private static final String NAME_PLACEHOLDER = "{name}";
+	private static final String PLACEHOLDER_START_CHAR = "{";
+	private static final String PLACEHOLDER_END_CHAR = "}";
 	
 	private Model model;
+	private SpecDefinitions specDefinitions;
 	private TemplateDefinition projectTemplate;
 	private MustacheEngine engine;
 	
@@ -77,9 +80,9 @@ public class ProjectGenerator {
 		return this;
 	}
 	
-	public ProjectGenerator withApiSpec(ArtifactDefinition definition) throws Exception {
-		CheckUtils.checkArgumentNotNull(definition);
-		this.model.setArtifact(definition);
+	public ProjectGenerator withApiSpec(SpecDefinitions specDefinitions) throws Exception {
+		CheckUtils.checkArgumentNotNull(specDefinitions);
+		this.specDefinitions = specDefinitions;
 		return this;
 	}
 	
@@ -219,43 +222,70 @@ public class ProjectGenerator {
 		List<GeneratedFile> generatedFiles = null;
 		Directory directory = null;
 		GeneratedFile generatedFile = null;
-    	
+    		String definitionTypeStr = null;
+    		
 	    	if (type != null) {
 	    		directory = projectTemplate.getDirectoryByPath(type);
 	    		generatedFiles = new ArrayList<GeneratedFile>();
 	    	
 	    		if (directory != null) {
 			    	for (TemplateFile file: directory.getFiles()) {
-						this.model.setPackageName(this.resolvePackagename());
+			    		if (this.includeFile(file)) {
+			    			this.model.setPackageName(this.resolvePackagename());
 						
-					switch (directory.getResolution()) {
-				        case Static:
-				        		generatedFile = this.generateFile(directory, file, "");
+			    			definitionTypeStr =  StringUtils.substringBetween(file.getName(), PLACEHOLDER_START_CHAR, PLACEHOLDER_END_CHAR);
+				        		
+			    			if (!StringUtils.isEmpty(definitionTypeStr)) {
+		        			
+		        				Collection<Definition> definitions = null;
+		        				Definition.Type definitionType = Definition.Type.valueOf(StringUtils.capitalize(definitionTypeStr));
+		        				switch (definitionType) {
+		        					case Controller:
+		        						definitions = this.specDefinitions.getDefinitions(Definition.Type.Controller);
+		        						break;
+		        					case Resource:
+		        						definitions = this.specDefinitions.getDefinitions(Definition.Type.Resource);
+		        						break;
+		        					case Service:
+		        						definitions = this.specDefinitions.getDefinitions(Definition.Type.Service);
+		        						break;
+		        					case Search:
+		        						definitions = this.specDefinitions.getDefinitions(Definition.Type.Search);
+		        						break;
+		        					case Entity:
+		        						definitions = this.specDefinitions.getDefinitions(Definition.Type.Entity);
+		        						break;
+		        					case Repository:
+		        						definitions = this.specDefinitions.getDefinitions(Definition.Type.Repository);
+		        						break;
+		        					default:
+		        						throw new NotFoundException("invalid definition type: ", definitionType.name());
+		        				}
+		        				
+		        				if (definitions != null && !definitions.isEmpty()) {
+			        				for (Definition current : definitions) {
+						    			this.model.setName(StringUtils.lowerCase(current.getName()));
+						    			this.model.setDefinition(current);
+						    			generatedFile = this.generateFile(directory, file, current.getName());
+						    			if (generatedFile != null) {
+						    				generatedFiles.add(generatedFile);
+						    			}
+						    		}
+		        				} else {
+		        					System.out.println("no definitions found: " + definitionType);
+		        				}
+		        			} else {
+			        			generatedFile = this.generateFile(directory, file, "");
 				        		if (generatedFile != null) {
 				        			generatedFiles.add(generatedFile);
 				        		}
-				        		break;
-				        		/**
-				        case Dynamic:
-				        		
-					        	for (PojoDefinition current : this.pojos) {
-					    			this.model.setClassname(StringUtils.lowerCase(current.getName()));
-					    			this.model.setSchema(current);
-					    			generatedFile = this.generateFile(directory, file, current.getName());
-					    			if (generatedFile != null) {
-					    				generatedFiles.add(generatedFile);
-					    			}
-					    		}
-					        	break;
-					        	*/
-				        default:
-				        		throw new IllegalArgumentException("missing file resolution method");
-			        }
+		        			}
+			    		}
 			    	}
 	    		}
 	    	}
-		return generatedFiles;
-       
+	    	return generatedFiles;
+	 
 	}
 	
 	public GeneratedFile generateFile(Directory directory, TemplateFile file, String arg) throws Exception {
@@ -263,6 +293,7 @@ public class ProjectGenerator {
 		Mustache template = null;
 		
 		System.out.println("generating template " + file.getSlug());
+		
 		template = this.getTemplate(file.getSlug());
 		
 		if (this.includeFile(file)) {
@@ -272,6 +303,7 @@ public class ProjectGenerator {
 			generatedFile.setPath(this.resolveOutputPath(directory));
 			generatedFile.setContent(template.render(this.model));
 		}
+		
     		return generatedFile;
 	}
 	
@@ -323,8 +355,14 @@ public class ProjectGenerator {
 					prefix = WordUtils.capitalizeSingular(arg);
 			}
 			
-			if (StringUtils.contains(file.getName(), NAME_PLACEHOLDER)) {
-				resolvedName = StringUtils.replace(file.getName(), NAME_PLACEHOLDER, prefix);
+			String placeholder = null;
+			
+			placeholder = StringUtils.substringBetween(file.getName(), PLACEHOLDER_START_CHAR, PLACEHOLDER_END_CHAR);
+			if (!StringUtils.isEmpty(placeholder)) {
+				resolvedName = StringUtils.replace(file.getName(), PLACEHOLDER_START_CHAR + placeholder + PLACEHOLDER_END_CHAR, prefix);
+			} else {
+				System.out.println(String.format("unable to resolve file name %s", file.getName()));
+				resolvedName = file.getName();
 			}
 		}
 		

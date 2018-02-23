@@ -8,9 +8,11 @@ import java.util.Map.Entry;
 
 import org.springframework.util.StringUtils;
 
+import com.google.common.base.Joiner;
+
 public class ConstraintDefinition {
 	
-private List<Constraint> constraints;
+	private List<Constraint> constraints;
 	
 	public ConstraintDefinition() {
 		this.constraints = new ArrayList<Constraint> ();
@@ -18,13 +20,6 @@ private List<Constraint> constraints;
 	
 	public List<Constraint> getConstraints() {
 		return this.constraints;
-	}
-	
-	public void addEnumConstraint(String name) {
-		Constraint constraint = new Constraint();
-		constraint.setName(name);
-		constraint.setType(ConstraintType.ValidEnum);
-		this.constraints.add(constraint);
 	}
 	
 	public void addConstraint(ConstraintType type) {
@@ -113,6 +108,15 @@ private List<Constraint> constraints;
 		
 		public void addArgument(String argumentName, String argumentValue) {
 			this.getArguments().put(argumentName, argumentValue);
+		}
+		
+		public String getArgs() {
+			String argumentStr = Joiner.on(",").withKeyValueSeparator("=").join(this.arguments);
+			if (!StringUtils.isEmpty(argumentStr)) {
+				argumentStr = "(" + argumentStr + ")";
+				System.out.println("constraint arguments string => " + argumentStr);
+			}
+			return argumentStr;
 		}
 		
 		public boolean isConstraint(ConstraintType type) {

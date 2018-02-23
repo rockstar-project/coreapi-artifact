@@ -1,14 +1,9 @@
 package com.rockstar.artifact.codegen.model;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-public class GeneralDefinition {
+public class GeneralDefinition implements Definition {
 	
 	private String name;
 	private String version;
-	private String title;
-	private String description;
 	private String endpointUrl;
 	private String ownerEmail;
 	
@@ -31,22 +26,6 @@ public class GeneralDefinition {
 		this.version = version;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getEndpointUrl() {
 		return endpointUrl;
 	}
@@ -64,7 +43,13 @@ public class GeneralDefinition {
 	}
 	
 	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+		StringBuilder generalStringBuilder = new StringBuilder();
+		
+		generalStringBuilder.append("\nGeneral Information\n");
+		generalStringBuilder.append("name = " + (this.name != null ? this.name : "not specified") + "\n");
+		generalStringBuilder.append("version = " + (this.version != null ? this.version : "not specified") + "\n");
+		generalStringBuilder.append("contact = " +  (this.ownerEmail != null ? this.ownerEmail : "not specified") + "\n");
+		return generalStringBuilder.toString();
 	}
 
 }

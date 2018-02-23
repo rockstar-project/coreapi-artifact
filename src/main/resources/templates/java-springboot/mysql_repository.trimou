@@ -1,8 +1,15 @@
-package {{packageName}}.repository;
+package com.rockstar.collection.domain;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-import {{packageName}}.domain.{{capitalize classname}};
-
-public interface {{capitalize classname}}Repository extends CrudRepository<{{capitalize classname}}, Long> {
+{{#definition}}
+@Repository
+public interface {{capitalize name}}Repository extends PagingAndSortingRepository<{{capitalize name}}, String>, JpaSpecificationExecutor<{{capitalize name}}> {
+	
+	{{#if uniquefields.size}}
+	public {{capitalize name}} findBy{{uniqueFieldsAndSeparated}}({{uniqueFieldsMethodArguments}});
+	{{/if}}
 }
+{{/definition}}

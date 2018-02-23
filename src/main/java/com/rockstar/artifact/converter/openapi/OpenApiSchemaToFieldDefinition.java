@@ -20,6 +20,9 @@ public class OpenApiSchemaToFieldDefinition implements Converter<Schema, FieldDe
 			fieldDefinition = new FieldDefinition();
 			fieldDefinition.setType(this.openApiTypeToFieldType.convert(schema));
 			fieldDefinition.setReadOnly(schema.getReadOnly());
+			if (schema.hasEnums()) {
+				fieldDefinition.setEnumeration(true);
+			}
 		}
 		return fieldDefinition;
 	}

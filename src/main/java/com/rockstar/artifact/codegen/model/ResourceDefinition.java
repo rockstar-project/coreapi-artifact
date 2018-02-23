@@ -2,11 +2,10 @@ package com.rockstar.artifact.codegen.model;
 
 import java.util.Collection;
 
-public class ResourceDefinition {
+public class ResourceDefinition implements Definition {
 	
 	private String name;
 	private Collection<AttributeDefinition> attributes;
-	private Collection<ResourceDefinition> subresources;
 	
 	public ResourceDefinition() {
 	}
@@ -26,14 +25,6 @@ public class ResourceDefinition {
 	public void setAttributes(Collection<AttributeDefinition> attributes) {
 		this.attributes = attributes;
 	}
-
-	public Collection<ResourceDefinition> getSubresources() {
-		return subresources;
-	}
-
-	public void setSubresources(Collection<ResourceDefinition> subresources) {
-		this.subresources = subresources;
-	}
 	
 	public AttributeDefinition getAttributeByName(String name) {
 		AttributeDefinition attribute = null;
@@ -46,34 +37,89 @@ public class ResourceDefinition {
 		return attribute;
 	}
 	
+	public boolean getValidConstraint() {
+		return this.hasConstraintType(ConstraintType.Valid);
+	}
+	
+	public boolean getNotEmptyConstraint() {
+		return this.hasConstraintType(ConstraintType.NotEmpty);
+	}
+	
+	public boolean getNotNullConstraint() {
+		return this.hasConstraintType(ConstraintType.NotNull);
+	}
+	
+	public boolean getSizeConstraint() {
+		return this.hasConstraintType(ConstraintType.Size);
+	}
+	
+	public boolean getPatternConstraint() {
+		return this.hasConstraintType(ConstraintType.Pattern);
+	}
+	
+	public boolean getURLConstraint() {
+		return this.hasConstraintType(ConstraintType.URL);
+	}
+	
+	public boolean getListType() {
+		return this.hasAttributeType(AttributeType.Array);
+	}
+	
+	public boolean getDateType() {
+		return this.hasAttributeType(AttributeType.LocalDate);
+	}
+	
+	public boolean getDateTimeType() {
+		return this.hasAttributeType(AttributeType.DateTime);
+	}
+	
+	public boolean hasAttributeType(AttributeType type) {
+		boolean hasType = false;
+		for (AttributeDefinition currentAttribute : this.attributes) {
+			if (currentAttribute.isType(type)) {
+				hasType = true;
+				break;
+			}
+		}
+		return hasType;
+	}
+	
+	public boolean getEmailConstraint() {
+		return this.hasConstraintType(ConstraintType.Email);
+	}
+	
+	public boolean hasConstraintType(ConstraintType type) {
+		boolean hasConstraint = false;
+		for (AttributeDefinition currentAttribute : this.attributes) {
+			if (currentAttribute.hasConstraint(type)) {
+				hasConstraint = true;
+				break;
+			}
+		}
+		return hasConstraint;
+	}
+	
 	public String toString() {
-		StringBuilder attributeStringBuilder = new StringBuilder();
+		String separator = "";
+		StringBuilder resourceStringBuilder = new StringBuilder();
 		
-		attributeStringBuilder.append(this.name);
-		attributeStringBuilder.append("\nAttributes");
-		attributeStringBuilder.append("\n=========== \n");
+		resourceStringBuilder.append("Resource Name: " + this.name + "\n");
+		resourceStringBuilder.append("Attributes\n");
+
 		if (this.attributes != null && !this.attributes.isEmpty()) {
 			
 			for (AttributeDefinition current: this.attributes) {
-				attributeStringBuilder.append(current);
-				attributeStringBuilder.append("\n");
+				resourceStringBuilder.append(separator);
+				resourceStringBuilder.append(current);
+				separator = "\n";
 			}
 		} else {
-			attributeStringBuilder.append(" - 0 found");
+			resourceStringBuilder.append(" - 0 found");
 		}
 		
-		attributeStringBuilder.append("\nSub Resources");
-		attributeStringBuilder.append("\n=========== \n");
-		if (this.subresources != null && !this.subresources.isEmpty()) {
-			for (ResourceDefinition subresource: this.subresources) {
-				attributeStringBuilder.append(subresource);
-				attributeStringBuilder.append("\n");
-			}
-		} else {
-			attributeStringBuilder.append(" - 0 found");
-		}
+		resourceStringBuilder.append("\n");
 		
-		return attributeStringBuilder.toString();
+		return resourceStringBuilder.toString();
 	}
 
 

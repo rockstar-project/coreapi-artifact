@@ -16,7 +16,6 @@ public class PojoDefinition {
 	
 	private String name;
 	private Map<String, PropertyDefinition> properties;
-	private Map<String, ReferenceDefinition> references;
 	
 	public PojoDefinition() {
 		this.properties = new HashMap<String, PropertyDefinition> ();
@@ -45,14 +44,6 @@ public class PojoDefinition {
 
 	public void setProperties(Map<String, PropertyDefinition> properties) {
 		this.properties = properties;
-	}
-
-	public Map<String, ReferenceDefinition> getReferences() {
-		return references;
-	}
-
-	public void setReferences(Map<String, ReferenceDefinition> references) {
-		this.references = references;
 	}
 
 	public Set<String> getFieldDeclarations() {

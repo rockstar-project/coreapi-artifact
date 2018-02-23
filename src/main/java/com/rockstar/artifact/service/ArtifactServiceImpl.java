@@ -17,8 +17,8 @@ import org.trimou.engine.MustacheEngine;
 
 import com.reprezen.kaizen.oasparser.OpenApi3Parser;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
-import com.rockstar.artifact.codegen.model.ArtifactDefinition;
-import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
+import com.rockstar.artifact.codegen.model.SpecDefinitions;
+import com.rockstar.artifact.converter.openapi.OpenApiToSpecDefinitions;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.NotFoundException;
@@ -38,12 +38,12 @@ public class ArtifactServiceImpl implements ArtifactService {
 	private TemplateDefinitionRegistry templateDefinitionRegistry;
 	
 	@Inject
-	private OpenApiToArtifactDefinition openApiToDefinitionConverter;
+	private OpenApiToSpecDefinitions openApiToDefinitionConverter;
 	 
     public String createArtifact(ArtifactResource artifact) throws Exception {
 	    	GeneratedProject project = null;
 	    	TemplateDefinition templateDefinition = null;
-		ArtifactDefinition artifactDefinition = null;
+		SpecDefinitions artifactDefinition = null;
 	    	if (artifact != null) {
 		   
 	    		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
@@ -81,20 +81,20 @@ public class ArtifactServiceImpl implements ArtifactService {
     
     
     public byte[] getArtifact(String artifactId) throws Exception {
-    	byte[] fileContent = null;
+    		byte[] fileContent = null;
     	
-    	Resource fileResource = null;
-    	File outputFile = null;
-    	
-    	outputFile = new File(FileUtils.getTempDirectory().getAbsolutePath() + File.separator + artifactId + ".zip");
-    	if (outputFile.exists()) {
-    		fileResource = new FileSystemResource(outputFile);
-			fileContent = IOUtils.toByteArray(fileResource.getInputStream());
-    	} else {
-    		throw new NotFoundException("artifact", artifactId);
-    	}
+	    	Resource fileResource = null;
+	    	File outputFile = null;
+	    	
+	    	outputFile = new File(FileUtils.getTempDirectory().getAbsolutePath() + File.separator + artifactId + ".zip");
+	    	if (outputFile.exists()) {
+	    		fileResource = new FileSystemResource(outputFile);
+				fileContent = IOUtils.toByteArray(fileResource.getInputStream());
+	    	} else {
+	    		throw new NotFoundException("artifact", artifactId);
+	    	}
     	 
-    	return fileContent;
+    		return fileContent;
     }
     
     private String createProjectFiles(GeneratedProject project) throws Exception {
@@ -118,4 +118,3 @@ public class ArtifactServiceImpl implements ArtifactService {
     }
    
 }
-

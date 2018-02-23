@@ -1,6 +1,6 @@
 package com.rockstar.artifact.model;
 
-import com.rockstar.artifact.codegen.model.ArtifactDefinition;
+import com.rockstar.artifact.codegen.model.Definition;
 
 public class Model {
 	
@@ -10,8 +10,7 @@ public class Model {
 	private String architecture;
 	private String namespace;
 	private String organization;
-	private ArtifactDefinition artifact;
-	private String classname;
+	private String name;
 	private String languageValue;
 	private String languageVersion;
 	private String frameworkValue;
@@ -42,6 +41,7 @@ public class Model {
 	private String buildVersion;
 	private String testValue;
 	private String testVersion;
+	private Definition definition;
 	
 	public Model() {
 	}
@@ -78,12 +78,12 @@ public class Model {
 		this.packageName = packageName;
 	}
 
-	public String getClassname() {
-		return this.classname;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setClassname(String classname) {
-		this.classname = classname;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getVersion() {
@@ -100,14 +100,6 @@ public class Model {
 
 	public void setContact(String contact) {
 		this.contact = contact;
-	}
-
-	public ArtifactDefinition getArtifact() {
-		return artifact;
-	}
-
-	public void setArtifact(ArtifactDefinition artifact) {
-		this.artifact = artifact;
 	}
 
 	public String getLanguageValue() {
@@ -348,5 +340,13 @@ public class Model {
 
 	public void setTestVersion(String testVersion) {
 		this.testVersion = testVersion;
+	}
+
+	public Definition getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(Definition definition) {
+		this.definition = definition;
 	}
 }

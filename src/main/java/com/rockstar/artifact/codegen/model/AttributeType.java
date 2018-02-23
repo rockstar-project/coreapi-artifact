@@ -9,6 +9,7 @@ public enum AttributeType {
 	Long,
 	Double,
 	Float,
+	Short,
 	BigDecimal,
 	LocalDate,
 	DateTime,
@@ -18,5 +19,5 @@ public enum AttributeType {
 	Map,
 	Byte,
 	File;
-
+	
 }

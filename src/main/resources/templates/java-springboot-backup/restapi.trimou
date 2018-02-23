@@ -1,0 +1,19 @@
+package {{packageName}};
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+{{#isEq discoveryValue "eureka" }}
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+{{/isEq}}
+
+{{#isEq discoveryValue "eureka" }}
+@EnableDiscoveryClient
+{{/isEq}}
+@SpringBootApplication
+public class RestApiService {
+
+	public static void main(String[] args) {
+		SpringApplication.run(RestApiService.class, args);
+	}
+
+}

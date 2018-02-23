@@ -11,7 +11,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>com.ibm.kickster</groupId>
+	<groupId>com.rockstar.api</groupId>
 	<artifactId>coreapi-artifact</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -19,11 +19,12 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		
 		<swagger-parser.version>1.0.32</swagger-parser.version>
         <swagger-core-version>1.5.16</swagger-core-version>
-        <jsonschematopojo.version>0.4.23</jsonschematopojo.version>
+        <jsonschematopojo.version>0.5.1</jsonschematopojo.version>
         <trimou.version>2.4.0.Final</trimou.version>
-        <openapi-parser.version>0.0.2.201710151503</openapi-parser.version>
+        <openapi-parser.version>0.0.3.201802081723</openapi-parser.version>
         <raml-parser-version>1.0.0</raml-parser-version>
 	</properties>
 
@@ -40,6 +41,10 @@
 	</dependencyManagement>
 
 	<dependencies>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		</dependency>
         <dependency>
 			<groupId>com.auth0</groupId>
 		  	<artifactId>auth0-spring-security-api</artifactId>
@@ -88,6 +93,11 @@
 		  <artifactId>trimou-extension-gson</artifactId>
 		  <version>${trimou.version}</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.github.everit-org.json-schema</groupId>
+		    <artifactId>org.everit.json.schema</artifactId>
+		    <version>1.7.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -133,6 +143,14 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<repositories>
+	    <repository>
+	        <id>jitpack.io</id>
+	        <url>https://jitpack.io</url>
+	    </repository>
+	</repositories>
+		
 
 	<build>
 		<plugins>

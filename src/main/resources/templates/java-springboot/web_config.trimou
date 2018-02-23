@@ -1,4 +1,4 @@
-package {{packageName}}.common;
+package {{packageName}}.config;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

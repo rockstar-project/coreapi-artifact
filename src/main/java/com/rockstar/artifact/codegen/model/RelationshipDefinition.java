@@ -1,22 +1,28 @@
 package com.rockstar.artifact.codegen.model;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 public class RelationshipDefinition {
 	
-	private EntityDefinition relatedEntity;
+	private EntityDefinition parent;
+	private EntityDefinition child;
 	private RelationshipType type;
 	
 	public RelationshipDefinition() {
 	}
-	
-	public EntityDefinition getRelatedEntity() {
-		return relatedEntity;
+
+	public EntityDefinition getParent() {
+		return parent;
 	}
-	
-	public void setRelatedEntity(EntityDefinition relatedEntity) {
-		this.relatedEntity = relatedEntity;
+
+	public void setParent(EntityDefinition parent) {
+		this.parent = parent;
+	}
+
+	public EntityDefinition getChild() {
+		return child;
+	}
+
+	public void setChild(EntityDefinition child) {
+		this.child = child;
 	}
 
 	public RelationshipType getType() {
@@ -56,6 +62,13 @@ public class RelationshipDefinition {
 	}
 	
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+		StringBuilder relationshipStringBuilder = new StringBuilder();
+		
+		relationshipStringBuilder.append("Type: " + this.type + "\n");
+		relationshipStringBuilder.append("parent: " + (this.parent != null ? this.parent.getName() : "undefined") + "\n");
+		relationshipStringBuilder.append("child: " + (this.child != null ? this.child.getName() : "undefined") + "\n");
+		relationshipStringBuilder.append("\n");
+		
+		return relationshipStringBuilder.toString();
 	}
 }

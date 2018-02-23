@@ -1,0 +1,89 @@
+package {{packageName}}.web;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import org.springframework.hateoas.VndErrors;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import {{packageName}}.service.NotFoundException;
+import {{packageName}}.service.NotUniqueException;
+
+@ControllerAdvice
+public class ErrorHandler {
+
+	private final MediaType vndErrorMediaType = MediaType.parseMediaType("application/vnd.error");
+
+	public ErrorHandler() {
+	}
+	
+	@ExceptionHandler(NotFoundException.class)
+	ResponseEntity<VndErrors> handleNotFoundException(NotFoundException notfoundex) {
+		return this.error(notfoundex, HttpStatus.NOT_FOUND,  notfoundex.getMessage());
+	}
+	
+	@ExceptionHandler(NotUniqueException.class)
+	ResponseEntity<VndErrors> handleNotUniqueException(NotUniqueException notuniqueex) {
+		return this.error(notuniqueex, HttpStatus.CONFLICT,  notuniqueex.getMessage());
+	}
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	ResponseEntity<VndErrors> handleUnauthorized(BadCredentialsException unauthorizedex) {
+		return this.error(unauthorizedex, HttpStatus.UNAUTHORIZED,  unauthorizedex.getMessage());
+	}
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	ResponseEntity<VndErrors> handleAccessDenied(AccessDeniedException accessdeniedex) {
+		return this.error(accessdeniedex, HttpStatus.FORBIDDEN,  accessdeniedex.getMessage());
+	}
+	
+	@ExceptionHandler({HttpMediaTypeNotSupportedException.class})
+	ResponseEntity<VndErrors> handleMediaTypeNotAcceptable(HttpMediaTypeNotSupportedException mediatypenotsupportedex) {
+		return this.error(mediatypenotsupportedex, HttpStatus.UNSUPPORTED_MEDIA_TYPE, mediatypenotsupportedex.getMessage());
+	}
+	
+	@ExceptionHandler({RuntimeException.class})
+	ResponseEntity<VndErrors> handleRuntime(RuntimeException runtimeex) {
+		return this.error(runtimeex, HttpStatus.UNSUPPORTED_MEDIA_TYPE, runtimeex.getMessage());
+	}
+	
+	@ExceptionHandler({MissingServletRequestParameterException.class})
+	ResponseEntity<VndErrors> handleMissingServletRequestParameter(MissingServletRequestParameterException missingservletRequestparameterex) {
+		return this.error(missingservletRequestparameterex, HttpStatus.BAD_REQUEST, missingservletRequestparameterex.getMessage());
+	}
+	
+	@ExceptionHandler({ServletRequestBindingException.class})
+	ResponseEntity<VndErrors> handleRequestBinding(ServletRequestBindingException requestbindingex) throws IOException {
+		return this.error(requestbindingex, HttpStatus.BAD_REQUEST, requestbindingex.getMessage());
+	}
+	
+	@ExceptionHandler({MethodArgumentNotValidException.class})
+	ResponseEntity<VndErrors> handleMethodArgumentNotValid(MethodArgumentNotValidException methodargumentnotvalidex) throws IOException {
+		return this.error(methodargumentnotvalidex, HttpStatus.BAD_REQUEST, methodargumentnotvalidex.getMessage());
+	}
+	
+	@ExceptionHandler({HttpMessageNotReadableException.class})
+	ResponseEntity<VndErrors> handleMessageNotReadable(HttpMessageNotReadableException messagenotreadableex) throws IOException {
+		return this.error(messagenotreadableex, HttpStatus.BAD_REQUEST, messagenotreadableex.getMessage());
+	}
+	
+	private <E extends Exception> ResponseEntity<VndErrors> error(E error, HttpStatus httpStatus, String logref) {
+		String msg = Optional.of(error.getMessage()).orElse(error.getClass().getSimpleName());
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(this.vndErrorMediaType);
+		return new ResponseEntity<>(new VndErrors(logref, msg), httpHeaders, httpStatus);
+	}
+	
+}

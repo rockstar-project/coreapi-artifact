@@ -1,0 +1,50 @@
+package com.rockstar.{{name}}.domain;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
+
+{{#definition}}
+public class {{capitalize name}}SearchSpecification implements Specification<{{capitalize name}}> {
+	
+	{{#filters}}
+	private {{type}} {{name}};
+	{{/filters}}
+
+	public {{capitalize name}}SearchSpecification() {
+	}
+
+	{{#filters}}
+	public {{type}} get{{capitalize name}}() {
+		return {{name}};
+	}
+	public void set{{capitalize name}}({{type}} {{name}}) {
+		this.{{name}} = {{name}};
+	}
+	
+	{{/filters}}
+	public Predicate toPredicate(Root<{{capitalize name}}> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+		List<Predicate> predicateList = null;
+	 
+	    predicateList = new ArrayList<Predicate>();
+	    
+	    {{#filters}}
+	    if (!StringUtils.isEmpty(this.{{name}})) {
+	        predicateList.add(builder.equal(root.get("{{name}}"), this.get{{capitalize name}}()));
+	    }
+	    {{/filters}}
+	   
+	    Predicate[] predicates = new Predicate[predicateList.size()];
+	    predicateList.toArray(predicates);
+	    
+	    return builder.and(predicates);
+	}
+}
+{{/definition}}

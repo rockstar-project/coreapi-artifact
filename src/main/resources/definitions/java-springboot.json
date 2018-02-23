@@ -22,12 +22,6 @@
       "name": "Dockerfile"
     }
   ],
-  "tags": [
-    "restapi",
-    "java",
-    "springboot",
-    "mysql"
-  ],
   "directories": [
     {
       "base": "src/main/java",
@@ -37,11 +31,6 @@
           "rule": "architecture == 'restapi'",
           "slug": "java-springboot/restapi",
           "name": "RestApiService.java"
-        },
-        {
-          "rule": "architecture == 'eventdriven'",
-          "slug": "java-springboot/event_driven",
-          "name": "MessageListenerApp.java"
         }
       ]
     },
@@ -58,57 +47,51 @@
           "rule": "architecture == 'restapi'",
           "slug": "java-springboot/web_config",
           "name": "WebConfig.java"
-        },
-        {
-          "rule": "architecture == 'eventdriven'",
-          "slug": "java-springboot/message_config",
-          "name": "MessagingConfig.java"
         }
       ]
     },
     {
       "base": "src/main/java",
       "path": "web",
-      "resolution": "Dynamic",
       "files": [
         {
           "rule": "architecture == 'restapi'",
           "slug": "java-springboot/resource",
-          "name": "{name}Resource.java"
+          "name": "{resource}Resource.java"
         },
         {
           "rule": "architecture == 'restapi'",
           "slug": "java-springboot/resource_assembler",
-          "name": "{name}ResourceAssembler.java"
+          "name": "{resource}ResourceAssembler.java"
         },
         {
           "rule": "architecture == 'restapi'",
-          "slug": "java-springboot/hateoas_controller",
-          "name": "{name}Controller.java"
+          "slug": "java-springboot/controller",
+          "name": "{controller}Controller.java"
         },
         {
           "rule": "architecture == 'restapi'",
           "slug": "java-springboot/error_handler",
           "name": "ErrorHandler.java"
-        }
-      ]
-    },
-    {
-      "base": "src/main/java",
-      "path": "messaging",
-      "resolution": "Dynamic",
-      "files": [
+        },
         {
-          "rule": "architecture == 'eventdriven'",
-          "slug": "java-springboot/message_listener",
-          "name": "{name}MessageListener.java"
+          "rule": "architecture == 'restapi'",
+          "slug": "java-springboot/error_resource",
+          "name": "ErrorResource.java"
+        },
+        {
+          "slug": "java-springboot/enum_annotation",
+          "name": "ValidEnum.java"
+        },
+        {
+        	  "slug": "java-springboot/enum_validator",
+          "name": "EnumValueValidator.java"
         }
       ]
     },
     {
       "base": "src/main/java",
       "path": "service",
-      "resolution": "Dynamic",
       "files": [
         {
           "slug": "java-springboot/notfound_exception",
@@ -120,100 +103,38 @@
         },
         {
           "slug": "java-springboot/service_interface",
-          "name": "{name}Service.java"
+          "name": "{service}Service.java"
         },
         {
-          "slug": "java-springboot/service_impl",
-          "name": "{name}ServiceImpl.java"
+          "slug": "java-springboot/search_criteria",
+          "name": "{search}Search.java"
         }
       ]
     },
     {
       "base": "src/main/java",
       "path": "domain",
-      "resolution": "Dynamic",
       "files": [
         {
           "rule": "datastoreValue == 'mysql'",
-          "slug": "java-springboot/mysql_model",
-          "name": "{name}.java"
+          "slug": "java-springboot/mysql_entity",
+          "name": "{entity}.java"
         },
         {
-          "rule": "datastoreValue == 'cassandra'",
-          "slug": "java-springboot/cassandra_model",
-          "name": "{name}.java"
+        	   "rule": "datastoreValue == 'mysql'",
+           "slug": "java-springboot/mysql_repository",
+           "name": "{repository}Repository.java"
         },
         {
-          "rule": "datastoreValue == 'mongodb'",
-          "slug": "java-springboot/mongodb_model",
-          "name": "{name}.java"
+        	   "rule": "datastoreValue == 'mysql'",
+           "slug": "java-springboot/search_specification",
+           "name": "{search}SearchSpecification.java"
         },
         {
-          "rule": "datastoreValue == 'neo4j'",
-          "slug": "java-springboot/neo4j_model",
-          "name": "{name}.java"
-        },
-        {
-          "rule": "datastoreValue == 'redis'",
-          "slug": "java-springboot/redis_model",
-          "name": "{name}.java"
-        },
-        {
-          "rule": "datastoreValue == 'mariadb'",
-          "slug": "java-springboot/mariadb_model",
-          "name": "{name}.java"
-        },
-        {
-          "rule": "datastoreValue == 'postgresql'",
-          "slug": "java-springboot/postgresql_model",
-          "name": "{name}.java"
-        },
-        {
-          "rule": "datastoreValue == 'couchdb'",
-          "slug": "java-springboot/couchdb_model",
-          "name": "{name}.java"
-        },
-        {
-          "slug": "java-springboot/mysql_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'mysql'"
-        },
-        {
-          "slug": "java-springboot/cassandra_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'cassandra'"
-        },
-        {
-          "slug": "java-springboot/neo4j_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'neo4j'"
-        },
-        {
-          "slug": "java-springboot/mongodb_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'mongodb'"
-        },
-        {
-          "slug": "java-springboot/redis_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'redis'"
-        },
-        {
-          "slug": "java-springboot/mariadb_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'mariadb'"
-        },
-        {
-          "slug": "java-springboot/postgresql_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'postgresql'"
-        },
-        {
-          "slug": "java-springboot/couchdb_repository",
-          "name": "{name}Repository.java",
-          "rule": "datastoreValue == 'couchdb'"
+          "slug": "java-springboot/service_impl",
+          "name": "{service}ServiceImpl.java"
         }
-      ]
+       ]
     },
     {
       "base": "src/main/resources",

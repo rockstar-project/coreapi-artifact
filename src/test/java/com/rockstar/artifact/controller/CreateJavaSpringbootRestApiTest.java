@@ -1,46 +1,47 @@
-package com.rockstar.artifact;
+package com.rockstar.artifact.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URI;
 
+import javax.inject.Inject;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.trimou.engine.MustacheEngine;
 
 import com.reprezen.kaizen.oasparser.OpenApi3Parser;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
-import com.rockstar.artifact.codegen.model.ArtifactDefinition;
-import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
+import com.rockstar.artifact.codegen.model.SpecDefinitions;
+import com.rockstar.artifact.converter.openapi.OpenApiToSpecDefinitions;
+import com.rockstar.artifact.model.GeneratedFile;
+import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.model.TemplateDefinition;
+import com.rockstar.artifact.service.ProjectGenerator;
 import com.rockstar.artifact.service.TemplateDefinitionRegistry;
+import com.rockstar.artifact.util.ZipUtils;
 import com.rockstar.artifact.web.ArtifactResource;
 
-public class SampleArtifacts {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class CreateJavaSpringbootRestApiTest {
 	
 	public static final String DEFAULT_SPEC_URI = "https://api.swaggerhub.com/apis/salsiddiqui0/spirit/1.0.0/swagger.json";
-	public static final String STORAGE_SPEC_URI = "https://api.swaggerhub.com/apis/kickster/storage/1.0.0/swagger.json";
+	public static final String STORAGE_SPEC_URI = "https://api.swaggerhub.com/apis/rockstar/Storage/1.0.0/swagger.json";
 	public static final String COLLECTION_SPEC_URI = "https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json";
 	public static final String PRODUCT_JSON_SCHEMA = "";
 	
-	private TemplateDefinitionRegistry templateDefinitionRegistry;
-	private MustacheEngine templateEngine;
-	private OpenApiToArtifactDefinition openApiConverter;
+	@Inject private TemplateDefinitionRegistry templateDefinitionRegistry;
+	@Inject private MustacheEngine templateEngine;
+	@Inject private OpenApiToSpecDefinitions openApiConverter;
 	
-	public SampleArtifacts(TemplateDefinitionRegistry templateDefinitionRegistry, MustacheEngine templateEngine, OpenApiToArtifactDefinition openApiToDefinitionConverter) {
-		this.templateDefinitionRegistry = templateDefinitionRegistry;
-		this.templateEngine = templateEngine;
-		this.openApiConverter = openApiToDefinitionConverter;
-	}
-	
-	public void generateAll() throws Exception {
-		this.generateAll(COLLECTION_SPEC_URI);
-	}
-	
-	public void generateAll(String specUri) throws Exception {
-		this.generateJavaSpringbootRestApi(specUri);
-		//this.generateJavaSpringbootEventListener(specUri);
-		//this.generateGolang8GinProject(specUri);
-		//this.generateGolang9GorillaProject(specUri);
-		//this.generateNodejsExpressProject(specUri);
+	@Test
+	public void contextLoads() {
 	}
 	
 	public void generateJavaSpringbootEventListener(String specUri) throws Exception {
@@ -50,11 +51,11 @@ public class SampleArtifacts {
 		
 		SelectedValue framework = new SelectedValue();
 		framework.setValue("springboot");
-		framework.setVersion("2.0.0.M7");
+		framework.setVersion("1.5.9");
 		
 		String architecture = "eventdriven";
 		String namespace = "product";
-		String organization = "springframeworkguru";
+		String organization = "codefly";
 		
 		SelectedValue datastoreOption = new SelectedValue();
 		datastoreOption.setValue("mysql");
@@ -75,12 +76,11 @@ public class SampleArtifacts {
 		SelectedValue registryOption = new SelectedValue();
 		registryOption.setValue("docker");
 		registryOption.setVersion("Hosted");
-		
 		ArtifactResource artifact = new ArtifactResource();
 		Specification spec = new Specification();
 		spec.setLocation(specUri);
 		//spec.setType("jsonschema");
-		//spec.setVersion("draft-4");
+		//spec.setVersion("draft-04");
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
@@ -99,7 +99,8 @@ public class SampleArtifacts {
 		this.generateProject(artifact);
 	}
 	
-	public void generateJavaSpringbootRestApi(String specUri) throws Exception {
+	@Test
+	public void generateJavaSpringbootRestApi() throws Exception {
 
 		SelectedValue language = new SelectedValue();
 		language.setValue("java");
@@ -111,7 +112,7 @@ public class SampleArtifacts {
 		
 		String architecture = "restapi";
 		String namespace = "storage";
-		String organization = "gravitant";
+		String organization = "ibmcloud";
 		
 		SelectedValue datastoreOption = new SelectedValue();
 		datastoreOption.setValue("mysql");
@@ -143,7 +144,7 @@ public class SampleArtifacts {
 		
 		ArtifactResource artifact = new ArtifactResource();
 		Specification spec = new Specification();
-		spec.setLocation(specUri);
+		spec.setLocation(COLLECTION_SPEC_URI);
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
@@ -245,15 +246,16 @@ public class SampleArtifacts {
 		
 	}
 	*/
+	
 	private void generateProject(ArtifactResource artifact) {
 		try {
 			TemplateDefinition templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
 			OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
-			ArtifactDefinition artifactDefinition = this.openApiConverter.convert(openApi);
+			SpecDefinitions artifactDefinition = this.openApiConverter.convert(openApi);
 			System.out.println(artifactDefinition);
-			/**
+			
 			GeneratedProject project = new ProjectGenerator(this.templateEngine)
-	    			.withType(artifact.getType())
+	    			.withArchitecture(artifact.getArchitecture())
 	    			.withLanguage(artifact.getLanguage())
 	    			.withNamespace(artifact.getNamespace())
 	    			.withOrganization(artifact.getOrganization())
@@ -269,7 +271,6 @@ public class SampleArtifacts {
 	    			.withDefinition(templateDefinition)
 	    			.withApiSpec(artifactDefinition)
 				.generate();
-			
 			
 			String outputPath = FileUtils.getUserDirectoryPath() + File.separator + "Downloads" + File.separator + artifact.getSlug();
 			FileOutputStream outputFileStream = null;
@@ -292,7 +293,7 @@ public class SampleArtifacts {
 	    		FileUtils.deleteDirectory(new File(outputPath));
 	        
 	        System.out.println(outputPath + ".zip");
-	        */
+	   
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

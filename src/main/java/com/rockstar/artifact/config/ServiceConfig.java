@@ -16,8 +16,6 @@ import org.trimou.handlebars.SimpleHelpers;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.rockstar.artifact.SampleArtifacts;
-import com.rockstar.artifact.converter.openapi.OpenApiToArtifactDefinition;
 import com.rockstar.artifact.model.TemplateDefinition;
 import com.rockstar.artifact.service.TemplateDefinitionRegistry;
 import com.rockstar.artifact.util.CheckUtils;
@@ -28,9 +26,6 @@ public class ServiceConfig {
 	
 	@Autowired
 	private ApplicationContext applicationContext;
-	
-	@Autowired
-	private OpenApiToArtifactDefinition openApiToDefinitionConverter;
 	
 	@Bean
 	public TemplateDefinitionRegistry templateDefinitionRegistry() throws Exception {
@@ -70,7 +65,7 @@ public class ServiceConfig {
 	@Bean
 	public MustacheEngine templateEngine() throws Exception {
 		MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder()
-				.setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true)
+			.setProperty(EngineConfigurationKey.SKIP_VALUE_ESCAPING, true)
 	        	.setProperty(EngineConfigurationKey.PRECOMPILE_ALL_TEMPLATES, true)
 	        	.setProperty(EngineConfigurationKey.DEBUG_MODE, true)
 	        	.registerHelpers(
@@ -142,9 +137,4 @@ public class ServiceConfig {
         return builder.build();
 	}
 	
-	@Bean(initMethod="generateAll")
-	public SampleArtifacts sampleArtifacts() throws Exception {
-		return new SampleArtifacts(this.templateDefinitionRegistry(), this.templateEngine(), this.openApiToDefinitionConverter);
-	}
-
 }

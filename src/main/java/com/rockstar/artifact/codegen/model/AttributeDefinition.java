@@ -1,6 +1,11 @@
 package com.rockstar.artifact.codegen.model;
 
-public class AttributeDefinition {
+import java.util.List;
+import java.util.Map;
+
+import com.rockstar.artifact.codegen.model.ConstraintDefinition.Constraint;
+
+public class AttributeDefinition implements Definition {
 	
 	private String name;
 	private AttributeType type;
@@ -24,8 +29,20 @@ public class AttributeDefinition {
 	public void setType(AttributeType type) {
 		this.type = type;
 	}
+	
+	public void addConstraint(ConstraintType constraintType) {
+		this.constraints.addConstraint(constraintType);
+	}
 
-	public ConstraintDefinition getConstraints() {
+	public void addConstraint(ConstraintType constraintType, Map<String, Object> arguments) {
+		this.constraints.addConstraint(constraintType, arguments);
+	}
+	
+	public List<Constraint> getConstraints() {
+		List<Constraint> constraints = null;
+		if (this.constraints != null) {
+			constraints = this.constraints.getConstraints();
+		}
 		return constraints;
 	}
 
@@ -33,16 +50,28 @@ public class AttributeDefinition {
 		return this.constraints.hasConstraint(constraintType);
 	}
 	
-	public boolean hasSizeConstraint() {
+	public boolean isSizeConstraint() {
 		return this.hasConstraint(ConstraintType.Size);
 	}
 	
-	public boolean hasNotNullConstraint() {
+	public boolean isNotNullConstraint() {
 		return this.hasConstraint(ConstraintType.NotNull);
 	}
 	
-	public boolean hasNotBlankConstraint() {
+	public boolean isNotEmptyConstraint() {
 		return this.hasConstraint(ConstraintType.NotEmpty);
+	}
+	
+	public boolean isPatternConstraint() {
+		return this.hasConstraint(ConstraintType.Pattern);
+	}
+	
+	public boolean isURLConstraint() {
+		return this.hasConstraint(ConstraintType.URL);
+	}
+	
+	public boolean isValidConstraint() {
+		return this.hasConstraint(ConstraintType.Valid);
 	}
 	
 	public ConstraintDefinition.Constraint getConstraint(ConstraintType constraintType) {
@@ -73,8 +102,20 @@ public class AttributeDefinition {
 		this.constraints = constraints;
 	}
 	
+	public boolean isType(AttributeType type) {
+		return (this.type != null && this.type.equals(type));
+	}
+	
+	public boolean isShortType() {
+		return (this.type != null && this.type.equals(AttributeType.Short));
+	}
+	
 	public boolean isIntegerType() {
 		return (this.type != null && this.type.equals(AttributeType.Integer));
+	}
+	
+	public boolean isLongType() {
+		return (this.type != null && this.type.equals(AttributeType.Long));
 	}
 	
 	public boolean isStringType() {
@@ -89,7 +130,11 @@ public class AttributeDefinition {
 		return (this.type != null && this.type.equals(AttributeType.Double));
 	}
 	
-	public boolean isLocalDateType() {
+	public boolean isFloatType() {
+		return (this.type != null && this.type.equals(AttributeType.Float));
+	}
+	
+	public boolean isDateType() {
 		return (this.type != null && this.type.equals(AttributeType.LocalDate));
 	}
 	
@@ -103,6 +148,18 @@ public class AttributeDefinition {
 	
 	public boolean isObjectType() {
 		return (this.type != null && this.type.equals(AttributeType.Object));
+	}
+	
+	public boolean isPrimitiveType() {
+		return this.isStringType() ||
+				this.isDoubleType() ||
+				this.isFloatType() ||
+				this.isLongType() ||
+				this.isShortType() ||
+ 				this.isIntegerType() ||
+				this.isBooleanType() ||
+				this.isDateType() ||
+				this.isDateTimeType();
 	}
 	
 	public String toString() {

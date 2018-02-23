@@ -1,12 +1,10 @@
 package com.rockstar.artifact.codegen.model;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-public class ServiceDefinition {
+public class ServiceDefinition implements Definition {
 	
 	private String name;
 	private EntityDefinition entity;
+	private RepositoryDefinition repository;
 	private SearchDefinition search;
 	
 	public ServiceDefinition() {
@@ -18,9 +16,6 @@ public class ServiceDefinition {
 
 	public void setName(String name) {
 		this.name = name;
-		if (this.entity != null) {
-			this.entity.setName(name);
-		}
 	}
 
 	public EntityDefinition getEntity() {
@@ -30,17 +25,21 @@ public class ServiceDefinition {
 	public void setEntity(EntityDefinition entity) {
 		this.entity = entity;
 	}
-	
+
+	public RepositoryDefinition getRepository() {
+		return repository;
+	}
+
+	public void setRepository(RepositoryDefinition repository) {
+		this.repository = repository;
+	}
+
 	public SearchDefinition getSearch() {
 		return search;
 	}
 
 	public void setSearch(SearchDefinition search) {
 		this.search = search;
-	}
-
-	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 
 }

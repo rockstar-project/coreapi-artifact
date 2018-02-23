@@ -1,0 +1,23 @@
+package {{packageName}}.service;
+
+{{#definition.search}}
+public class {{capitalize name}}Search {
+	 
+	{{#filters}}
+	private {{type}} {{name}};
+	{{/filters}}
+	
+	public {{capitalize name}}Search() {
+	}
+
+	{{#filters}}
+	public {{type}} get{{capitalize name}}() {
+		return this.{{name}};
+	}
+	public void set{{capitalize name}}({{type}} {{name}}) {
+		this.{{name}} = {{name}};
+	}
+	
+	{{/filters}}
+}
+{{/definition.search}}

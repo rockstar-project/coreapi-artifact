@@ -1,0 +1,11 @@
+package {{packageName}}.service;
+
+{{#definition}}
+public enum {{capitalize name}}Enum {
+	
+	{{#values}}
+	{{iter.index}}{{#iter.hasNext}},{{/iter.hasNext}}
+	{{/values}}
+
+}
+{{/definition}}

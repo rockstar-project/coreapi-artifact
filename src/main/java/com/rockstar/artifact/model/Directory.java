@@ -17,10 +17,10 @@ public class Directory {
     private List<TemplateFile> files;
 
     public Directory() {
-    	this.base = DEFAULT_BASE;
-    	this.path = DEFAULT_PATH;
-    	this.type = DEFAULT_TYPE;
-    	this.resolution = DEFAULT_RESOLUTION;
+	    	this.base = DEFAULT_BASE;
+	    	this.path = DEFAULT_PATH;
+	    	this.type = DEFAULT_TYPE;
+	    	this.resolution = DEFAULT_RESOLUTION;
     }
 
 	public String getBase() {

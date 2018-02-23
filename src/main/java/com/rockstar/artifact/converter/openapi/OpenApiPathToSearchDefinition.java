@@ -62,7 +62,7 @@ public class OpenApiPathToSearchDefinition implements Converter<Map<String, Path
 	private Collection<ParamDefinition> getSearchParams(Operation operation) {
 		Collection<ParamDefinition> filters = null;
 		Collection<Parameter> params = null;
-		ParamDefinition searchfilter = null;
+		ParamDefinition searchParameter = null;
 		Schema searchSchema = null;
 		
 		if (operation != null) {
@@ -71,32 +71,38 @@ public class OpenApiPathToSearchDefinition implements Converter<Map<String, Path
 				filters = new ArrayList<ParamDefinition>();
 				for (Parameter currentParam : params) {
 					if (currentParam.getIn().equalsIgnoreCase("query")) {
-						searchfilter = new ParamDefinition();
-						searchfilter.setName(currentParam.getName());
-						searchfilter.setRequired(currentParam.getRequired());
+						searchParameter = new ParamDefinition();
+						searchParameter.setName(currentParam.getName());
+						searchParameter.setRequired(currentParam.getRequired());
 						
 						searchSchema = currentParam.getSchema();
 						if (searchSchema!= null) {
-							searchfilter.setDefaultValue(searchSchema.getDefault());
-							searchfilter.setType(this.openApiTypeToAttributeType.convert(searchSchema));
-							searchfilter.setConstraints(this.openApiSchemaToConstraintDefintion.convert(searchSchema));
+							searchParameter.setDefaultValue(searchSchema.getDefault());
+							searchParameter.setType(this.openApiTypeToAttributeType.convert(searchSchema));
+							searchParameter.setConstraints(this.openApiSchemaToConstraintDefintion.convert(searchSchema));
 						}
 						switch (currentParam.getName()) {
+							case "query":
+							case "q":
+								searchParameter.setParamType(SearchParamType.SearchTerm);
+							break;
 							case "page": 
-								searchfilter.setParamType(SearchParamType.PageNumber);
+							case "offset":
+								searchParameter.setParamType(SearchParamType.PageNumber);
 								break;
 							case "size": 
-								searchfilter.setParamType(SearchParamType.PageSize);
+							case "skip":
+								searchParameter.setParamType(SearchParamType.PageSize);
 								break;
 							case "sort":
-								searchfilter.setParamType(SearchParamType.Sort);
+								searchParameter.setParamType(SearchParamType.Sort);
 								break;
 							default:
-								searchfilter.setParamType(SearchParamType.Filter);
+								searchParameter.setParamType(SearchParamType.Filter);
 								break;
 						}
 						
-						filters.add(searchfilter);
+						filters.add(searchParameter);
 					}
 				}
 			}

@@ -65,11 +65,10 @@ public class ParamDefinition {
 	public String toString() {
 		StringBuilder attributeStringBuilder = new StringBuilder();
 		
-		attributeStringBuilder.append(this.name);
-		attributeStringBuilder.append(" (");
-		attributeStringBuilder.append(this.type);
-		attributeStringBuilder.append(")");
-		attributeStringBuilder.append("\n");
+		attributeStringBuilder.append("Parameter Name: " + this.name + "\n");
+		attributeStringBuilder.append("Parameter Type: " + this.paramType + "\n");
+		attributeStringBuilder.append("Parameter Default Value: " + this.defaultValue + "\n");
+		attributeStringBuilder.append(this.constraints);
 		
 		return attributeStringBuilder.toString();
 	}

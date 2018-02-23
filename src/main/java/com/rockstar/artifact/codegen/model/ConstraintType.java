@@ -13,4 +13,5 @@ public enum ConstraintType {
 	Valid,
 	ValidEnum,
 	Decimals;
+	
 }

@@ -1,24 +1,18 @@
 package {{packageName}}.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.rockstar.{{classname}}.domain.Attribute;
-import com.rockstar.{{classname}}.domain.Option;
-import com.rockstar.{{classname}}.domain.{{capitalize classname}};
+{{#definition}}
+import {{packageName}}.domain.{{entity.name}};
 
-public interface {{capitalize classname}}Service {
+public interface {{capitalize name}}Service {
 	
-	public List<{{capitalize classname}}> getAll{{capitalizePlural classname}}();
-	public {{capitalize classname}} get{{capitalize classname}}(String identifier);
-	public {{capitalize classname}} create{{capitalize classname}}({{capitalize classname}} {{classname}});
-	public void update{{capitalize classname}}({{capitalize classname}} {{classname}});
-	public void delete{{capitalize classname}}(String identifier);
-	
-	{{#isEq type "restapi"}}
-	public Page<{{capitalize classname}}> search({{capitalize classname}}Search {{classname}}Search, Pageable pageRequest);
-	{{/isEq}}
+	public {{capitalize entity.name}} get{{capitalize entity.name}}(String identifier);
+	public {{capitalize entity.name}} create{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
+	public void update{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
+	public void delete{{capitalize entity.name}}(String identifier);
+	public Page<{{capitalize search.name}}> search({{capitalize search.name}}Search searchCriteria, Pageable pageRequest);
 	
 }
+{{/definition}}
