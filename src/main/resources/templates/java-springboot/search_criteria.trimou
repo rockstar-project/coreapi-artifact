@@ -1,6 +1,6 @@
 package {{packageName}}.service;
 
-{{#definition.search}}
+{{#definition}}
 public class {{capitalize name}}Search {
 	 
 	{{#filters}}
@@ -20,4 +20,4 @@ public class {{capitalize name}}Search {
 	
 	{{/filters}}
 }
-{{/definition.search}}
+{{/definition}}

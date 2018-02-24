@@ -18,8 +18,25 @@
       "name": "README.md"
     },
     {
-      "slug": "java-springboot/dockerfile",
+      "slug": "java-springboot/dockerfile_java",
       "name": "Dockerfile"
+    },
+    {
+    	  "rule": "datastoreValue == 'mysql'",
+      "slug": "java-springboot/dockerfile_mysql",
+      "name": "Dockerfile-datastore"
+    },
+    {
+      "slug": "java-springboot/mysql_schema",
+      "name": "schema.sql"
+    },
+    {
+      "slug": "common/environment_var",
+      "name": "environment.sh"
+    },
+    {
+      "slug": "common/docker_compose",
+      "name": "docker-compose.yml"
     }
   ],
   "directories": [
@@ -138,7 +155,6 @@
     },
     {
       "base": "src/main/resources",
-      "type": "properties",
       "files": [
         {
           "slug": "java-springboot/application",

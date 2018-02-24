@@ -84,58 +84,60 @@ public class EntityDefinition implements Definition {
 		return uniquefieldNamesSeparatedByAnd;
 	}
 	
-	public Collection<FieldDefinition> getTypes(FieldType type) {
-		Collection<FieldDefinition> fieldDefinitions = new ArrayList<FieldDefinition> ();
-		for (FieldDefinition currentfield : this.fields) {
-			if (currentfield.getType().equals(type)) {
-				fieldDefinitions.add(currentfield);
+	public Collection<FieldDefinition> getFieldsWithPrimitiveType() {
+		Collection<FieldDefinition> primitiveFields = null;
+		if (this.fields != null && !this.fields.isEmpty()) {
+			primitiveFields = new ArrayList<FieldDefinition> ();
+			for (FieldDefinition currentField : this.fields) {
+				if (currentField.isPrimitiveType()) {
+					primitiveFields.add(currentField);
+				}
 			}
 		}
-		return fieldDefinitions;
+		return primitiveFields;
 	}
 	
-	public Boolean isStringTypes() {
-		return !this.getTypes(FieldType.String).isEmpty();
+	public Collection<FieldDefinition> getTypes(FieldType type) {
+		Collection<FieldDefinition> types = null;
+		if (this.fields != null && !this.fields.isEmpty()) {
+			types = new ArrayList<FieldDefinition> ();
+			for (FieldDefinition currentfield : this.fields) {
+				if (currentfield.getType().equals(type)) {
+					types.add(currentfield);
+				}
+			}
+		}
+		return types;
 	}
 	
-	public Boolean isBooleanTypes() {
-		return !this.getTypes(FieldType.Boolean).isEmpty();
+	public Collection<FieldDefinition> getPrimitiveOrObjectFields() {
+		Collection<FieldDefinition> primitiveOrObjectFields = null;
+		if (this.fields != null && !this.fields.isEmpty()) {
+			primitiveOrObjectFields = new ArrayList<FieldDefinition> ();
+			for (FieldDefinition currentfield : this.fields) {
+				if (currentfield.isPrimitiveType() || currentfield.isObjectType()) {
+					primitiveOrObjectFields.add(currentfield);
+				}
+			}
+		}
+		return primitiveOrObjectFields;
 	}
 	
-	public Boolean isShortTypes() {
-		return !this.getTypes(FieldType.Short).isEmpty();
+	public boolean getArrayType() {
+		return this.hasFieldType(FieldType.Array);
 	}
 	
-	public Boolean isIntegerTypes() {
-		return !this.getTypes(FieldType.Integer).isEmpty();
+	public boolean getDateType() {
+		return this.hasFieldType(FieldType.LocalDate);
 	}
 	
-	public Boolean isLongTypes() {
-		return !this.getTypes(FieldType.Long).isEmpty();
+	public boolean getDateTimeType() {
+		return this.hasFieldType(FieldType.DateTime);
 	}
 	
-	public Boolean isDoubleTypes() {
-		return !this.getTypes(FieldType.Double).isEmpty();
-	}
-	
-	public Boolean isFloatTypes() {
-		return !this.getTypes(FieldType.Float).isEmpty();
-	}
-	
-	public Boolean isDateTypes() {
-		return !this.getTypes(FieldType.LocalDate).isEmpty();
-	}
-	
-	public Boolean isDateTimeTypes() {
-		return !this.getTypes(FieldType.DateTime).isEmpty();
-	}
-	
-	public Boolean isArrayTypes() {
-		return !this.getTypes(FieldType.Array).isEmpty();
-	}
-	
-	public Boolean isObjectTypes() {
-		return !this.getTypes(FieldType.Object).isEmpty();
+	public boolean hasFieldType(FieldType type) {
+		Collection<FieldDefinition> types = this.getTypes(type);
+		return (types != null && !types.isEmpty());
 	}
 
 	public String toString() {

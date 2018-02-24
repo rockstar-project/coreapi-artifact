@@ -54,9 +54,9 @@ public class TrimouTemplateTest {
 		
 		model.setArchitecture("restapi");
 		model.setNamespace("storage");
-		model.setOrganization("gravitant");
+		model.setOrganization("ibmcloud");
 		
-		model.setPackageName("com.rockstar.api");
+		model.setPackageName("com.ibmcloud.storage");
 		
 		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(specUri), true);
 		if (!openApi.isValid()) {
@@ -64,38 +64,38 @@ public class TrimouTemplateTest {
 				throw new InvalidSchemaException(item.getMsg());
 			}
 		} else {
-			
-			SpecDefinitions specDefinitions = this.openApiToSpecDefinitions.convert(openApi);
-			Collection<Definition> serviceDefinitions = specDefinitions.getDefinitions(Definition.Type.Service);
-			if (serviceDefinitions != null && !serviceDefinitions.isEmpty()) {
-				for (Definition current : serviceDefinitions) {
-		    			model.setName(StringUtils.lowerCase(current.getName()));
-		    			model.setDefinition(current);
+			// ENTITY COMPONENT TEMPLATES
+			//this.renderTemplate(Definition.Type.Repository, "mysql_entity", openApi, model);
+			// NOT TESTED: this.renderTemplate(Definition.Type.Repository, "mysql_schema", openApi, model);
 		    		
-		    			//SERVICE COMPONENT TEMPLATES
-		    			//System.out.println(templateEngine.getMustache("java-springboot/search_criteria").render(model));
-		    			//System.out.println(templateEngine.getMustache("java-springboot/service_interface").render(model));
-		    			//System.out.println(templateEngine.getMustache("java-springboot/service_impl").render(model));
-		    		}
-			}
+			// REPOSITORY COMPONENT TEMPLATES
+			// this.renderTemplate(Definition.Type.Repository, "mysql_repository", openApi, model);
 			
-			Collection<Definition> resourceDefinitions = specDefinitions.getDefinitions(Definition.Type.Resource);
-			if (resourceDefinitions != null && !resourceDefinitions.isEmpty()) {
-				for (Definition current : resourceDefinitions) {
-		    			model.setName(StringUtils.lowerCase(current.getName()));
-		    			model.setDefinition(current);
-		    			
-		    			//RESOURCE COMPONENT TEMPLATES
-		    			System.out.println(templateEngine.getMustache("java-springboot/resource").render(model));
-		    			//System.out.println(templateEngine.getMustache("java-springboot/resource_assembler").render(model));
-		    			
-		    			//SERVICE COMPONENT TEMPLATES
-		    			//System.out.println(templateEngine.getMustache("java-springboot/search_criteria").render(model));
-		    			//System.out.println(templateEngine.getMustache("java-springboot/service_interface").render(model));
-		    			//System.out.println(templateEngine.getMustache("java-springboot/service_impl").render(model));
-		    		}
-			}
-				
+			// SERVICE COMPONENT TEMPLATES
+			//this.renderTemplate(Definition.Type.Service, "search_criteria", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "service_interface", openApi, model);
+			this.renderTemplate(Definition.Type.Service, "service_impl", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "search_specification", openApi, model);
+			
+			// RESOURCE COMPONENT TEMPLATES
+			//this.renderTemplate(Definition.Type.Resource, "resource", openApi, model);
+			// this.renderTemplate(Definition.Type.Resource, "resource_assembler", openApi, model);
+			
+			// CONTROLLER COMPONENT TEMPLATE
+			//this.renderTemplate(Definition.Type.Controller, "controller", openApi, model);
+		}
+	}
+	
+	private void renderTemplate(Definition.Type type, String template, OpenApi3 openApi, Model model) {
+		SpecDefinitions specDefinitions = this.openApiToSpecDefinitions.convert(openApi);
+		Collection<Definition> definitions = specDefinitions.getDefinitions(type);
+		if (definitions != null && !definitions.isEmpty()) {
+			for (Definition current : definitions) {
+	    			model.setName(StringUtils.lowerCase(current.getName()));
+	    			model.setDefinition(current);
+	    		
+	    			System.out.println(templateEngine.getMustache("java-springboot/" + template).render(model));
+	    		}
 		}
 	}
 

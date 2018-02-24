@@ -116,21 +116,18 @@ public class FieldDefinition {
 	
 
 	public String toString() {
-		String separator = "";
 		StringBuilder fieldStringBuilder = new StringBuilder();
 		
 		fieldStringBuilder.append(this.name);
 		fieldStringBuilder.append(" (");
 		fieldStringBuilder.append(this.type);
 		fieldStringBuilder.append(")");
-		if (this.unique) {
-			fieldStringBuilder.append(" unique ");
-			separator = ",";
-		}
-		if (this.enumeration) {
-			fieldStringBuilder.append(separator);
-			fieldStringBuilder.append(" enum ");
-		}
+		fieldStringBuilder.append(" - ");
+		fieldStringBuilder.append("unique = " + (this.unique != null && this.unique ? "Yes" : "No"));
+		fieldStringBuilder.append(",");
+		fieldStringBuilder.append("enum = " + (this.enumeration != null && this.enumeration ? "Yes" : "No"));
+		fieldStringBuilder.append(",");
+		fieldStringBuilder.append("readOnly = " + (this.readOnly != null && this.readOnly ? "Yes" : "No"));
 		
 		return fieldStringBuilder.toString();
 	}

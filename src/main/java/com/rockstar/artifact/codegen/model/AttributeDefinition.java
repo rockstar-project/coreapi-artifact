@@ -9,9 +9,11 @@ public class AttributeDefinition implements Definition {
 	
 	private String name;
 	private AttributeType type;
+	private Boolean writeOnly;
 	private ConstraintDefinition constraints;
 	
 	public AttributeDefinition() {
+		this.writeOnly = Boolean.FALSE;
 	}
 
 	public String getName() {
@@ -30,6 +32,14 @@ public class AttributeDefinition implements Definition {
 		this.type = type;
 	}
 	
+	public Boolean getWriteOnly() {
+		return writeOnly;
+	}
+
+	public void setWriteOnly(Boolean writeOnly) {
+		this.writeOnly = writeOnly;
+	}
+
 	public void addConstraint(ConstraintType constraintType) {
 		this.constraints.addConstraint(constraintType);
 	}

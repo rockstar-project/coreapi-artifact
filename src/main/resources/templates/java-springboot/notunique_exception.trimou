@@ -1,4 +1,4 @@
-package {{packageName}}.common;
+package {{packageName}}.service;
 
 public class NotUniqueException extends RuntimeException {
 

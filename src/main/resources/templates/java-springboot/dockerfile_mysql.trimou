@@ -1,0 +1,6 @@
+FROM 
+MAINTAINER {{capitalize organization}} Team
+
+COPY schema.sql /docker-entrypoint-initdb.d/data-dump.sql
+WORKDIR /app/data
+COPY data .

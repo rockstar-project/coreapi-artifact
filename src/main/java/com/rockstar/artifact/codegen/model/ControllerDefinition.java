@@ -6,6 +6,7 @@ public class ControllerDefinition implements Definition {
 	private Definition resource;
 	private Definition service;
 	private Definition search;
+	private Definition entity;
 	
 	public ControllerDefinition() {
 	}
@@ -42,6 +43,14 @@ public class ControllerDefinition implements Definition {
 		this.search = search;
 	}
 
+	public Definition getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Definition entity) {
+		this.entity = entity;
+	}
+
 	public String toString() {
 		StringBuilder controllerStringBuilder = new StringBuilder();
 		
@@ -54,6 +63,9 @@ public class ControllerDefinition implements Definition {
 		}
 		if (this.search != null) {
 			controllerStringBuilder.append(search);
+		}
+		if (this.entity != null) {
+			controllerStringBuilder.append(entity);
 		}
 		return controllerStringBuilder.toString();
 	}

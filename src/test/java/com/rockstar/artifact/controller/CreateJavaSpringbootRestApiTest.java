@@ -108,10 +108,10 @@ public class CreateJavaSpringbootRestApiTest {
 		
 		SelectedValue framework = new SelectedValue();
 		framework.setValue("springboot");
-		framework.setVersion("1.5.9");
+		framework.setVersion("1.5.9.RELEASE");
 		
 		String architecture = "restapi";
-		String namespace = "storage";
+		String namespace = "volume";
 		String organization = "ibmcloud";
 		
 		SelectedValue datastoreOption = new SelectedValue();
@@ -144,7 +144,7 @@ public class CreateJavaSpringbootRestApiTest {
 		
 		ArtifactResource artifact = new ArtifactResource();
 		Specification spec = new Specification();
-		spec.setLocation(COLLECTION_SPEC_URI);
+		spec.setLocation(STORAGE_SPEC_URI);
 		spec.setType("openapi");
 		spec.setVersion("3");
 		
@@ -257,6 +257,7 @@ public class CreateJavaSpringbootRestApiTest {
 			GeneratedProject project = new ProjectGenerator(this.templateEngine)
 	    			.withArchitecture(artifact.getArchitecture())
 	    			.withLanguage(artifact.getLanguage())
+	    			.withFramework(artifact.getFramework())
 	    			.withNamespace(artifact.getNamespace())
 	    			.withOrganization(artifact.getOrganization())
 	    			.withDatastore(artifact.getDatastore())

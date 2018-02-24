@@ -13,7 +13,7 @@ public class OpenApiTypeToFieldType implements Converter<Schema, FieldType> {
 	public FieldType convert(Schema schema) {
 		String typeStr = null;
 		String formatStr = null;
-		FieldType attributeType =  FieldType.String;
+		FieldType fieldType = FieldType.String;
 		
 		typeStr = schema.getType();
 		formatStr = schema.getFormat();
@@ -24,66 +24,77 @@ public class OpenApiTypeToFieldType implements Converter<Schema, FieldType> {
 					if (formatStr != null) {
 						switch (formatStr) {
 							case "date":
-								attributeType = FieldType.LocalDate;
+								fieldType = FieldType.LocalDate;
 								break;
 							case "date-time":
-								attributeType = FieldType.DateTime;
+								fieldType = FieldType.DateTime;
 								break;
 							case "uuid":
-								attributeType = FieldType.UUID;
+								fieldType = FieldType.UUID;
 								break;
 							case "byte":
 							case "binary":
-								attributeType = FieldType.Byte;
+								fieldType = FieldType.Byte;
 								break;
 							default:
-								attributeType = FieldType.String;
+								fieldType = FieldType.String;
 								break;
 						}
+					} else {
+						fieldType = FieldType.String;
 					}
-					attributeType = FieldType.String;
 					break;
 				case "integer":
-					switch (formatStr) {
-						case "int32":
-							attributeType = FieldType.Integer;
-							break;
-						case "int64":
-							attributeType = FieldType.Long;
-							break;
-						default:
-							attributeType = FieldType.Integer;
-							break;
+					if (formatStr != null) {
+						switch (formatStr) {
+							case "int32":
+								fieldType = FieldType.Integer;
+								break;
+							case "int64":
+								fieldType = FieldType.Long;
+								break;
+							default:
+								fieldType = FieldType.Integer;
+								break;
+						}
+					} else {
+						fieldType = FieldType.Integer;
 					}
+					break;
 				case "number":
-					switch (formatStr) {
-						case "float":
-							attributeType = FieldType.Float;
-							break;
-						case "double":
-							attributeType = FieldType.Double;
-							break;
-						default:
-							attributeType = FieldType.Double;
-							break;
+					if (formatStr != null) {
+						switch (formatStr) {
+							case "float":
+								fieldType = FieldType.Float;
+								break;
+							case "double":
+								fieldType = FieldType.Double;
+								break;
+							default:
+								fieldType = FieldType.Double;
+								break;
+						}
+					} else {
+						fieldType = FieldType.Double;
 					}
-					attributeType = FieldType.Double;
 					break;
 				case "boolean":
-					attributeType = FieldType.Boolean;
+					fieldType = FieldType.Boolean;
 					break;
 				case "object":
-					attributeType = FieldType.Object;
+					fieldType = FieldType.Object;
 					break;
 				case "array":
-					attributeType = FieldType.Array;
+					fieldType = FieldType.Array;
 					break;
 				default:
-					attributeType = FieldType.String;
+					fieldType = FieldType.String;
 					break;
 			}
 		}
-		return attributeType;
+		return fieldType;
 	} 
+	
+	
 
 }

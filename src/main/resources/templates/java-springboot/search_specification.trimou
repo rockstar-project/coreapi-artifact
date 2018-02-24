@@ -1,4 +1,4 @@
-package com.rockstar.{{name}}.domain;
+package {{packageName}}.domain;
 
 import java.util.ArrayList;
 import java.util.List;

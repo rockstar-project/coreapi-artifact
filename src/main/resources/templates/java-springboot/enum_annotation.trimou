@@ -15,13 +15,13 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnum
 {
-    public abstract String message() default "Invalid value. This is not permitted.";
+    public abstract String message() default "Invalid value.";
      
     public abstract Class<?>[] groups() default {};
   
     public abstract Class<? extends Payload>[] payload() default {};
      
-    public abstract Class<? extends java.lang.Enum<?>> enumClass();
+    public abstract String[] allowableValues();
      
     public abstract boolean ignoreCase() default false;
 }

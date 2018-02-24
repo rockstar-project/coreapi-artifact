@@ -1,11 +1,13 @@
 package com.rockstar.artifact.codegen.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class ResourceDefinition implements Definition {
 	
 	private String name;
 	private Collection<AttributeDefinition> attributes;
+	private EntityDefinition entity;
 	
 	public ResourceDefinition() {
 	}
@@ -26,6 +28,27 @@ public class ResourceDefinition implements Definition {
 		this.attributes = attributes;
 	}
 	
+	public EntityDefinition getEntity() {
+		return entity;
+	}
+
+	public void setEntity(EntityDefinition entity) {
+		this.entity = entity;
+	}
+	
+	public Collection<AttributeDefinition> getAttributesWithPrimitiveType() {
+		Collection<AttributeDefinition> primitiveAttributes = null;
+		if (this.attributes != null && !this.attributes.isEmpty()) {
+			primitiveAttributes = new ArrayList<AttributeDefinition> ();
+			for (AttributeDefinition currentAttribute : this.attributes) {
+				if (currentAttribute.isPrimitiveType()) {
+					primitiveAttributes.add(currentAttribute);
+				}
+			}
+		}
+		return primitiveAttributes;
+	}
+
 	public AttributeDefinition getAttributeByName(String name) {
 		AttributeDefinition attribute = null;
 		for (AttributeDefinition currentAttribute : this.attributes) {

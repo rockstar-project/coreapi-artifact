@@ -5,14 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
+{{#definition}}
 import {{packageName}}.service.{{capitalize name}}Search;
 import {{packageName}}.service.{{capitalize name}}Service;
 import {{packageName}}.service.NotFoundException;
-import {{packageName}}.service.NotUniqueException;
+{{#isNotEq entity.uniquefields.size 0}}import {{packageName}}.service.NotUniqueException;{{/isNotEq}}
+{{#entity.dateTimeType}}import org.joda.time.DateTime;{{/entity.dateTimeType}}
+{{#entity.dateType}}import org.joda.time.LocalDate;{{/entity.dateType}}
 
-{{#definition}}
 @Service
 @Transactional(readOnly=true)
 public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Service {
@@ -26,7 +27,7 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 		if ({{name}}Search != null) {
 			searchSpecification = new {{capitalize search.name}}SearchSpecification();
 			{{#search.filters}}
-			searchSpecification.set{{capitalize name}}({{search.name}}Search.get{{name}}());
+			searchSpecification.set{{capitalize name}}({{search.name}}Search.get{{capitalize name}}());
 			{{/search.filters}}
 			{{name}}Page = this.{{repository.name}}Repository.findAll(searchSpecification, pageRequest);
 		}
@@ -41,7 +42,7 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 	public {{capitalize name}} create{{capitalize name}}({{capitalize name}} {{name}}) {
 		{{capitalize name}} updated{{capitalize name}} = null;
 		if ({{name}} != null) {
-			this.validateUnique{{capitalize name}}({{name}});
+			{{#isNotEq entity.uniquefields.size 0}}this.validateUnique{{capitalize name}}({{name}});{{/isNotEq}}
 			updated{{capitalize name}} = this.{{repository.name}}Repository.save({{name}});
 		}
 		return updated{{capitalize name}};
@@ -53,13 +54,13 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 		Boolean modifyFlag = false;
 		current{{capitalize entity.name}} = this.retrieve{{capitalize name}}ById({{name}}.getId());
 
-		{{#entity.fields}}
+		{{#entity.primitiveOrObjectFields}}
 		{{type}} {{name}} = {{entity.name}}.get{{capitalize name}}();
 		if ({{name}} != null{{#entity.stringTypes}} && !{{name}}.isEmpty(){{/entity.stringTypes}}) {
 			current{{capitalize entity.name}}.set{{capitalize name}}({{name}});
 			modifyFlag = true;
 		}
-		{{/entity.fields}}
+		{{/entity.primitiveOrObjectFields}}
 		
 		if (modifyFlag) {
 			this.{{repository.name}}Repository.save(current{{capitalize entity.name}});
@@ -71,13 +72,13 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 		this.{{repository.name}}Repository.delete(this.retrieve{{capitalize name}}ById({{name}}Id));
 	}
 	
-	private void validateUnique{{capitalize name}}({{capitalize name}} {{name}}) {
+	{{#isNotEq entity.uniquefields.size 0}}private void validateUnique{{capitalize name}}({{capitalize name}} {{name}}) {
 		if ({{name}} != null) {
 			if (this.{{repository.name}}Repository.findBy{{repository.uniqueFieldsAndSeparated}}({{#entity.uniquefields}}{{entity.name}}.get{{capitalize name}}(){{#iter.hasNext}},{{/iter.hasNext}}{{/entity.uniquefields}}) != null) {
 				throw new NotUniqueException("{{entity.name}}");
 			}
 		}
-	}
+	}{{/isNotEq}}
 	
 	private {{capitalize name}} retrieve{{capitalize name}}ById(String {{name}}Id) {
 		{{capitalize name}} {{name}} = this.{{repository.name}}Repository.findOne({{name}}Id);

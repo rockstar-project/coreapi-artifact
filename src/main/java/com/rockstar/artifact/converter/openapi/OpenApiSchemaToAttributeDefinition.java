@@ -22,6 +22,7 @@ public class OpenApiSchemaToAttributeDefinition implements Converter<Schema, Att
 			attributeType = this.openApiTypeToAttributeType.convert(schema);
 			attributeDefinition = new AttributeDefinition();
 			attributeDefinition.setType(attributeType);
+			attributeDefinition.setWriteOnly(schema.getWriteOnly());
 			attributeDefinition.setConstraints(this.openApiSchemaToConstraintDefinition.convert(schema));
 		}
 		return attributeDefinition;

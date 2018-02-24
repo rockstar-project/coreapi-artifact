@@ -84,18 +84,18 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 					}
 					
 					if (schema != null) {
-						attributes = this.openApiSchemaToAttributeDefinitions.convert(schema);
-						this.setRequiredFields(attributes, schema.getRequiredFields());
-						
-						resource = new ResourceDefinition();
-						resource.setName(name);
-						resource.setAttributes(attributes);
+						entity = this.openApiSchemaToEntityDefinition.convert(schema);
+						entity.setName(name);
 						
 						search = this.openApiPathToSearchDefinition.convert(pathsByTag);
 						search.setName(name);
 						
-						entity = this.openApiSchemaToEntityDefinition.convert(schema);
-						entity.setName(name);
+						attributes = this.openApiSchemaToAttributeDefinitions.convert(schema);
+						this.setRequiredFields(attributes, schema.getRequiredFields());
+						resource = new ResourceDefinition();
+						resource.setName(name);
+						resource.setAttributes(attributes);
+						resource.setEntity(entity);
 						
 						repository = new RepositoryDefinition();
 						repository.setName(name);
@@ -112,6 +112,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 						controller.setResource(resource);
 						controller.setSearch(search);
 						controller.setService(service);
+						controller.setEntity(entity);
 						
 						specDefinitions.withDefinition(Type.Resource, resource);
 						specDefinitions.withDefinition(Type.Service, service);

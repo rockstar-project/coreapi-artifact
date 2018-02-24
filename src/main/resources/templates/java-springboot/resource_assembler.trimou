@@ -1,5 +1,40 @@
 package {{packageName}}.web;
 
+import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.stereotype.Component;
+
+{{#definition}}
+import {{packageName}}.domain.{{capitalize entity.name}};
+
 @Component
-class {{capitalize name}}ResourceAssembler implements ResourceAssembler<{{capitalize name}}, Resource<{{capitalize name}}>> {
+public class {{capitalize name}}ResourceAssembler extends ResourceAssemblerSupport<{{capitalize name}}, {{capitalize name}}Resource> {
+	
+	public {{capitalize name}}ResourceAssembler() {
+		super({{capitalize name}}Controller.class, {{capitalize name}}Resource.class);
+	}
+	
+	public {{capitalize name}}Resource toResource({{capitalize entity.name}} {{entity.name}}) {
+		{{capitalize name}}Resource resource = null;
+		
+		if ({{entity.name}} != null) {
+			resource = this.createResourceWithId({{entity.name}}.getId(), {{entity.name}});
+			{{#attributesWithPrimitiveType}}
+			resource.set{{capitalizeCamelcase name}}({{entity.name}}.get{{capitalizeCamelcase name}}());
+			{{/attributesWithPrimitiveType}}
+		}
+		return resource;
+	}
+	
+	public {{capitalize entity.name}} fromResource({{capitalize name}}Resource resource) {
+		{{capitalize entity.name}} {{entity.name}} = null;
+		
+		if (resource != null) {
+			{{entity.name}} = new {{capitalize entity.name}}();
+			{{#entity.fieldsWithPrimitiveType}}
+			{{entity.name}}.set{{capitalizeCamelcase name}}(resource.get{{capitalizeCamelcase name}}());
+			{{/entity.fieldsWithPrimitiveType}}
+		}
+		return {{entity.name}};
+	}
 }
+{{/definition}}
