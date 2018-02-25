@@ -7,6 +7,7 @@ public class ResourceDefinition implements Definition {
 	
 	private String name;
 	private Collection<AttributeDefinition> attributes;
+	private Collection<ResourceDefinition> subresources;
 	private EntityDefinition entity;
 	
 	public ResourceDefinition() {
@@ -36,6 +37,14 @@ public class ResourceDefinition implements Definition {
 		this.entity = entity;
 	}
 	
+	public Collection<ResourceDefinition> getSubresources() {
+		return subresources;
+	}
+
+	public void setSubresources(Collection<ResourceDefinition> subresources) {
+		this.subresources = subresources;
+	}
+
 	public Collection<AttributeDefinition> getAttributesWithPrimitiveType() {
 		Collection<AttributeDefinition> primitiveAttributes = null;
 		if (this.attributes != null && !this.attributes.isEmpty()) {

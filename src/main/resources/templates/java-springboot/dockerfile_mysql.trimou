@@ -1,4 +1,4 @@
-FROM 
+FROM {{datastoreValue}}:{{datastoreVersion}}
 MAINTAINER {{capitalize organization}} Team
 
 COPY schema.sql /docker-entrypoint-initdb.d/data-dump.sql

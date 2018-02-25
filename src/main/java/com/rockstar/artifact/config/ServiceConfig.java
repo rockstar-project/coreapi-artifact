@@ -16,8 +16,8 @@ import org.trimou.handlebars.SimpleHelpers;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.rockstar.artifact.model.TemplateDefinition;
-import com.rockstar.artifact.service.TemplateDefinitionRegistry;
+import com.rockstar.artifact.model.ProjectDirectory;
+import com.rockstar.artifact.service.CodeGenerator;
 import com.rockstar.artifact.util.CheckUtils;
 import com.rockstar.artifact.util.WordUtils;
 
@@ -27,34 +27,20 @@ public class ServiceConfig {
 	@Autowired
 	private ApplicationContext applicationContext;
 	
+	
 	@Bean
-	public TemplateDefinitionRegistry templateDefinitionRegistry() throws Exception {
-		TemplateDefinitionRegistry templateDefinitionRegistry = null;
+	public CodeGenerator codeGenerator() throws Exception {
+		return new CodeGenerator(this.templateEngine(), this.projectDirectory());
+	}
+	
+	@Bean
+	public ProjectDirectory projectDirectory() throws Exception {
 		ObjectMapper jsonMapper = new ObjectMapper();
 	    jsonMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 	    jsonMapper.setSerializationInclusion(Include.NON_NULL);
-		
-	    TemplateDefinition templateDefinition = null;
-	    templateDefinitionRegistry = null;
-	    Resource[] definitionResources = null;
-	    String resourceKey = null;
-	    
-	    definitionResources = this.workspaceDefinitionResources();
-	    if (definitionResources != null && definitionResources.length > 0) {
-	    		System.out.println("total template definition found: " + definitionResources.length);
-	    		templateDefinitionRegistry = new TemplateDefinitionRegistry();
-		    for (Resource currentResource : definitionResources) {
-		    		try {
-			    		templateDefinition = jsonMapper.readValue(currentResource.getInputStream(), TemplateDefinition.class);
-			    		resourceKey = StringUtils.split(currentResource.getFilename(), ".")[0];
-			    		templateDefinitionRegistry.registerTemplateDefinition(resourceKey, templateDefinition);
-		    		} catch (Exception exception) {
-		    			System.out.println(resourceKey + " definitions not registered: " + exception.getMessage());
-		    		}
-		    }
-	    }
-	   
-		return templateDefinitionRegistry;
+	    Resource projectDirectoryResource = this.applicationContext.getResource("classpath:projects/java-springboot.json");
+	    ProjectDirectory projectDirectory = jsonMapper.readValue(projectDirectoryResource.getInputStream(), ProjectDirectory.class);
+		return projectDirectory;
 	}
 	
 	@Bean

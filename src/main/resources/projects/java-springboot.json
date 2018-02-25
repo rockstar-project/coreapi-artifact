@@ -1,0 +1,252 @@
+{
+  "files": [
+    {
+      "template": "java-springboot/maven",
+      "filename": "pom.xml",
+      "naming_convention": "lowercase"
+    },
+    {
+      "template": "java-springboot/gitignore",
+      "filename": ".gitignore",
+      "naming_convention": "lowercase"
+    },
+    {
+      "template": "java-springboot/travis",
+      "filename": ".travis.yml",
+      "naming_convention": "lowercase"
+    },
+    {
+      "template": "java-springboot/readme",
+      "filename": "README.md"
+    },
+    {
+      "template": "java-springboot/dockerfile_java",
+      "filename": "Dockerfile",
+      "naming_convention": "capitalize"
+    },
+    {
+      "rule": "datastoreValue == 'mysql'",
+      "template": "java-springboot/dockerfile_mysql",
+      "filename": "Dockerfile-datastore",
+      "naming_convention": "capitalize"
+    },
+    {
+      "rule": "datastoreValue == 'mysql'",
+      "template": "java-springboot/mysql_schema",
+      "filename": "schema.sql",
+      "naming_convention": "lowercase"
+    },
+    {
+      "rule": "datastoreValue == 'cassandra'",
+      "template": "java-springboot/cassandra_schema",
+      "filename": "schema.cql",
+      "naming_convention": "lowercase"
+    },
+    {
+      "rule": "datastoreValue == 'cassandra'",
+      "template": "java-springboot/dockerfile_cassandra",
+      "filename": "Dockerfile-datastore",
+      "naming_convention": "capitalize"
+    },
+    {
+      "template": "common/environment_var",
+      "filename": "environment.sh",
+      "naming_convention": "lowercase"
+    },
+    {
+      "template": "common/docker_compose",
+      "filename": "docker-compose.yml",
+      "naming_convention": "lowercase"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/restapi",
+      "filename": "RestApiService.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "securityValue == 'auth0'",
+      "template": "java-springboot/auth0_security",
+      "filename": "SecurityConfig.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/config'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "messagingValue == 'nats'",
+      "template": "java-springboot/nats_config",
+      "filename": "MessageConfig.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/config'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/web_config",
+      "filename": "WebConfig.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/config'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/resource",
+      "filename": "name+'Resource.java'",
+      "component": "resource",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/resource_assembler",
+      "filename": "name+'ResourceAssembler.java'",
+      "component": "resource",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/controller",
+      "filename": "name+'Controller.java'",
+      "component": "controller",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/error_handler",
+      "filename": "ErrorHandler.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "architecture == 'restapi'",
+      "template": "java-springboot/error_resource",
+      "filename": "ErrorResource.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/enum_annotation",
+      "filename": "ValidEnum.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/enum_validator",
+      "filename": "EnumValueValidator.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/web'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/notfound_exception",
+      "filename": "NotFoundException.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/service'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/notunique_exception",
+      "filename": "NotUniqueException.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/service'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/service_interface",
+      "filename": "name+'Service.java'",
+      "component": "service",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/service'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/search_criteria",
+      "filename": "name+'Search.java'",
+      "component": "search",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/service'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'mysql'",
+      "template": "java-springboot/mysql_entity",
+      "filename": "name+'.java'",
+      "component": "entity",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'mysql'",
+      "template": "java-springboot/mysql_repository",
+      "filename": "name+'Repository.java'",
+      "component": "repository",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'mysql'",
+      "template": "java-springboot/search_specification",
+      "filename": "name+'SearchSpecification.java'",
+      "component": "search",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'cassandra'",
+      "template": "java-springboot/cassandra_entity",
+      "filename": "name+'.java'",
+      "component": "entity",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'cassandra'",
+      "template": "java-springboot/cassandra_repository",
+      "filename": "name+'Repository.java'",
+      "component": "repository",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "template": "java-springboot/service_impl",
+      "filename": "name+'ServiceImpl.java'",
+      "component": "service",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/resources",
+      "template": "java-springboot/application",
+      "filename": "application.yml",
+      "naming_convention": "lowercase"
+    },
+    {
+      "base_dir": "src/main/resources",
+      "template": "java-springboot/bootstrap",
+      "filename": "bootstrap.yml",
+      "naming_convention": "lowercase"
+    },
+    {
+      "base_dir": "src/main/resources",
+      "template": "java-springboot/messages",
+      "filename": "messages.properties",
+      "naming_convention": "lowercase"
+    }
+  ]
+}

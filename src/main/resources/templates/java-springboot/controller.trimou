@@ -1,4 +1,4 @@
-package {{packageName}}.web;
+package {{packageName}};
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 

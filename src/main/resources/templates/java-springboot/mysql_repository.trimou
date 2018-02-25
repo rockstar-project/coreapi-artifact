@@ -1,4 +1,4 @@
-package {{packageName}}.domain;
+package {{packageName}};
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface {{capitalize name}}Repository extends PagingAndSortingRepository<{{capitalize name}}, String>, JpaSpecificationExecutor<{{capitalize name}}> {
 	
-	{{#if uniquefields.size}}
+	{{#if uniquefields.size > 0}}
 	public {{capitalize name}} findBy{{uniqueFieldsAndSeparated}}({{uniqueFieldsMethodArguments}});
 	{{/if}}
 }

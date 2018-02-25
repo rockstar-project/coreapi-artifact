@@ -1,0 +1,10 @@
+package {{packageName}};
+
+{{#definition}}
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.UUID;
+
+public interface {{capitalize name}}Repository extends CrudRepository<{{capitalize name}}, UUID> {
+}
+{{/definition}}

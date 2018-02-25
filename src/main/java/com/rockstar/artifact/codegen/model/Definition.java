@@ -13,7 +13,8 @@ public interface Definition {
 		Model,
 		Entity,
 		Repository,
-		Security 
+		Security ,
+		MySqlSchema
 	};
 	
 	public String getName();

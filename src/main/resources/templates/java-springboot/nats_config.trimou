@@ -1,0 +1,26 @@
+package {{packageName}};
+
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+
+import nats.client.Nats;
+import nats.client.spring.EnableNatsAnnotations;
+import nats.client.spring.NatsBuilder;
+
+@Configuration
+@EnableNatsAnnotations
+@Profile("messaging")
+public class MessageConfig {
+	
+	@Bean
+	public Nats nats(ApplicationEventPublisher applicationEventPublisher, Environment environment) {
+		final Nats nats = new NatsBuilder(applicationEventPublisher)
+				.addHost(environment.getProperty("NATS_SERVER", "nats://localhost:4222"))
+				.connect();
+		return nats;
+	}
+
+}

@@ -1,4 +1,4 @@
-FROM ibmcom/ibmjava
+FROM {{languageValue}}:{{languageVersion}}
 MAINTAINER {{capitalize organization}} Team
 
 VOLUME /tmp

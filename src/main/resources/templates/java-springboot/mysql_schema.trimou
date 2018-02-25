@@ -1,22 +1,11 @@
 {{#definition}}
 USE {{organization}}_db_{{namespace}};
 
-{{#table}}
-CREATE TABLE IF NOT EXISTS {{name}} (
+{{#tables}}
+CREATE TABLE IF NOT EXISTS {{camelcaseToUpperSnakecase name}} (
   ID varchar(36) PRIMARY KEY,
-  NAME varchar(255),
-  TITLE varchar(255),
-  SUBTITLE varchar(255),
-  DESCRIPTION varchar(1000),
-  IMAGE varchar(255),
-  BLOG_URL varchar(255),
-  FEATURED tinyint,
-  STATE varchar(255),
-  PRICE varchar(255),
-  VISIBILITY varchar(255),
-  VERSION varchar(100),
-  AUTHOR varchar(255),
-  ORGANIZATION varchar(255),
-  CREATED_AT datetime);
- {{/table}}
+  {{#columns}}
+  {{camelcaseToUpperSnakecase name}} {{#stringType}}varchar({{maximumLength}}){{/stringType}}{{#booleanType}}tinyint{{/booleanType}}{{#integerType}}integer{{/integerType}}{{#doubleType}}double{{/doubleType}}{{#dateTimeType}}datetime{{/dateTimeType}}{{#dateType}}date{{/dateType}}{{#parentId}}varchar(36){{/parentId}}{{#iter.hasNext}},{{/iter.hasNext}}
+  {{/columns}});
+ {{/tables}}
 {{/definition}}

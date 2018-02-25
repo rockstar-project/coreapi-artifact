@@ -14,6 +14,12 @@ public class SpecDefinitions {
 		this.definitions = new HashMap<Definition.Type, Collection<Definition>> ();
 	}
 
+	public void withDefinitions(Definition.Type type, Collection<Definition> definitions) {
+		for (Definition currentDefinition : this.getDefinitions(type)) {
+			this.withDefinition(type, currentDefinition);
+		}
+	}
+	
 	public void withDefinition(Definition.Type type, Definition definitionItem) {
 		if (this.getDefinitions(type) != null) {
 			this.getDefinitions(type).add(definitionItem);

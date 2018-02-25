@@ -128,7 +128,7 @@ public class FieldDefinition {
 		fieldStringBuilder.append("enum = " + (this.enumeration != null && this.enumeration ? "Yes" : "No"));
 		fieldStringBuilder.append(",");
 		fieldStringBuilder.append("readOnly = " + (this.readOnly != null && this.readOnly ? "Yes" : "No"));
-		
+		fieldStringBuilder.append("\n");
 		return fieldStringBuilder.toString();
 	}
 	

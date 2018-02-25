@@ -1,4 +1,4 @@
-package {{packageName}}.service;
+package {{packageName}};
 
 public class NotFoundException extends RuntimeException {
 

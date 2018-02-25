@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.trimou.engine.MustacheEngine;
 
 import com.reprezen.kaizen.oasparser.OpenApi3Parser;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
@@ -22,7 +21,8 @@ import com.rockstar.artifact.converter.openapi.OpenApiToSpecDefinitions;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.NotFoundException;
-import com.rockstar.artifact.model.TemplateDefinition;
+import com.rockstar.artifact.model.Project;
+import com.rockstar.artifact.model.ProjectBuilder;
 import com.rockstar.artifact.util.ZipUtils;
 import com.rockstar.artifact.web.ArtifactResource;
 
@@ -31,54 +31,47 @@ public class ArtifactServiceImpl implements ArtifactService {
 	
 	static Logger LOGGER = LoggerFactory.getLogger(ArtifactService.class);
 	
-	@Inject 
-	private MustacheEngine templateEngine;
-	
 	@Inject
-	private TemplateDefinitionRegistry templateDefinitionRegistry;
+	private CodeGenerator codeGenerator;
 	
 	@Inject
 	private OpenApiToSpecDefinitions openApiToDefinitionConverter;
-	 
-    public String createArtifact(ArtifactResource artifact) throws Exception {
-	    	GeneratedProject project = null;
-	    	TemplateDefinition templateDefinition = null;
-		SpecDefinitions artifactDefinition = null;
-	    	if (artifact != null) {
-		   
-	    		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
-	    		artifactDefinition = this.openApiToDefinitionConverter.convert(openApi);
-		    	templateDefinition = this.templateDefinitionRegistry.lookup(artifact.getSlug());
-		    	project = new ProjectGenerator(this.templateEngine)
-		    			.withArchitecture(artifact.getArchitecture())
-		    			.withLanguage(artifact.getLanguage())
-		    			.withNamespace(artifact.getNamespace())
-		    			.withOrganization(artifact.getOrganization())
-		    			.withDatastore(artifact.getDatastore())
-		    			.withHttp(artifact.getHttp())
-		    			.withMessaging(artifact.getMessaging())
-		    			.withDiscovery(artifact.getDiscovery())
-		    			.withMonitoring(artifact.getMonitoring())
-		    			.withSecurity(artifact.getSecurity())
-		    			.withTracing(artifact.getTracing())
-		    			.withCi(artifact.getCi())
-		    			.withCd(artifact.getCd())
-		    			.withRegistry(artifact.getRegistry())
-		    			.withScm(artifact.getScm())
-		    			.withBuild(artifact.getBuild())
-		    			.withTest(artifact.getTest())
-		    			.withDefinition(templateDefinition)
-		    			.withApiSpec(artifactDefinition)
-		    		.generate();
-	    	
-		    	String directory = this.createProjectFiles(project);
-		        
+	
+	public String createArtifact(ArtifactResource artifact) throws Exception {
+    	Project project = null;
+	SpecDefinitions specDefinition = null;
+    	if (artifact != null) {
+	   
+    		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
+    		specDefinition = this.openApiToDefinitionConverter.convert(openApi);
+	    	project = new ProjectBuilder()
+	    			.withArchitecture(artifact.getArchitecture())
+	    			.withLanguage(artifact.getLanguage())
+	    			.withNamespace(artifact.getNamespace())
+	    			.withOrganization(artifact.getOrganization())
+	    			.withDatastore(artifact.getDatastore())
+	    			.withHttp(artifact.getHttp())
+	    			.withMessaging(artifact.getMessaging())
+	    			.withDiscovery(artifact.getDiscovery())
+	    			.withMonitoring(artifact.getMonitoring())
+	    			.withSecurity(artifact.getSecurity())
+	    			.withTracing(artifact.getTracing())
+	    			.withCi(artifact.getCi())
+	    			.withCd(artifact.getCd())
+	    			.withRegistry(artifact.getRegistry())
+	    			.withScm(artifact.getScm())
+	    			.withBuild(artifact.getBuild())
+	    			.withTest(artifact.getTest())
+	    			.withApiSpec(specDefinition)
+	    		.build();
+	    		
+	    		String directory = this.createProjectFiles(this.codeGenerator.generate(project));
+	        
 		    	ZipUtils.zip(directory, directory + ".zip");
 		    	FileUtils.deleteDirectory(new File(directory));
 	    	}
-        return project.getId();
-    }
-    
+    		return artifact.getArchitecture() + "-" + artifact.getNamespace();
+	}
     
     public byte[] getArtifact(String artifactId) throws Exception {
     		byte[] fileContent = null;

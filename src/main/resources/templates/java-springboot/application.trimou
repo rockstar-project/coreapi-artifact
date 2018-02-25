@@ -4,8 +4,6 @@ spring:
   datasource:
     platform: mysql
     driver-class-name:  com.mysql.jdbc.Driver
-  {{/isEq}}
-  {{#isEq datastoreValue "mysql" }}
   jpa:
     hibernate:
       naming:
