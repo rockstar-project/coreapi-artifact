@@ -11,7 +11,7 @@
 Clone git repository
 
 ```
-	$ git clone https://github.ibm.com/apigility/coreapi-artifact.git
+	$ git clone https://github.com/rockstar-project/coreapi-artifact.git
 	$ cd coreapi-artifact
 ```
 
