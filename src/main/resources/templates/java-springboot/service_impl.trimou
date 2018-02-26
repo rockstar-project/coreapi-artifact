@@ -1,16 +1,15 @@
 package {{packageName}};
 
+{{#isEq datastoreValue 'cassandra'}}import java.util.UUID;{{/isEq}}
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 {{#definition}}
-import {{packageName}}.service.{{capitalize name}}Search;
-import {{packageName}}.service.{{capitalize name}}Service;
-import {{packageName}}.service.NotFoundException;
-{{#isNotEq entity.uniquefields.size 0}}import {{packageName}}.service.NotUniqueException;{{/isNotEq}}
+import com.{{organization}}.{{namespace}}.service.{{capitalize name}}Service;
+import com.{{organization}}.{{namespace}}.service.NotFoundException;
+{{#isNotEq entity.uniquefields.size 0}}import com.{{organization}}.{{namespace}}.service.NotUniqueException;{{/isNotEq}}
 {{#entity.dateTimeType}}import org.joda.time.DateTime;{{/entity.dateTimeType}}
 {{#entity.dateType}}import org.joda.time.LocalDate;{{/entity.dateType}}
 
@@ -20,21 +19,11 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 	
 	@Autowired private {{capitalize repository.name}}Repository {{repository.name}}Repository;
 	
-	public Page<{{capitalize search.name}}> search({{capitalize search.name}}Search {{search.name}}Search, Pageable pageRequest) {
-		Page<{{capitalize name}}> {{name}}Page = null;
-		{{capitalize name}}SearchSpecification searchSpecification = null;
-
-		if ({{name}}Search != null) {
-			searchSpecification = new {{capitalize search.name}}SearchSpecification();
-			{{#search.filters}}
-			searchSpecification.set{{capitalize name}}({{search.name}}Search.get{{capitalize name}}());
-			{{/search.filters}}
-			{{name}}Page = this.{{repository.name}}Repository.findAll(searchSpecification, pageRequest);
-		}
-		return {{name}}Page;
+	public Page<{{capitalize search.name}}> search({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest) {
+		return this.{{repository.name}}Repository.findBy{{#search.filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/search.filters}}({{#search.filters}}{{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, pageRequest);
 	}
 	
-	public {{capitalize name}} get{{capitalize name}}(String {{name}}Id) {
+	public {{capitalize name}} get{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) {
 		return this.retrieve{{capitalize name}}ById({{name}}Id);
 	}
 	
@@ -68,7 +57,7 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 	}
 	
 	@Transactional(readOnly=false)
-	public void delete{{capitalize name}}(String {{name}}Id) {
+	public void delete{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) {
 		this.{{repository.name}}Repository.delete(this.retrieve{{capitalize name}}ById({{name}}Id));
 	}
 	
@@ -80,7 +69,7 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 		}
 	}{{/isNotEq}}
 	
-	private {{capitalize name}} retrieve{{capitalize name}}ById(String {{name}}Id) {
+	private {{capitalize name}} retrieve{{capitalize name}}ById({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) {
 		{{capitalize name}} {{name}} = this.{{repository.name}}Repository.findOne({{name}}Id);
 		if ({{name}} == null) {
 			throw new NotFoundException("{{name}}");

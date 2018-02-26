@@ -1,12 +1,9 @@
 package com.rockstar.artifact.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.net.URI;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,14 +13,12 @@ import com.reprezen.kaizen.oasparser.OpenApi3Parser;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
 import com.rockstar.artifact.codegen.model.SpecDefinitions;
 import com.rockstar.artifact.converter.openapi.OpenApiToSpecDefinitions;
-import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.Project;
 import com.rockstar.artifact.model.ProjectBuilder;
 import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.model.Specification;
 import com.rockstar.artifact.service.CodeGenerator;
-import com.rockstar.artifact.util.ZipUtils;
 import com.rockstar.artifact.utils.DownloadUtils;
 import com.rockstar.artifact.web.ArtifactResource;
 
@@ -60,11 +55,14 @@ public class CreateJavaSpringbootRestApiTest {
 		String organization = "cookery";
 		
 		SelectedValue datastoreOption = new SelectedValue();
-		datastoreOption.setValue("mysql");
-		datastoreOption.setVersion("5.7");
+		//datastoreOption.setValue("mysql");
+		//datastoreOption.setVersion("5.7");
 		
 		//datastoreOption.setValue("cassandra");
 		//datastoreOption.setVersion("3.11");
+		
+		datastoreOption.setValue("mongodb");
+		datastoreOption.setVersion("3.6");
 		
 		SelectedValue securityOption = new SelectedValue();
 		securityOption.setValue("auth0");

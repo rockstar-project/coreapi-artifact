@@ -4,7 +4,7 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 {{#definition}}
-import {{packageName}}.domain.{{capitalize entity.name}};
+import com.{{organization}}.{{namespace}}.domain.{{capitalize entity.name}};
 
 @Component
 public class {{capitalize name}}ResourceAssembler extends ResourceAssemblerSupport<{{capitalize name}}, {{capitalize name}}Resource> {

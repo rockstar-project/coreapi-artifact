@@ -171,14 +171,6 @@
     },
     {
       "base_dir": "src/main/java",
-      "template": "java-springboot/search_criteria",
-      "filename": "name+'Search.java'",
-      "component": "search",
-      "naming_convention": "capitalize",
-      "package_dir": "'com/'+organization+'/'+namespace+'/service'"
-    },
-    {
-      "base_dir": "src/main/java",
       "rule": "datastoreValue == 'mysql'",
       "template": "java-springboot/mysql_entity",
       "filename": "name+'.java'",
@@ -197,15 +189,6 @@
     },
     {
       "base_dir": "src/main/java",
-      "rule": "datastoreValue == 'mysql'",
-      "template": "java-springboot/search_specification",
-      "filename": "name+'SearchSpecification.java'",
-      "component": "search",
-      "naming_convention": "capitalize",
-      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
-    },
-    {
-      "base_dir": "src/main/java",
       "rule": "datastoreValue == 'cassandra'",
       "template": "java-springboot/cassandra_entity",
       "filename": "name+'.java'",
@@ -217,6 +200,24 @@
       "base_dir": "src/main/java",
       "rule": "datastoreValue == 'cassandra'",
       "template": "java-springboot/cassandra_repository",
+      "filename": "name+'Repository.java'",
+      "component": "repository",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'mongodb'",
+      "template": "java-springboot/mongodb_entity",
+      "filename": "name+'.java'",
+      "component": "entity",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'mongodb'",
+      "template": "java-springboot/mongodb_repository",
       "filename": "name+'Repository.java'",
       "component": "repository",
       "naming_convention": "capitalize",

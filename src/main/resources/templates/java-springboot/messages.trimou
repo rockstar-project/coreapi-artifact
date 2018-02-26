@@ -1,7 +1,26 @@
-URL.collectionResource.image=
-NotEmpty.collectionResource.image=
-ValidEnum.collectionResourcce.visibility=
-NotEmpty.collectionResource.visibility=
-Size.collectionResource.name=
-Pattern.collectionResource.name=
-NotEmpty.collectionResource.name=
+{{#definition.attributes}}
+{{#notEmptyConstraint}}
+NotEmpty.{{definition.name}}Resource.{{name}}={{name}} is required
+{{/notEmptyConstraint}}
+{{#sizeConstraint}}
+Size.{{definition.name}}Resource.{{name}}={{#isNotNull sizeMinArgument}}{{name}} must be a minimum of {0} characters{{#isNotNull sizeMaxArgument}} and a maximum of {1} characters{{/isNotNull}}{{/isNotNull}}
+{{/sizeConstraint}}
+{{#patternConstraint}}
+Pattern.{{definition.name}}Resource.{{name}}=invalid value
+{{/patternConstraint}}
+{{#URLConstraint}}
+URL.{{definition.name}}Resource.{{name}}=invalid {{name}} url
+{{/URLConstraint}}
+{{#notNullConstraint}}
+NotNull.{{definition.name}}Resource.{{name}}={{name}} is undefined or empty
+{{/notNullConstraint}}
+{{#emailConstraint}}
+Email.{{definition.name}}Resource.{{name}}=invalid email address
+{{/emailConstraint}}
+{{#validConstraint}}
+Valid.{{definition.name}}Resource.{{name}}=invalid
+{{/validConstraint}}
+{{#validEnumConstraint}}
+ValidEnum.{{definition.name}}Resource.{{name}}=invalid value. Valid values are {{validEnumAllowableValuesArgument}}
+{{/validEnumConstraint}}
+{{/definition.attributes}}

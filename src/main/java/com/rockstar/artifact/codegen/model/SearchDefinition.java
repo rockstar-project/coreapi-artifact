@@ -1,6 +1,7 @@
 package com.rockstar.artifact.codegen.model;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class SearchDefinition implements Definition {
 	
@@ -28,6 +29,38 @@ public class SearchDefinition implements Definition {
 
 	public Collection<ParamDefinition> getFilters() {
 		return this.getSearchParams(SearchParamType.Filter);
+	}
+	
+	public ParamDefinition getQueryParam() {
+		return this.getSearchParam(SearchParamType.SearchTerm);
+	}
+	
+	public ParamDefinition getPageSizeParam() {
+		return this.getSearchParam(SearchParamType.PageSize);
+	}
+	
+	public ParamDefinition getPageNumberParam() {
+		return this.getSearchParam(SearchParamType.PageNumber);
+	}
+	
+	public Collection<ParamDefinition> getSortParams() {
+		return this.getSearchParams(SearchParamType.Sort);
+	}
+	
+	public ParamDefinition getSearchParam(SearchParamType paramType) {
+		ParamDefinition searchParam = null;
+		Collection<ParamDefinition> params = null;
+		Iterator<ParamDefinition> iterator = null;
+		
+		params = this.getSearchParams(SearchParamType.SearchTerm);
+		
+		if (params != null) {
+			iterator = params.iterator();
+			if (iterator != null && iterator.hasNext()) {
+				searchParam = iterator.next();
+			}
+		}
+		return searchParam;
 	}
 	
 	public Collection<ParamDefinition> getSearchParams(SearchParamType paramType) {

@@ -9,6 +9,7 @@ public class RepositoryDefinition implements Definition {
 	
 	private String name;
 	private Collection<FieldDefinition> uniquefields;
+	private SearchDefinition search;
 	
 	public RepositoryDefinition() {
 	}
@@ -28,7 +29,15 @@ public class RepositoryDefinition implements Definition {
 	public void setUniquefields(Collection<FieldDefinition> uniquefields) {
 		this.uniquefields = uniquefields;
 	}
-	
+
+	public SearchDefinition getSearch() {
+		return search;
+	}
+
+	public void setSearch(SearchDefinition search) {
+		this.search = search;
+	}
+
 	public String getUniqueFieldsMethodArguments() {
 		Collection<FieldDefinition> uniquefields = null;
 		String[] methodArguments = null;

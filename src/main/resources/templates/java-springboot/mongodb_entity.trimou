@@ -1,45 +1,34 @@
 package {{packageName}};
 
-import com.datastax.driver.core.DataType;
-import org.springframework.data.cassandra.mapping.CassandraType;
-import org.springframework.data.cassandra.mapping.Column;
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 {{#definition}}
 {{#dateTimeType}}import org.joda.time.DateTime;{{/dateTimeType}}
 {{#dateType}}import org.joda.time.LocalDate;{{/dateType}}
 {{#floatType}}import java.math.BigDecimal;{{/floatType}}
-import java.io.Serializable;
-import java.util.UUID;
 
-@Table(value="{{camelcaseToUpperSnakecase name}}")
-public class {{capitalize name}} implements Serializable{
+@Document(collection="{{pluralize name}}")
+{{#isNotEq uniquefields.size 0}}@CompoundIndex(def = "{{#uniquefields}}{'{{name}}':1{{#iter.hasNext}},{{/iter.hasNext}}}{{/uniquefields}}", name = "{{name}}_index", unique = true){{/isNotEq}}
+public class {{capitalize name}} {
 
-	private static final long serialVersionUID = 1L;
-	
-    @PrimaryKey
-    @CassandraType(type = DataType.Name.UUID)
-    private UUID id;
-    
+    @Id
+    private String id;
     {{#primitiveOrObjectFields}}
-	@Column(value="{{camelcaseToUpperSnakecase name}}")
 	private {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}} {{camelcase name}};
-	
 	{{/primitiveOrObjectFields}}
-    
-    public {{capitalize name}}() {
-    		this.id = UUID.randomUUID();
+	
+	public {{capitalize name}}() {
 	}
 	
-	public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-    
+	public String getId() {
+		return this.id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	
     {{#primitiveOrObjectFields}}
 	public {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}} get{{capitalizeCamelcase name}}() {
 		return this.{{name}};

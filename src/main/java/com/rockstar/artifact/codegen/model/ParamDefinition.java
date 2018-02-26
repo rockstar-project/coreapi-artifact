@@ -61,6 +61,14 @@ public class ParamDefinition {
 	public void setConstraints(ConstraintDefinition constraints) {
 		this.constraints = constraints;
 	}
+	
+	public boolean getNotEmptyConstraint() {
+		return this.hasConstraint(ConstraintType.NotEmpty);
+	}
+	
+	public boolean hasConstraint(ConstraintType constraintType) {
+		return this.constraints.hasConstraint(constraintType);
+	}
 
 	public String toString() {
 		StringBuilder attributeStringBuilder = new StringBuilder();

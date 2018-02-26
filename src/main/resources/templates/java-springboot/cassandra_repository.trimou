@@ -1,10 +1,21 @@
 package {{packageName}};
 
 {{#definition}}
+{{#isNotEq search.filters.size 0}}
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+{{/isNotEq}}
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
 public interface {{capitalize name}}Repository extends CrudRepository<{{capitalize name}}, UUID> {
+
+	{{#isNotEq uniquefields.size 0}}
+	public {{capitalize name}} findBy{{uniqueFieldsAndSeparated}}({{uniqueFieldsMethodArguments}});
+	{{/isNotEq}}
+	{{#isNotEq search.filters.size 0}}
+	public Page<{{capitalize name}}> findBy{{#search.filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/search.filters}}({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest);
+	{{/isNotEq}}
 }
 {{/definition}}

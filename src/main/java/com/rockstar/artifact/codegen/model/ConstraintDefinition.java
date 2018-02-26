@@ -114,7 +114,6 @@ public class ConstraintDefinition {
 			String argumentStr = Joiner.on(",").withKeyValueSeparator("=").join(this.arguments);
 			if (!StringUtils.isEmpty(argumentStr)) {
 				argumentStr = "(" + argumentStr + ")";
-				System.out.println("constraint arguments string => " + argumentStr);
 			}
 			return argumentStr;
 		}

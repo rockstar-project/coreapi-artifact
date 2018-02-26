@@ -1,18 +1,20 @@
 package {{packageName}};
 
+{{#isEq datastoreValue 'cassandra'}}import java.util.UUID;{{/isEq}}
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 {{#definition}}
-import {{packageName}}.domain.{{capitalize entity.name}};
+import com.{{organization}}.{{namespace}}.domain.{{capitalize entity.name}};
 
 public interface {{capitalize name}}Service {
 	
-	public {{capitalize entity.name}} get{{capitalize entity.name}}(String identifier);
+	public {{capitalize entity.name}} get{{capitalize entity.name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} identifier);
 	public {{capitalize entity.name}} create{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
 	public void update{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
-	public void delete{{capitalize entity.name}}(String identifier);
-	public Page<{{capitalize search.name}}> search({{capitalize search.name}}Search searchCriteria, Pageable pageRequest);
+	public void delete{{capitalize entity.name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} identifier);
+	public Page<{{capitalize search.name}}> search({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest);
 	
 }
 {{/definition}}
+

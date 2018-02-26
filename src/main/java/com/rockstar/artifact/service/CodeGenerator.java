@@ -77,9 +77,6 @@ public class CodeGenerator {
     					case Service:
     						definitions = specDefinitions.getDefinitions(Definition.Type.Service);
     						break;
-    					case Search:
-    						definitions = specDefinitions.getDefinitions(Definition.Type.Search);
-    						break;
     					case Entity:
     						definitions = specDefinitions.getDefinitions(Definition.Type.Entity);
     						break;

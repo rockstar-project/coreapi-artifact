@@ -85,7 +85,9 @@ public class TrimouTemplateTest {
 			//this.renderTemplate(Definition.Type.Controller, "controller", openApi, model);
 			
 			// MYSQL Table COMPONENT TEMPLATE
-			this.renderTemplate(Definition.Type.MySqlSchema, "mysql_schema", openApi, model);
+			//this.renderTemplate(Definition.Type.MySqlSchema, "mysql_schema", openApi, model);
+			
+			this.renderTemplate(Definition.Type.Resource, "messages", openApi, model);
 		}
 	}
 	

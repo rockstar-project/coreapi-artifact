@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.reprezen.kaizen.oasparser.jsonoverlay.Reference;
@@ -30,6 +31,7 @@ import com.rockstar.artifact.codegen.model.EntityDefinition;
 import com.rockstar.artifact.codegen.model.MySqlSchemaDefinition;
 import com.rockstar.artifact.codegen.model.RepositoryDefinition;
 import com.rockstar.artifact.codegen.model.ResourceDefinition;
+import com.rockstar.artifact.codegen.model.SampleDataDefinition;
 import com.rockstar.artifact.codegen.model.SearchDefinition;
 import com.rockstar.artifact.codegen.model.ServiceDefinition;
 import com.rockstar.artifact.codegen.model.SpecDefinitions;
@@ -43,6 +45,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 	@Inject private OpenApiSchemaToEntityDefinition openApiSchemaToEntityDefinition;
 	@Inject private OpenApiPathToSearchDefinition openApiPathToSearchDefinition;
 	@Inject private OpenApiSchemaToMySqlSchemaDefinition openApiSchemaToMySqlSchema;
+	@Inject private OpenApiSchemaToSampleDataDefinition openApiSchemaToSampleData;
 	
 	public SpecDefinitions convert(OpenApi3 openApi) {
 		SpecDefinitions specDefinitions = null;
@@ -53,6 +56,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		EntityDefinition entity = null;
 		RepositoryDefinition repository = null;
 		MySqlSchemaDefinition mySqlSchema = null;
+		SampleDataDefinition data = null;
 		
 		Info info = null;
 		Map<String, Schema> schemas = null;
@@ -85,13 +89,19 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 					pathsByTag = this.getPathsByTag(currentTag.getName(), openApi.getPaths());
 				
 					schemaKey = this.GETSuccessResponseSchemaKey(pathsByTag);
-					System.out.println("Schema Key: " + schemaKey);
+		
 					if (!StringUtils.isEmpty(schemaKey)) {
 						schema = schemas.get(schemaKey);
 						name = WordUtils.uncapitalizeSingular(schemaKey);
 					} 
 					
 					if (schema != null) {
+						data = this.openApiSchemaToSampleData.convert(schema);
+						try {
+							System.out.println(new ObjectMapper().writeValueAsString(data));
+						} catch (Exception exception) {
+							exception.printStackTrace();
+						}
 						entity = this.openApiSchemaToEntityDefinition.convert(schema);
 						entity.setName(name);
 						
@@ -105,6 +115,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 						repository = new RepositoryDefinition();
 						repository.setName(name);
 						repository.setUniquefields(entity.getUniquefields());
+						repository.setSearch(search);
 						
 						service = new ServiceDefinition();
 						service.setName(name);
@@ -123,7 +134,6 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 						specDefinitions.withDefinition(Type.Service, service);
 						specDefinitions.withDefinition(Type.Entity, entity);
 						specDefinitions.withDefinition(Type.Repository, repository);
-						specDefinitions.withDefinition(Type.Search, search);
 						specDefinitions.withDefinition(Type.Controller, controller);
 						
 						System.out.println(controller);

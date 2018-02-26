@@ -84,6 +84,25 @@ public class AttributeDefinition implements Definition {
 		return this.hasConstraint(ConstraintType.Valid);
 	}
 	
+	public boolean isValidEnumConstraint() {
+		return this.hasConstraint(ConstraintType.ValidEnum);
+	}
+	
+	public Object getSizeMinArgument() {
+		Constraint sizeConstraint = this.getConstraint(ConstraintType.Size);
+		return sizeConstraint.getArguments().get("min");
+	}
+	
+	public Object getSizeMaxArgument() {
+		Constraint sizeConstraint = this.getConstraint(ConstraintType.Size);
+		return sizeConstraint.getArguments().get("max");
+	}
+	
+	public Object getValidEnumAllowableValuesArgument() {
+		Constraint validEnumConstraint = this.getConstraint(ConstraintType.ValidEnum);
+		return validEnumConstraint.getArguments().get("allowableValues");
+	}
+	
 	public ConstraintDefinition.Constraint getConstraint(ConstraintType constraintType) {
 		return constraints.getConstraint(constraintType);
 	}

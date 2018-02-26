@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import {{packageName}}.service.NotUniqueException;
-import {{packageName}}.service.NotFoundException;
+import com.{{organization}}.{{namespace}}.service.NotUniqueException;
+import com.{{organization}}.{{namespace}}.service.NotFoundException;
 
 @ControllerAdvice
 public class ErrorHandler {
