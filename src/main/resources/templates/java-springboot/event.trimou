@@ -1,0 +1,26 @@
+package {{packageName}};
+
+{{#definition}}
+public class {{capitalize name}}Event {
+	
+	private EventType type;
+	private {{capitalize name}} payload;
+	
+	public {{capitalize name}}Event(EventType type) {
+		this.type = type;
+	}
+
+	public EventType getType() {
+		return this.type;
+	}
+
+	public {{capitalize name}} getPayload() {
+		return this.payload;
+	}
+
+	public void setPayload({{capitalize name}} payload) {
+		this.payload = payload;
+	}
+
+}
+{{/definition}}

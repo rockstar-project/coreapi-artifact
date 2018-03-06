@@ -10,6 +10,7 @@ public class EntityDefinition implements Definition {
 	private String name;
 	private Collection<FieldDefinition> fields;
 	private Collection<RelationshipDefinition> relationships;
+	private RepositoryDefinition repository;
 	
 	public EntityDefinition() {
 	}
@@ -36,6 +37,40 @@ public class EntityDefinition implements Definition {
 
 	public void setRelationships(Collection<RelationshipDefinition> relationships) {
 		this.relationships = relationships;
+	}
+	
+	public RepositoryDefinition getRepository() {
+		return repository;
+	}
+
+	public void setRepository(RepositoryDefinition repository) {
+		this.repository = repository;
+	}
+	
+	public Collection<RelationshipDefinition> getManyToManyRelationships() {
+		return this.getRelationshipsByType(RelationshipType.ManyToMany);
+	}
+	
+	public Collection<RelationshipDefinition> getOneToManyRelationships() {
+		return this.getRelationshipsByType(RelationshipType.OneToMany);
+	}
+	
+	public Collection<RelationshipDefinition> getManyToOneRelationships() {
+		return this.getRelationshipsByType(RelationshipType.ManyToOne);
+	}
+	
+	public Collection<RelationshipDefinition> getRelationshipsByType(RelationshipType type) {
+		Collection<RelationshipDefinition> relationshipsByType = null;
+		
+		if (this.relationships != null && !this.relationships.isEmpty()) {
+			relationshipsByType = new ArrayList<RelationshipDefinition> ();
+			for (RelationshipDefinition current : this.relationships) {
+				if (current.getType().equals(type)) {
+					relationshipsByType.add(current);
+				}
+			}
+		}
+		return relationshipsByType;
 	}
 	
 	public Collection<FieldDefinition> getEnumFields() {
@@ -121,6 +156,32 @@ public class EntityDefinition implements Definition {
 			}
 		}
 		return primitiveOrObjectFields;
+	}
+	
+	public Collection<EntityDefinition> getChildEntities() {
+		Collection<EntityDefinition> childEntities = null;
+		
+		if (this.relationships != null && !this.relationships.isEmpty()) {
+			childEntities = new ArrayList<EntityDefinition> ();
+			for (RelationshipDefinition current : this.getRelationships()) {
+				childEntities.add(current.getChild());
+			}
+		}
+		return childEntities;
+	}
+	
+	public EntityDefinition getChildEntity(String name) {
+		EntityDefinition currentChild = null;
+		EntityDefinition childEntity = null;
+		if (this.relationships != null && !this.relationships.isEmpty()) {
+			for (RelationshipDefinition current : this.getRelationships()) {
+				currentChild = current.getChild();
+				if (currentChild.getName().equalsIgnoreCase(name)) {
+					childEntity = currentChild;
+				}
+			}
+		}
+		return childEntity;
 	}
 	
 	public boolean getArrayType() {

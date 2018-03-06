@@ -10,7 +10,7 @@ import com.{{organization}}.{{namespace}}.domain.{{capitalize entity.name}};
 public class {{capitalize name}}ResourceAssembler extends ResourceAssemblerSupport<{{capitalize name}}, {{capitalize name}}Resource> {
 	
 	public {{capitalize name}}ResourceAssembler() {
-		super({{capitalize name}}Controller.class, {{capitalize name}}Resource.class);
+		super({{capitalize parent}}Controller.class, {{capitalize name}}Resource.class);
 	}
 	
 	public {{capitalize name}}Resource toResource({{capitalize entity.name}} {{entity.name}}) {

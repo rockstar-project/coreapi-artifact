@@ -3,7 +3,6 @@ package com.rockstar.artifact.converter.openapi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,22 +12,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.reprezen.kaizen.oasparser.jsonoverlay.Reference;
 import com.reprezen.kaizen.oasparser.model3.Info;
-import com.reprezen.kaizen.oasparser.model3.MediaType;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
-import com.reprezen.kaizen.oasparser.model3.Operation;
 import com.reprezen.kaizen.oasparser.model3.Path;
-import com.reprezen.kaizen.oasparser.model3.Response;
 import com.reprezen.kaizen.oasparser.model3.Schema;
 import com.reprezen.kaizen.oasparser.model3.Tag;
 import com.rockstar.artifact.codegen.model.ControllerDefinition;
 import com.rockstar.artifact.codegen.model.Definition.Type;
 import com.rockstar.artifact.codegen.model.EntityDefinition;
+import com.rockstar.artifact.codegen.model.MessagingDefinition;
 import com.rockstar.artifact.codegen.model.MySqlSchemaDefinition;
+import com.rockstar.artifact.codegen.model.RelationshipDefinition;
 import com.rockstar.artifact.codegen.model.RepositoryDefinition;
 import com.rockstar.artifact.codegen.model.ResourceDefinition;
 import com.rockstar.artifact.codegen.model.SampleDataDefinition;
@@ -54,16 +50,19 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		ServiceDefinition service = null;
 		SearchDefinition search = null;
 		EntityDefinition entity = null;
+		Collection<RelationshipDefinition> childEntityRelationships = null;
 		RepositoryDefinition repository = null;
 		MySqlSchemaDefinition mySqlSchema = null;
 		SampleDataDefinition data = null;
+		MessagingDefinition messaging = null;
+		RepositoryDefinition subrepository = null;
 		
 		Info info = null;
 		Map<String, Schema> schemas = null;
 		Map<String, Path> pathsByTag = null;
 		Collection<Tag> tags = null;
 		
-		Map<String, Collection<String>> componentsHierarchy = null;
+		Map<String, Collection<String>> resourceHierarchy = null;
 		
 		if (openApi != null) {
 			specDefinitions = new SpecDefinitions();
@@ -73,7 +72,6 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 				specDefinitions.withDefinition(Type.General, this.openApiInfoToGeneralDefinition.convert(info));
 			}
 			
-			String schemaKey = null;
 			Schema schema = null;
 			String name = null;
 			
@@ -83,60 +81,100 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 			if (tags != null && !tags.isEmpty()) {
 				for (Tag currentTag : tags) {
 					schema = null;
-					componentsHierarchy = this.resolvePathsToComponentsHierarchy(currentTag.getName(), openApi.getPaths());
-					System.out.println(this.printComponentsHierachy(componentsHierarchy));
-					
 					pathsByTag = this.getPathsByTag(currentTag.getName(), openApi.getPaths());
-				
-					schemaKey = this.GETSuccessResponseSchemaKey(pathsByTag);
-		
-					if (!StringUtils.isEmpty(schemaKey)) {
-						schema = schemas.get(schemaKey);
-						name = WordUtils.uncapitalizeSingular(schemaKey);
-					} 
+					resourceHierarchy = this.resolvePathsToResourceHierarchy(currentTag.getName(), pathsByTag);
+					System.out.println(this.printComponentsHierachy(resourceHierarchy));
 					
-					if (schema != null) {
-						data = this.openApiSchemaToSampleData.convert(schema);
-						try {
-							System.out.println(new ObjectMapper().writeValueAsString(data));
-						} catch (Exception exception) {
-							exception.printStackTrace();
+					for (Entry<String, Collection<String>> resourceEntry: resourceHierarchy.entrySet()) {
+					
+						
+						schema = schemas.get(StringUtils.capitalize(resourceEntry.getKey()));
+						name = resourceEntry.getKey();
+						
+						if (schema != null) {
+							messaging = new MessagingDefinition();
+							messaging.setName(name);
+							
+							data = this.openApiSchemaToSampleData.convert(schema);
+						
+							search = this.openApiPathToSearchDefinition.convert(pathsByTag);
+							search.setName(name);
+							
+							entity = this.openApiSchemaToEntityDefinition.convert(schema);
+							entity.setName(name);
+							
+							repository = new RepositoryDefinition();
+							repository.setName(name);
+							repository.setUniquefields(entity.getUniquefields());
+							repository.setSearch(search);
+				
+							if (entity.getChildEntities() != null && !entity.getChildEntities().isEmpty()) {
+								for (EntityDefinition childEntity : entity.getChildEntities()) {
+									subrepository = new RepositoryDefinition();
+									subrepository.setName(childEntity.getName());
+									subrepository.setParent(entity.getName());
+									subrepository.setUniquefields(childEntity.getUniquefields());
+									childEntity.setRepository(subrepository);
+									childEntityRelationships = childEntity.getRelationships();
+									if (childEntityRelationships != null && !childEntityRelationships.isEmpty()) {
+										for (RelationshipDefinition childEntityRelationship : childEntityRelationships) {
+											if (childEntityRelationship.isManyToOne()) {
+												System.out.println("many to one relationship found...");
+												childEntityRelationship.setParent(entity);
+											}
+										}
+									}
+								}
+							}
+							entity.setRepository(repository);
+							
+							specDefinitions.withDefinition(Type.Entity, entity);
+							specDefinitions.withDefinition(Type.Repository, repository);
+							for (EntityDefinition current : entity.getChildEntities()) {
+								specDefinitions.withDefinition(Type.Entity, current);
+								specDefinitions.withDefinition(Type.Repository, current.getRepository());
+							}
+							
+							
+							resource = this.openApiSchemaToResourceDefinition.convert(schema);
+							resource.setName(name);
+							resource.setParent(name);
+							resource.setEntity(entity);
+							resource.setSubresources(resourceEntry.getValue());
+							specDefinitions.withDefinition(Type.Resource, resource);
+							
+							for (String current : resource.getSubresources()) {
+								Schema subresourceSchema = schemas.get(StringUtils.capitalize(current));
+								ResourceDefinition subresourceDefinition = this.openApiSchemaToResourceDefinition.convert(subresourceSchema);
+								subresourceDefinition.setName(current);
+								subresourceDefinition.setParent(resource.getName());
+								subresourceDefinition.setEntity(entity.getChildEntity(current));
+								specDefinitions.withDefinition(Type.Resource, subresourceDefinition);
+							}
+				
+							service = new ServiceDefinition();
+							service.setName(name);
+							service.setSearch(search);
+							service.setEntity(entity);
+							service.setMessaging(messaging);
+							
+							controller = new ControllerDefinition();
+							controller.setName(name);
+							controller.setResource(resource);
+							controller.setSearch(search);
+							controller.setService(service);
+							controller.setEntity(entity);
+							
+							specDefinitions.withDefinition(Type.Messaging, messaging);
+							
+							specDefinitions.withDefinition(Type.Service, service);
+							
+							specDefinitions.withDefinition(Type.Controller, controller);
+							
+							//System.out.println(controller);
+						} else {
+							System.out.println("schema not found for resource " + resourceEntry.getKey());
 						}
-						entity = this.openApiSchemaToEntityDefinition.convert(schema);
-						entity.setName(name);
-						
-						search = this.openApiPathToSearchDefinition.convert(pathsByTag);
-						search.setName(name);
-						
-						resource = this.openApiSchemaToResourceDefinition.convert(schema);
-						resource.setName(name);
-						resource.setEntity(entity);
-						
-						repository = new RepositoryDefinition();
-						repository.setName(name);
-						repository.setUniquefields(entity.getUniquefields());
-						repository.setSearch(search);
-						
-						service = new ServiceDefinition();
-						service.setName(name);
-						service.setSearch(search);
-						service.setEntity(entity);
-						service.setRepository(repository);
-						
-						controller = new ControllerDefinition();
-						controller.setName(name);
-						controller.setResource(resource);
-						controller.setSearch(search);
-						controller.setService(service);
-						controller.setEntity(entity);
-						
-						specDefinitions.withDefinition(Type.Resource, resource);
-						specDefinitions.withDefinition(Type.Service, service);
-						specDefinitions.withDefinition(Type.Entity, entity);
-						specDefinitions.withDefinition(Type.Repository, repository);
-						specDefinitions.withDefinition(Type.Controller, controller);
-						
-						System.out.println(controller);
 					}
 				}
 			}
@@ -146,7 +184,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		return specDefinitions;
 	}
 	
-	private Map<String, Collection<String>> resolvePathsToComponentsHierarchy(String tagname, Map<String, Path> paths) {
+	private Map<String, Collection<String>> resolvePathsToResourceHierarchy(String tagname, Map<String, Path> paths) {
 		Collection<String> uriStrings = null;
 		Collection<String> resourcePaths = null;
 		Collection<String> subresourcePaths = null;
@@ -177,13 +215,15 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 			
 		Multimap<String, String> resources = ArrayListMultimap.create();
 		for (String currentResource : resourcePaths) {
-			String resource = WordUtils.capitalizeSingular(StringUtils.stripStart(currentResource, "/"));
+			String resource = WordUtils.uncapitalizeSingular(StringUtils.stripStart(currentResource, "/"));
 			
 			if (subresourcePaths != null && !subresourcePaths.isEmpty()) {
 				
 				for (String currentSubresource : subresourcePaths) {
-					String subresource = WordUtils.capitalizeSingular(StringUtils.stripStart(currentSubresource, "/"));
-					resources.put(resource, subresource);
+					String subresource = WordUtils.uncapitalizeSingular(StringUtils.stripStart(currentSubresource, "/"));
+					if (StringUtils.isNotEmpty(subresource)) {
+						resources.put(resource, subresource);
+					}
 				}
 			}
 		}
@@ -197,7 +237,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 			for (Entry<String, Collection<String>> currentEntry : componentsHierachy.entrySet()) {
 				componentHierarchyStringBuilder.append(currentEntry.getKey() + " =>");
 				for (String current : currentEntry.getValue()) {
-					componentHierarchyStringBuilder.append(" " + current);
+					componentHierarchyStringBuilder.append(current);
 				}
 				componentHierarchyStringBuilder.append("\n");
 			}
@@ -226,52 +266,5 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		
 		return taggedPaths;
 	}
-	
-	
-	private String GETSuccessResponseSchemaKey(Map<String, Path> paths) {
-		Path path = null;
-		Iterator<Path> pathIterator = null;
-		Operation getOperation = null;
-		Response getOperationResponse = null;
-		MediaType responseJsonContent = null;
-		Reference responseSchemaReference = null;
-		String schemaKey = null;
-		
-		pathIterator = paths.values().iterator();
-		while (pathIterator.hasNext()) {
-			path = pathIterator.next();
-			getOperation = path.getOperation("get");
-			getOperationResponse = getOperation.getResponse("200");
-			responseJsonContent = getOperationResponse.getContentMediaType("application/json");
-			responseSchemaReference = responseJsonContent.getSchemaReference();
-			
-			if (responseSchemaReference != null) {
-				schemaKey = StringUtils.substringAfterLast(responseSchemaReference.getKey(), "/");
-			}
-		}
-		
-		return schemaKey;
-	}
-	
-	private Schema GETSuccessResponseSchema(Map<String, Path> paths) {
-		Path path = null;
-		Iterator<Path> pathIterator = null;
-		Operation getOperation = null;
-		Response getOperationResponse = null;
-		MediaType responseJsonContent = null;
-		Schema responseSchema = null;
-		
-		pathIterator = paths.values().iterator();
-		while (pathIterator.hasNext()) {
-			path = pathIterator.next();
-			getOperation = path.getOperation("get");
-			getOperationResponse = getOperation.getResponse("200");
-			responseJsonContent = getOperationResponse.getContentMediaType("application/json");
-			responseSchema = responseJsonContent.getSchema();
-		}
-		
-		return responseSchema;
-	}
-	
 	
 }

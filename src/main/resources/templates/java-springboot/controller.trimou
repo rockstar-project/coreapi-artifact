@@ -1,10 +1,10 @@
 package {{packageName}};
 
+{{#definition}}
+{{#isNotEq service.entity.childEntities.size 0}}import java.util.List;{{/isNotEq}}
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
 {{#isEq datastoreValue 'cassandra'}}import java.util.UUID;{{/isEq}}
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,25 +20,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-{{#definition}}
 import com.{{organization}}.{{namespace}}.domain.{{capitalize service.entity.name}};
 import com.{{organization}}.{{namespace}}.service.{{capitalize service.name}}Service;
+{{#service.entity.childEntities}}
+import com.{{organization}}.{{namespace}}.domain.{{capitalize name}};
+{{/service.entity.childEntities}}
 
 @RestController
 @RequestMapping("/{{pluralize name}}")
 public class {{capitalize name}}Controller {
 
-    @Autowired
-    private {{capitalize service.name}}Service {{service.name}}Service;
-    
-    @Autowired
-    private {{capitalize resource.name}}ResourceAssembler {{resource.name}}ResourceAssembler;
+    @Autowired private {{capitalize service.name}}Service {{service.name}}Service;
+    @Autowired private {{capitalize resource.name}}ResourceAssembler {{resource.name}}ResourceAssembler;
+    {{#resource.subresources}}
+    @Autowired private {{capitalize .}}ResourceAssembler {{.}}ResourceAssembler;
+	{{/resource.subresources}}
 
 	@GetMapping
    	public HttpEntity<PagedResources<{{capitalize resource.name}}Resource>> search({{#search.filters}}@RequestParam(name = "{{name}}", required = {{notEmptyConstraint}}) {{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}},
@@ -88,5 +90,50 @@ public class {{capitalize name}}Controller {
     public void delete{{capitalize resource.name}}(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id) {
         this.{{service.name}}Service.delete{{capitalize service.name}}(id);
     }
+    
+    {{#resource.subresources}}
+    @GetMapping(value="/{id}/{{pluralize .}}")
+	public HttpEntity<List<{{capitalize .}}Resource>> get{{capitalize resource.name}}{{capitalizePlural .}}(@PathVariable("id") String {{resource.name}}Id) {
+		List<{{capitalize .}}> {{resource.name}}{{capitalizePlural .}} = this.{{resource.name}}Service.get{{capitalizePlural .}}({{resource.name}}Id);
+		List<{{capitalize .}}Resource> {{.}}ResourceList = this.{{.}}ResourceAssembler.toResources({{resource.name}}{{capitalizePlural .}});
+		return new ResponseEntity<List<{{capitalize .}}Resource>>({{.}}ResourceList, HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/{id}/{{pluralize .}}")
+	public HttpEntity<Void> create{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @RequestBody {{capitalize .}}Resource {{.}}Resource) {
+		HttpHeaders headers = null;
+		{{capitalize .}} updated{{capitalize .}} = null;
+		{{capitalize .}} {{.}} = this.{{.}}ResourceAssembler.fromResource({{.}}Resource);
+		{{.}}.set{{capitalize resource.name}}Id({{resource.name}}Id);
+		updated{{capitalize .}} = this.{{service.name}}Service.add{{capitalize .}}({{.}});
+		headers = new HttpHeaders();
+		headers.setLocation(linkTo({{capitalize resource.name}}Controller.class).slash({{resource.name}}Id).slash("{{pluralize .}}").slash(updated{{capitalize .}}.getId().toString()).toUri());
+		
+		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value="/{id}/{{pluralize .}}/{subresource_id}")
+	public HttpEntity<{{capitalize .}}Resource> get{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @PathVariable("subresource_id") String {{.}}Id) {
+		{{capitalize .}}Resource {{.}}Resource = null;
+		{{.}}Resource = this.{{.}}ResourceAssembler.toResource(this.{{service.name}}Service.get{{capitalize .}}({{resource.name}}Id, {{.}}Id));
+		return new ResponseEntity<{{capitalize .}}Resource>({{.}}Resource, HttpStatus.OK);
+	}
+	
+	@PutMapping(value="/{id}/{{pluralize .}}/{subresource_id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void update{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @PathVariable("subresource_id") String {{.}}Id, @RequestBody @Valid {{capitalize .}} {{.}}) {
+		{{.}}.set{{capitalize resource.name}}Id({{resource.name}}Id);
+		{{.}}.setId({{.}}Id);
+		this.{{service.name}}Service.update{{capitalize .}}({{.}});
+	}
+	
+	@DeleteMapping(value="/{id}/{{pluralize .}}/{subresource_id}")
+	public void delete{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @PathVariable("subresource_id") String {{.}}Id) {
+		{{capitalize .}} {{.}} = new {{capitalize .}}();
+		{{.}}.setId({{.}}Id);
+		{{.}}.set{{capitalize resource.name}}Id({{resource.name}}Id);
+		this.{{service.name}}Service.remove{{capitalize .}}({{resource.name}}Id, {{.}}Id);
+	}
+	{{/resource.subresources}}
 }
 {{/definition}}

@@ -1,0 +1,27 @@
+package {{packageName}};
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
+
+{{#definition}}
+import com.{{organization}}.{{namespace}}.messaging.{{capitalize name}}MessageProducer;
+
+@Component
+public class {{capitalize name}}EventListener {
+	
+	private final Logger logger = LoggerFactory.getLogger({{capitalize name}}EventListener.class);
+	
+	@Inject private {{capitalize name}}MessageProducer messageProducer;
+	
+	@TransactionalEventListener
+	public void on{{capitalize name}}Event({{capitalize name}}Event {{name}}Event) throws Exception {
+		logger.info(String.format("detected {{uppercase name}}_%s event", {{name}}Event.getType().name().toUpperCase()));
+		this.messageProducer.send({{name}}Event);
+	}
+
+}
+{{/definition}}

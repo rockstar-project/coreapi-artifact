@@ -55,14 +55,14 @@ public class CreateJavaSpringbootRestApiTest {
 		String organization = "cookery";
 		
 		SelectedValue datastoreOption = new SelectedValue();
-		//datastoreOption.setValue("mysql");
-		//datastoreOption.setVersion("5.7");
+		datastoreOption.setValue("mysql");
+		datastoreOption.setVersion("5.7");
 		
 		//datastoreOption.setValue("cassandra");
 		//datastoreOption.setVersion("3.11");
 		
-		datastoreOption.setValue("mongodb");
-		datastoreOption.setVersion("3.6");
+		//datastoreOption.setValue("mongodb");
+		//datastoreOption.setVersion("3.6");
 		
 		SelectedValue securityOption = new SelectedValue();
 		securityOption.setValue("auth0");
@@ -88,6 +88,10 @@ public class CreateJavaSpringbootRestApiTest {
 		discoveryOption.setValue("eureka");
 		discoveryOption.setVersion("1.5.9");
 		
+		SelectedValue messagingOption = new SelectedValue();
+		messagingOption.setValue("rabbitmq");
+		messagingOption.setVersion("3.7.2");
+		
 		ArtifactResource artifact = new ArtifactResource();
 		Specification spec = new Specification();
 		spec.setLocation(COLLECTION_SPEC_URI);
@@ -101,6 +105,7 @@ public class CreateJavaSpringbootRestApiTest {
 		artifact.setNamespace(namespace);
 		artifact.setSpecification(spec);
 		artifact.setDatastore(datastoreOption);
+		artifact.setMessaging(messagingOption);
 		artifact.setDiscovery(discoveryOption);
 		artifact.setSecurity(securityOption);
 		artifact.setRegistry(registryOption);
@@ -128,7 +133,7 @@ public class CreateJavaSpringbootRestApiTest {
 			    			.withOrganization(artifact.getOrganization())
 			    			.withDatastore(artifact.getDatastore())
 			    			.withHttp(artifact.getHttp())
-			    			//.withMessaging(artifact.getMessaging())
+			    			.withMessaging(artifact.getMessaging())
 			    			.withDiscovery(artifact.getDiscovery())
 			    			//.withMonitoring(artifact.getMonitoring())
 			    			.withSecurity(artifact.getSecurity())

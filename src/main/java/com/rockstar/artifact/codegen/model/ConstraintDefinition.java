@@ -111,9 +111,12 @@ public class ConstraintDefinition {
 		}
 		
 		public String getArgs() {
-			String argumentStr = Joiner.on(",").withKeyValueSeparator("=").join(this.arguments);
-			if (!StringUtils.isEmpty(argumentStr)) {
-				argumentStr = "(" + argumentStr + ")";
+			String argumentStr = null;
+			if (this.arguments != null && !this.arguments.isEmpty()) {
+				argumentStr = Joiner.on(",").withKeyValueSeparator("=").join(this.arguments);
+				if (!StringUtils.isEmpty(argumentStr)) {
+					argumentStr = "(" + argumentStr + ")";
+				}
 			}
 			return argumentStr;
 		}

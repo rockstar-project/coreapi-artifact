@@ -232,6 +232,49 @@
       "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
     },
     {
+      "rule": "messagingValue != null",
+      "base_dir": "src/main/java",
+      "template": "java-springboot/event_type",
+      "filename": "EventType.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "rule": "messagingValue != null",
+      "base_dir": "src/main/java",
+      "template": "java-springboot/event",
+      "filename": "name+'Event.java'",
+      "component": "messaging",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "rule": "messagingValue != null",
+      "base_dir": "src/main/java",
+      "template": "java-springboot/event_listener",
+      "filename": "name+'EventListener.java'",
+      "component": "messaging",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "rule": "messagingValue == 'rabbitmq'",
+      "base_dir": "src/main/java",
+      "template": "java-springboot/rabbitmq_config",
+      "filename": "MessageConfig.java",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/config'"
+    },
+    {
+    	  "rule": "messagingValue == 'rabbitmq'",
+      "base_dir": "src/main/java",
+      "template": "java-springboot/rabbitmq_message_producer",
+      "filename": "name+'MessageProducer.java'",
+      "component": "messaging",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/messaging'"
+    },
+    {
       "base_dir": "src/main/resources",
       "template": "java-springboot/application",
       "filename": "application.yml",

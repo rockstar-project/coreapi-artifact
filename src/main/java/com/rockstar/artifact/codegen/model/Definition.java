@@ -5,6 +5,7 @@ public interface Definition {
 	public enum Type {
 		General,
 		Config,
+		Messaging,
 		Controller,
 		Search,
 		Enum,

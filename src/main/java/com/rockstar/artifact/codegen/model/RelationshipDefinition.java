@@ -66,7 +66,7 @@ public class RelationshipDefinition {
 		
 		relationshipStringBuilder.append("Type: " + this.type + "\n");
 		relationshipStringBuilder.append("parent: " + (this.parent != null ? this.parent.getName() : "undefined") + "\n");
-		relationshipStringBuilder.append("child: " + (this.child != null ? this.child.getName() : "undefined") + "\n");
+		relationshipStringBuilder.append("child: " + (this.child != null ? this.child : "undefined") + "\n");
 		relationshipStringBuilder.append("\n");
 		
 		return relationshipStringBuilder.toString();

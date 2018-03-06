@@ -1,0 +1,62 @@
+package {{packageName}};
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.stereotype.Component;
+{{#definition}}
+import com.{{organization}}.{{namespace}}.domain.{{capitalize name}};
+import com.{{organization}}.{{namespace}}.domain.{{capitalize name}}Event;
+
+@Component
+public class {{capitalize name}}MessageProducer {
+	
+	private final Logger logger = LoggerFactory.getLogger({{capitalize name}}MessageProducer.class);
+	
+	@Inject private RabbitMessagingTemplate messagingTemplate;
+	@Inject private MappingJackson2MessageConverter messageConverter;
+	
+	public void send({{capitalize name}}Event event) {
+		this.messagingTemplate.setMessageConverter(this.messageConverter);
+		switch (event.getType()) {
+			case CREATED:
+				this.sendCreatedMessage(event.getPayload());
+				break;
+			case READ:
+				this.sendReadMessage(event.getPayload());
+				break;
+			case UPDATED:
+				this.sendUpdatedMessage(event.getPayload());
+				break;
+			case DELETED:
+				this.sendDeletedMessage(event.getPayload());
+				break;
+			default:
+				break;
+		}
+ 	}
+	
+	public void sendCreatedMessage({{capitalize name}} messagePayload) {
+		this.messagingTemplate.convertAndSend("exchange.event", "{{name}}.create", messagePayload);
+		logger.info("{{uppercase name}}_CREATED message produced with payload: {0} ", messagePayload);
+	}
+	
+	public void sendReadMessage({{capitalize name}} messagePayload) {
+		this.messagingTemplate.convertAndSend("exchange.event", "{{name}}.read", messagePayload);
+		logger.info("{{uppercase name}}_READ message produced with payload: {0}", messagePayload);
+	}
+	
+	public void sendUpdatedMessage({{capitalize name}} messagePayload) {
+		this.messagingTemplate.convertAndSend("exchange.event", "{{name}}.update", messagePayload);
+		logger.info("{{uppercase name}}_UPDATED message produced with payload: {0}", messagePayload);
+	}
+
+	public void sendDeletedMessage({{capitalize name}} messagePayload) {
+		this.messagingTemplate.convertAndSend("exchange.event", "{{name}}.delete", messagePayload);
+		logger.info("{{uppercase name}}_DELETED message produced with payload: {0}", messagePayload);
+	}
+}
+{{/definition}}

@@ -4,8 +4,8 @@ public class ServiceDefinition implements Definition {
 	
 	private String name;
 	private EntityDefinition entity;
-	private RepositoryDefinition repository;
 	private SearchDefinition search;
+	private MessagingDefinition messaging;
 	
 	public ServiceDefinition() {
 	}
@@ -26,20 +26,20 @@ public class ServiceDefinition implements Definition {
 		this.entity = entity;
 	}
 
-	public RepositoryDefinition getRepository() {
-		return repository;
-	}
-
-	public void setRepository(RepositoryDefinition repository) {
-		this.repository = repository;
-	}
-
 	public SearchDefinition getSearch() {
 		return search;
 	}
 
 	public void setSearch(SearchDefinition search) {
 		this.search = search;
+	}
+
+	public MessagingDefinition getMessaging() {
+		return messaging;
+	}
+
+	public void setMessaging(MessagingDefinition messaging) {
+		this.messaging = messaging;
 	}
 
 }

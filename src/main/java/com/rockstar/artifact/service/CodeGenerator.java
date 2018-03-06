@@ -86,6 +86,9 @@ public class CodeGenerator {
     					case MySqlSchema:
     						definitions = specDefinitions.getDefinitions(Definition.Type.MySqlSchema);
     						break;
+    					case Messaging:
+    						definitions = specDefinitions.getDefinitions(Definition.Type.Messaging);
+    						break;
     					default:
     						break;
     				}

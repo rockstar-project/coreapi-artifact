@@ -6,8 +6,9 @@ import java.util.Collection;
 public class ResourceDefinition implements Definition {
 	
 	private String name;
+	private String parent;
 	private Collection<AttributeDefinition> attributes;
-	private Collection<ResourceDefinition> subresources;
+	private Collection<String> subresources;
 	private EntityDefinition entity;
 	
 	public ResourceDefinition() {
@@ -37,11 +38,19 @@ public class ResourceDefinition implements Definition {
 		this.entity = entity;
 	}
 	
-	public Collection<ResourceDefinition> getSubresources() {
+	public String getParent() {
+		return parent;
+	}
+
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+
+	public Collection<String> getSubresources() {
 		return subresources;
 	}
 
-	public void setSubresources(Collection<ResourceDefinition> subresources) {
+	public void setSubresources(Collection<String> subresources) {
 		this.subresources = subresources;
 	}
 

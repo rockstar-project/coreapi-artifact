@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +14,7 @@ import com.rockstar.artifact.codegen.model.EntityDefinition;
 import com.rockstar.artifact.codegen.model.FieldDefinition;
 import com.rockstar.artifact.codegen.model.RelationshipDefinition;
 import com.rockstar.artifact.codegen.model.RelationshipType;
+import com.rockstar.artifact.util.WordUtils;
 
 @Component
 public class OpenApiSchemaToEntityDefinition implements Converter<Schema, EntityDefinition>{
@@ -24,8 +24,13 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 	public EntityDefinition convert(Schema schema) {
 		EntityDefinition entity = null;
 		FieldDefinition field = null;
-		Collection<RelationshipDefinition> relationships = null;
+		RelationshipDefinition oneToOneRelationship = null;
+		RelationshipDefinition oneToManyRelationship = null;
+		RelationshipDefinition manyToOneRelationship = null;
+		Collection<RelationshipDefinition> entityRelationships = null;
+		Collection<RelationshipDefinition> childEntityRelationships = null;
 		Collection<FieldDefinition> fields = null;
+		EntityDefinition childEntity = null;
 		Schema propertySchema = null;
 		String propertyType = null;
 		String propertyName = null;
@@ -33,7 +38,7 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 		if (schema != null) {
 			entity = new EntityDefinition();
 			fields = new ArrayList<FieldDefinition> ();
-			relationships = new ArrayList<RelationshipDefinition> ();
+			entityRelationships = new ArrayList<RelationshipDefinition> ();
 			if (schema.getProperties() != null && !schema.getProperties().isEmpty()) {
 				for (Entry<String, Schema> schemaEntry : schema.getProperties().entrySet()) {
 					propertyName = schemaEntry.getKey();
@@ -44,14 +49,21 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 						if (propertyType.equalsIgnoreCase("array")) {
 							Schema itemsSchema = propertySchema.getItemsSchema();
 							if (itemsSchema != null) {
-								RelationshipDefinition oneToManyRelationship = null;
-								EntityDefinition childEntity = new EntityDefinition();
-								childEntity.setName(StringUtils.uncapitalize(propertyName));
+								
+								childEntity = this.convert(itemsSchema);
+								childEntity.setName(WordUtils.uncapitalizeSingular(propertyName));
 								
 								oneToManyRelationship = new RelationshipDefinition();
 								oneToManyRelationship.setType(RelationshipType.OneToMany);
 								oneToManyRelationship.setChild(childEntity);
-								relationships.add(oneToManyRelationship);
+								entityRelationships.add(oneToManyRelationship);
+								
+								manyToOneRelationship = new RelationshipDefinition();
+								manyToOneRelationship.setType(RelationshipType.ManyToOne);
+								
+								childEntityRelationships = new ArrayList<RelationshipDefinition> ();
+								childEntityRelationships.add(manyToOneRelationship);
+								childEntity.setRelationships(childEntityRelationships);
 							}
 						}
 						
@@ -63,16 +75,14 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 						
 						fields.add(field);
 					} else {
-						EntityDefinition childEntity = null;
-						RelationshipDefinition oneToOneRelationship = null;
-						
+				
 						childEntity = new EntityDefinition();
 						childEntity.setName(propertyName);
 						
 						oneToOneRelationship = new RelationshipDefinition();
 						oneToOneRelationship.setChild(childEntity);
 						oneToOneRelationship.setType(RelationshipType.OneToOne);
-						relationships.add(oneToOneRelationship);
+						entityRelationships.add(oneToOneRelationship);
 					}
 				}
 				
@@ -80,8 +90,8 @@ public class OpenApiSchemaToEntityDefinition implements Converter<Schema, Entity
 			if (!fields.isEmpty()) {
 				entity.setFields(fields);
 			}
-			if (!relationships.isEmpty()) {
-				entity.setRelationships(relationships);
+			if (!entityRelationships.isEmpty()) {
+				entity.setRelationships(entityRelationships);
 			}
 		}
 		return entity;

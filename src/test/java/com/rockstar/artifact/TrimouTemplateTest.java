@@ -74,7 +74,7 @@ public class TrimouTemplateTest {
 			// SERVICE COMPONENT TEMPLATES
 			//this.renderTemplate(Definition.Type.Service, "search_criteria", openApi, model);
 			//this.renderTemplate(Definition.Type.Service, "service_interface", openApi, model);
-			//this.renderTemplate(Definition.Type.Service, "service_impl", openApi, model);
+			this.renderTemplate(Definition.Type.Service, "service_impl", openApi, model);
 			//this.renderTemplate(Definition.Type.Service, "search_specification", openApi, model);
 			
 			// RESOURCE COMPONENT TEMPLATES
@@ -87,7 +87,7 @@ public class TrimouTemplateTest {
 			// MYSQL Table COMPONENT TEMPLATE
 			//this.renderTemplate(Definition.Type.MySqlSchema, "mysql_schema", openApi, model);
 			
-			this.renderTemplate(Definition.Type.Resource, "messages", openApi, model);
+			//this.renderTemplate(Definition.Type.Resource, "messages", openApi, model);
 		}
 	}
 	

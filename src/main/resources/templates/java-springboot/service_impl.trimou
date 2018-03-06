@@ -1,12 +1,14 @@
 package {{packageName}};
 
+{{#definition}}
 {{#isEq datastoreValue 'cassandra'}}import java.util.UUID;{{/isEq}}
+{{#isNotEq entity.childEntities.size 0}}import java.util.List;{{/isNotEq}}
+{{#isNotNull messagingValue}}import org.springframework.context.ApplicationEventPublisher;{{/isNotNull}}
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-{{#definition}}
 import com.{{organization}}.{{namespace}}.service.{{capitalize name}}Service;
 import com.{{organization}}.{{namespace}}.service.NotFoundException;
 {{#isNotEq entity.uniquefields.size 0}}import com.{{organization}}.{{namespace}}.service.NotUniqueException;{{/isNotEq}}
@@ -17,29 +19,49 @@ import com.{{organization}}.{{namespace}}.service.NotFoundException;
 @Transactional(readOnly=true)
 public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Service {
 	
+	@Autowired private {{capitalize entity.repository.name}}Repository {{entity.repository.name}}Repository;
+	{{#isNotEq entity.childEntities.size 0}}
+	{{#entity.childEntities}}
 	@Autowired private {{capitalize repository.name}}Repository {{repository.name}}Repository;
+	{{/entity.childEntities}}
+	{{/isNotEq}}
+	{{#isNotNull messagingValue}}@Autowired private ApplicationEventPublisher eventPublisher;{{/isNotNull}}
 	
 	public Page<{{capitalize search.name}}> search({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest) {
-		return this.{{repository.name}}Repository.findBy{{#search.filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/search.filters}}({{#search.filters}}{{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, pageRequest);
+		return this.{{entity.repository.name}}Repository.findBy{{#search.filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/search.filters}}({{#search.filters}}{{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, pageRequest);
 	}
 	
-	public {{capitalize name}} get{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) {
-		return this.retrieve{{capitalize name}}ById({{name}}Id);
+	public {{capitalize name}} get{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) { 
+		{{capitalize entity.name}} {{entity.name}} = this.retrieve{{capitalize entity.name}}ById({{entity.name}}Id);
+		{{#isNotNull messagingValue}}
+		{{capitalize messaging.name}}Event {{messaging.name}}Event = new {{capitalize messaging.name}}Event(EventType.READ);
+		{{messaging.name}}Event.setPayload({{entity.name}});
+		this.eventPublisher.publishEvent({{messaging.name}}Event);
+		{{/isNotNull}}
+		return {{entity.name}};
 	}
 	
 	@Transactional(readOnly=false)
-	public {{capitalize name}} create{{capitalize name}}({{capitalize name}} {{name}}) {
-		{{capitalize name}} updated{{capitalize name}} = null;
-		if ({{name}} != null) {
-			{{#isNotEq entity.uniquefields.size 0}}this.validateUnique{{capitalize name}}({{name}});{{/isNotEq}}
-			updated{{capitalize name}} = this.{{repository.name}}Repository.save({{name}});
+	public {{capitalize entity.name}} create{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}}) {
+		{{capitalize entity.name}} updated{{capitalize entity.name}} = null;
+		if ({{entity.name}} != null) {
+			{{#isNotEq entity.uniquefields.size 0}}this.validateUnique{{capitalize entity.name}}({{entity.name}});{{/isNotEq}}
+			updated{{capitalize entity.name}} = this.{{entity.repository.name}}Repository.save({{entity.name}});
+			{{#isNotNull messagingValue}}
+			{{capitalize messaging.name}}Event {{messaging.name}}Event = new {{capitalize messaging.name}}Event(EventType.CREATED);
+			{{messaging.name}}Event.setPayload(updated{{capitalize entity.name}});
+			this.eventPublisher.publishEvent({{messaging.name}}Event);
+			{{/isNotNull}}
 		}
 		return updated{{capitalize name}};
 	}
 	
 	@Transactional(readOnly=false)
-	public void update{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}}) {
+	public {{capitalize entity.name}} update{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}}) {
+		{{capitalize entity.name}} updated{{capitalize entity.name}} = null;
 		{{capitalize entity.name}} current{{capitalize entity.name}} = null;
+		{{#isNotNull messagingValue}}{{capitalize messaging.name}}Event {{messaging.name}}Event = null;{{/isNotNull}}
+		
 		Boolean modifyFlag = false;
 		current{{capitalize entity.name}} = this.retrieve{{capitalize name}}ById({{name}}.getId());
 
@@ -52,30 +74,101 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 		{{/entity.primitiveOrObjectFields}}
 		
 		if (modifyFlag) {
-			this.{{repository.name}}Repository.save(current{{capitalize entity.name}});
+			updated{{capitalize entity.name}} = this.{{entity.repository.name}}Repository.save(current{{capitalize entity.name}});
+			{{#isNotNull messagingValue}}
+			{{messaging.name}}Event = new {{capitalize messaging.name}}Event(EventType.UPDATED);
+			{{messaging.name}}Event.setPayload(updated{{capitalize entity.name}});
+			this.eventPublisher.publishEvent({{messaging.name}}Event);
+			{{/isNotNull}}
 		}
+		return updated{{capitalize entity.name}};
 	}
 	
 	@Transactional(readOnly=false)
 	public void delete{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) {
-		this.{{repository.name}}Repository.delete(this.retrieve{{capitalize name}}ById({{name}}Id));
+		this.{{entity.repository.name}}Repository.delete(this.retrieve{{capitalize name}}ById({{name}}Id));
+		{{#isNotNull messagingValue}}
+		{{capitalize messaging.name}}Event {{messaging.name}}Event = new {{capitalize messaging.name}}Event(EventType.DELETED);
+		{{capitalize entity.name}} deleted{{capitalize entity.name}} = new {{capitalize entity.name}}();
+		deleted{{capitalize entity.name}}.setId({{entity.name}}Id);
+		{{messaging.name}}Event.setPayload(deleted{{capitalize entity.name}});
+		this.eventPublisher.publishEvent({{messaging.name}}Event);
+		{{/isNotNull}}
 	}
 	
 	{{#isNotEq entity.uniquefields.size 0}}private void validateUnique{{capitalize name}}({{capitalize name}} {{name}}) {
 		if ({{name}} != null) {
-			if (this.{{repository.name}}Repository.findBy{{repository.uniqueFieldsAndSeparated}}({{#entity.uniquefields}}{{entity.name}}.get{{capitalize name}}(){{#iter.hasNext}},{{/iter.hasNext}}{{/entity.uniquefields}}) != null) {
+			if (this.{{entity.repository.name}}Repository.findBy{{entity.repository.uniqueFieldsAndSeparated}}({{#entity.uniquefields}}{{entity.name}}.get{{capitalize name}}(){{#iter.hasNext}},{{/iter.hasNext}}{{/entity.uniquefields}}) != null) {
 				throw new NotUniqueException("{{entity.name}}");
 			}
 		}
 	}{{/isNotEq}}
 	
 	private {{capitalize name}} retrieve{{capitalize name}}ById({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) {
+		{{capitalize name}} {{name}} = this.{{entity.repository.name}}Repository.findOne({{name}}Id);
+		if ({{name}} == null) {
+			throw new NotFoundException("{{name}}");
+		}
+		return {{name}};
+	}
+	
+	{{#entity.childEntities}}
+	public List<{{capitalize name}}> get{{capitalizePlural name}}(String {{entity.name}}Id) {
+		return this.{{repository.name}}Repository.findBy{{capitalize entity.name}}Id({{entity.name}}Id);
+	}
+
+	public {{capitalize name}} get{{capitalize name}}(String {{entity.name}}Id, String {{name}}Id) {
+		{{capitalize name}} existing{{capitalize name}} = null;
+		
+		this.get{{capitalize entity.name}}({{entity.name}}Id);
+		
+		existing{{capitalize name}} = this.retrieve{{capitalize name}}ById({{name}}Id);
+		
+		if (existing{{capitalize name}} == null) {
+			throw new NotFoundException("{{name}}");
+		}
+		
+		return existing{{capitalize name}};
+	}
+	
+	@Transactional(readOnly=false)
+	public {{capitalize name}} add{{capitalize name}}({{capitalize name}} {{name}}) {
+		{{capitalize name}}  updated{{capitalize name}} = null;
+		if ({{name}} != null) {
+			{{#isNotEq uniquefields.size 0}}this.validateUnique{{capitalize name}}({{name}});{{/isNotEq}}
+			updated{{capitalize name}} = this.{{repository.name}}Repository.save({{name}});
+		}
+		return updated{{capitalize name}};
+	}
+	
+	@Transactional(readOnly=false)
+	public {{capitalize name}} update{{capitalize name}}({{capitalize name}} {{name}}) {
+		return null;
+	}
+	
+	@Transactional(readOnly=false)
+	public void remove{{capitalize name}}(String {{entity.name}}Id, String {{name}}Id) {
+		this.get{{capitalize entity.name}}({{entity.name}}Id);
+		this.{{repository.name}}Repository.delete(this.retrieve{{capitalize name}}ById({{name}}Id));
+	}
+
+	{{#isNotEq uniquefields.size 0}}private void validateUnique{{capitalize name}}({{capitalize name}} {{name}}) {
+		{{capitalize name}} persisted{{capitalize name}} = null;
+		
+		persisted{{capitalize name}} = this.{{repository.name}}Repository.findBy{{capitalize parent}}Id{{repository.uniqueFieldsAndSeparated}}({{name}}.get{{capitalize parent}}Id(){{#isNotEq uniquefields.size 0}}, {{#uniquefields}}{{entity.name}}.get{{capitalize name}}(){{#iter.hasNext}},{{/iter.hasNext}}{{/uniquefields}}{{/isNotEq}});
+		if (persisted{{capitalize name}} != null) {
+			throw new NotUniqueException("{{name}}");
+		}
+	}{{/isNotEq}}
+	
+	private {{capitalize name}} retrieve{{capitalize name}}ById(String {{name}}Id) {
 		{{capitalize name}} {{name}} = this.{{repository.name}}Repository.findOne({{name}}Id);
 		if ({{name}} == null) {
 			throw new NotFoundException("{{name}}");
 		}
 		return {{name}};
 	}
+	{{/entity.childEntities}}
 	
 }
 {{/definition}}

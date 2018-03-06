@@ -1,0 +1,10 @@
+package {{packageName}};
+
+public enum EventType {
+	
+	CREATED,
+	UPDATED,
+	READ,
+	DELETED
+
+}

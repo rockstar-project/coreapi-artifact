@@ -1,1 +1,0 @@
-{{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}

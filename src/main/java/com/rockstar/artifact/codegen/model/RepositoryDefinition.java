@@ -8,6 +8,7 @@ import org.apache.commons.lang3.text.WordUtils;
 public class RepositoryDefinition implements Definition {
 	
 	private String name;
+	private String parent;
 	private Collection<FieldDefinition> uniquefields;
 	private SearchDefinition search;
 	
@@ -28,6 +29,14 @@ public class RepositoryDefinition implements Definition {
 
 	public void setUniquefields(Collection<FieldDefinition> uniquefields) {
 		this.uniquefields = uniquefields;
+	}
+
+	public String getParent() {
+		return parent;
+	}
+
+	public void setParent(String parent) {
+		this.parent = parent;
 	}
 
 	public SearchDefinition getSearch() {
