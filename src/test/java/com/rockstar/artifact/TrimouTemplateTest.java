@@ -77,38 +77,37 @@ public class TrimouTemplateTest {
 			}
 		} else {
 			// STATIC TEMPLATES
-			//this.renderTemplate("maven", model);
-			//this.renderTemplate("enum_validator", model);
+			//this.renderTemplate("java-springboot/maven", model);
+			//this.renderTemplate("java-springboot/enum_validator", model);
 			
 			// ENTITY COMPONENT TEMPLATES
-			//this.renderTemplate(Definition.Type.Entity, "mysql_entity", openApi, model);
-			// NOT TESTED: this.renderTemplate(Definition.Type.Repository, "mysql_schema", openApi, model);
+			//this.renderTemplate(Definition.Type.Entity, "java-springboot/mysql_entity", openApi, model);
+			// NOT TESTED: this.renderTemplate(Definition.Type.Repository, "java-springboot/mysql_schema", openApi, model);
 		    		
 			// REPOSITORY COMPONENT TEMPLATES
-			//this.renderTemplate(Definition.Type.Repository, "mysql_repository", openApi, model);
+			//this.renderTemplate(Definition.Type.Repository, "java-springboot/mysql_repository", openApi, model);
 			
 			// SERVICE COMPONENT TEMPLATES
-			//this.renderTemplate(Definition.Type.Service, "search_criteria", openApi, model);
-			//this.renderTemplate(Definition.Type.Service, "service_interface", openApi, model);
-			//this.renderTemplate(Definition.Type.Service, "service_impl", openApi, model);
-			//this.renderTemplate(Definition.Type.Service, "search_specification", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "java-springboot/search_criteria", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "java-springboot/service_interface", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "java-springboot/service_impl", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "java-springboot/search_specification", openApi, model);
 			
 			// RESOURCE COMPONENT TEMPLATES
-			//this.renderTemplate(Definition.Type.Resource, "resource", openApi, model);
-			// this.renderTemplate(Definition.Type.Resource, "resource_assembler", openApi, model);
+			//this.renderTemplate(Definition.Type.Resource, "java-springboot/resource", openApi, model);
+			// this.renderTemplate(Definition.Type.Resource, "java-springboot/resource_assembler", openApi, model);
 			
 			// CONTROLLER COMPONENT TEMPLATE
-			this.renderTemplate(Definition.Type.Controller, "controller", openApi, model);
-			
+			this.renderTemplate(Definition.Type.Controller, "java-springboot/controller", openApi, model);
 			// MYSQL Table COMPONENT TEMPLATE
-			//this.renderTemplate(Definition.Type.MySqlSchema, "mysql_schema", openApi, model);
+			//this.renderTemplate(Definition.Type.MySqlSchema, "java-springboot/mysql_schema", openApi, model);
 			
-			//this.renderTemplate(Definition.Type.Resource, "messages", openApi, model);
+			//this.renderTemplate(Definition.Type.Resource, "java-springboot/messages", openApi, model);
 		}
 	}
 	
 	private void renderTemplate(String template, Model model) {
-		String generatedCode = templateEngine.getMustache("java-springboot/" + template).render(model);
+		String generatedCode = templateEngine.getMustache(template).render(model);
 		System.out.println(generatedCode);
 	}
 	
@@ -119,7 +118,7 @@ public class TrimouTemplateTest {
 			for (Definition current : definitions) {
 	    			model.setName(StringUtils.lowerCase(current.getName()));
 	    			model.setDefinition(current);
-	    			String generatedCode = templateEngine.getMustache("java-springboot/" + template).render(model);
+	    			String generatedCode = templateEngine.getMustache(template).render(model);
 	    			System.out.println(generatedCode);
 	    		}
 		}
@@ -132,7 +131,7 @@ public class TrimouTemplateTest {
 			for (Definition current : definitions) {
 	    			model.setName(StringUtils.lowerCase(current.getName()));
 	    			model.setDefinition(current);
-	    			String generatedCode = templateEngine.getMustache("java-springboot/" + template).render(model);
+	    			String generatedCode = templateEngine.getMustache(template).render(model);
 	    			System.out.println(generatedCode);
 	    			
 	    			try {

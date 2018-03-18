@@ -1,5 +1,0 @@
-package {{packageName}}.model;
-
-public class {{capitalize schema.name}} {
-
-}

@@ -105,6 +105,51 @@
 			<scope>test</scope>
 		</dependency>
 		{{/isEq}}
+		{{#isEq datastoreValue "postgresql" }}
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "mariadb" }}
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>1.1.9</version>
+		</dependency>
+		{{/isEq}}
+        {{#isEq datastoreValue "neo4j" }}
+        <dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-neo4j</artifactId>
+		</dependency>
+		<dependency> <!-- If you're using the HTTP driver -->
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-http-driver</artifactId>
+		</dependency>
+        {{/isEq}}
+        {{#isEq datastoreValue "redis" }}
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-redis</artifactId>
+			<version>1.4.4.RELEASE</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "couchdb" }}
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-couchbase</artifactId>
+		</dependency>
+		{{/isEq}}
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>

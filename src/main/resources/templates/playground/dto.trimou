@@ -1,5 +1,0 @@
-{{<playground/pojo}}
-	{{$persistence_annotations}}
-	@Column(name="{{uppercase key}}")
-	{{/persistence_annotations}}
-{{playground/pojo}}

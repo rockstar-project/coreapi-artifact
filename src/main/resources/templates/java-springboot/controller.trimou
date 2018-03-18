@@ -36,25 +36,25 @@ import com.{{organization}}.{{namespace}}.domain.{{capitalize name}};
 @RequestMapping("/{{pluralize name}}")
 public class {{capitalize name}}Controller {
 
-    @Autowired private {{capitalize service.name}}Service {{service.name}}Service;
-    @Autowired private {{capitalize resource.name}}ResourceAssembler {{resource.name}}ResourceAssembler;
-    {{#resource.subresources}}
-    @Autowired private {{capitalize .}}ResourceAssembler {{.}}ResourceAssembler;
-    {{/resource.subresources}}
-    
-    {{#search}}
-    @GetMapping
-    public HttpEntity<PagedResources<{{capitalize resource.name}}Resource>> search(
+	@Autowired private {{capitalize service.name}}Service {{service.name}}Service;
+	@Autowired private {{capitalize resource.name}}ResourceAssembler {{resource.name}}ResourceAssembler;
+	{{#resource.subresources}}
+	@Autowired private {{capitalize .}}ResourceAssembler {{.}}ResourceAssembler;
+	{{/resource.subresources}}
+
+	{{#search}}
+	@GetMapping
+	public HttpEntity<PagedResources<{{capitalize resource.name}}Resource>> search(
 		{{#search.filters}}@RequestParam(name = "{{name}}", required = {{notEmptyConstraint}}) {{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}},
-   			@PageableDefault(page = 0, size = 10, sort="name") Pageable pageable, PagedResourcesAssembler<{{capitalize resource.name}}> pageResourcesAssembler) {
-   		Page<{{capitalize resource.name}}> {{resource.name}}Page = null;
-   		PagedResources<{{capitalize resource.name}}Resource> {{resource.name}}ResourcePage = null;
-   			
-   		{{resource.name}}Page = this.{{service.name}}Service.search({{#search.filters}}{{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, pageable);
-   		{{resource.name}}ResourcePage = pageResourcesAssembler.toResource({{resource.name}}Page, this.{{resource.name}}ResourceAssembler);
-   		
-   		return new ResponseEntity<PagedResources<{{capitalize resource.name}}Resource>>({{resource.name}}ResourcePage, HttpStatus.OK);
-   	}
+		@PageableDefault(page = 0, size = 10, sort="name") Pageable pageable, PagedResourcesAssembler<{{capitalize resource.name}}> pageResourcesAssembler) {
+		Page<{{capitalize resource.name}}> {{resource.name}}Page = null;
+		PagedResources<{{capitalize resource.name}}Resource> {{resource.name}}ResourcePage = null;
+			
+		{{resource.name}}Page = this.{{service.name}}Service.search({{#search.filters}}{{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, pageable);
+		{{resource.name}}ResourcePage = pageResourcesAssembler.toResource({{resource.name}}Page, this.{{resource.name}}ResourceAssembler);
+		
+		return new ResponseEntity<PagedResources<{{capitalize resource.name}}Resource>>({{resource.name}}ResourcePage, HttpStatus.OK);
+	}
 	{{/search}}
 	{{^search}}
 	
@@ -73,44 +73,41 @@ public class {{capitalize name}}Controller {
 		HttpHeaders headers = null;
 		{{capitalize service.entity.name}} new{{capitalize service.entity.name}} = null;
 		{{capitalize service.entity.name}} updated{{capitalize service.entity.name}} = null;
-		
 		new{{capitalize service.entity.name}} = this.{{resource.name}}ResourceAssembler.fromResource({{resource.name}}Resource);
 		updated{{capitalize service.entity.name}} = this.{{service.name}}Service.create{{capitalize service.name}}(new{{capitalize service.entity.name}});
 		headers = new HttpHeaders();
 		headers.setLocation(linkTo({{capitalize name}}Controller.class).slash(updated{{capitalize service.entity.name}}.getId()).toUri());
-		
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-    	}
-
-    @GetMapping(value="/{id}")
-    public ResponseEntity<{{capitalize resource.name}}Resource> get{{capitalize resource.name}}ById(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id) {
-    		{{capitalize resource.name}} {{service.entity.name}} = this.{{name}}Service.get{{capitalize name}}(id);
-    		{{capitalize resource.name}}Resource {{resource.name}}Resource = this.{{resource.name}}ResourceAssembler.toResource({{resource.name}});
-    		
-    		return new ResponseEntity<{{capitalize name}}Resource>({{resource.name}}Resource, HttpStatus.OK);
-    }
-
-    @PatchMapping(value="/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update{{capitalize resource.name}}(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id, @RequestBody {{capitalize name}} {{name}}) {
-    		{{name}}.setId(id);
-    		this.{{service.name}}Service.update{{capitalize service.name}}({{name}});
-    }
-    
-    @DeleteMapping(value="/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete{{capitalize resource.name}}(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id) {
-    		this.{{service.name}}Service.delete{{capitalize service.name}}(id);
-    	}
-    	
-    	{{#resource.subresources}}
-    	@GetMapping(value="/{id}/{{pluralize .}}")
-    	public HttpEntity<List<{{capitalize .}}Resource>> get{{capitalize resource.name}}{{capitalizePlural .}}(@PathVariable("id") String {{resource.name}}Id) {
-    		List<{{capitalize .}}> {{resource.name}}{{capitalizePlural .}} = this.{{resource.name}}Service.get{{capitalizePlural .}}({{resource.name}}Id);
-    		List<{{capitalize .}}Resource> {{.}}ResourceList = this.{{.}}ResourceAssembler.toResources({{resource.name}}{{capitalizePlural .}});
-    		return new ResponseEntity<List<{{capitalize .}}Resource>>({{.}}ResourceList, HttpStatus.OK);
 	}
 	
+	@GetMapping(value="/{id}")
+	public ResponseEntity<{{capitalize resource.name}}Resource> get{{capitalize resource.name}}ById(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id) {
+		{{capitalize resource.name}} {{service.entity.name}} = this.{{name}}Service.get{{capitalize name}}(id);
+		{{capitalize resource.name}}Resource {{resource.name}}Resource = this.{{resource.name}}ResourceAssembler.toResource({{resource.name}});
+		return new ResponseEntity<{{capitalize name}}Resource>({{resource.name}}Resource, HttpStatus.OK);
+}
+
+	@PatchMapping(value="/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void update{{capitalize resource.name}}(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id, @RequestBody {{capitalize name}} {{name}}) {
+		{{name}}.setId(id);
+		this.{{service.name}}Service.update{{capitalize service.name}}({{name}});
+	}
+
+	@DeleteMapping(value="/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete{{capitalize resource.name}}(@PathVariable("id") {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} id) {
+		this.{{service.name}}Service.delete{{capitalize service.name}}(id);
+	}
+	
+	{{#resource.subresources}}
+	@GetMapping(value="/{id}/{{pluralize .}}")
+	public HttpEntity<List<{{capitalize .}}Resource>> get{{capitalize resource.name}}{{capitalizePlural .}}(@PathVariable("id") String {{resource.name}}Id) {
+		List<{{capitalize .}}> {{resource.name}}{{capitalizePlural .}} = this.{{resource.name}}Service.get{{capitalizePlural .}}({{resource.name}}Id);
+		List<{{capitalize .}}Resource> {{.}}ResourceList = this.{{.}}ResourceAssembler.toResources({{resource.name}}{{capitalizePlural .}});
+		return new ResponseEntity<List<{{capitalize .}}Resource>>({{.}}ResourceList, HttpStatus.OK);
+	}
+
 	@PostMapping(value="/{id}/{{pluralize .}}")
 	public HttpEntity<Void> create{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @RequestBody {{capitalize .}}Resource {{.}}Resource) {
 		HttpHeaders headers = null;
@@ -123,14 +120,14 @@ public class {{capitalize name}}Controller {
 		
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping(value="/{id}/{{pluralize .}}/{subresource_id}")
 	public HttpEntity<{{capitalize .}}Resource> get{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @PathVariable("subresource_id") String {{.}}Id) {
 		{{capitalize .}}Resource {{.}}Resource = null;
 		{{.}}Resource = this.{{.}}ResourceAssembler.toResource(this.{{service.name}}Service.get{{capitalize .}}({{resource.name}}Id, {{.}}Id));
 		return new ResponseEntity<{{capitalize .}}Resource>({{.}}Resource, HttpStatus.OK);
 	}
-	
+
 	@PutMapping(value="/{id}/{{pluralize .}}/{subresource_id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void update{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @PathVariable("subresource_id") String {{.}}Id, @RequestBody @Valid {{capitalize .}} {{.}}) {
@@ -138,7 +135,7 @@ public class {{capitalize name}}Controller {
 		{{.}}.setId({{.}}Id);
 		this.{{service.name}}Service.update{{capitalize .}}({{.}});
 	}
-	
+
 	@DeleteMapping(value="/{id}/{{pluralize .}}/{subresource_id}")
 	public void delete{{capitalize resource.name}}{{capitalize .}}(@PathVariable("id") String {{resource.name}}Id, @PathVariable("subresource_id") String {{.}}Id) {
 		{{capitalize .}} {{.}} = new {{capitalize .}}();
@@ -146,7 +143,7 @@ public class {{capitalize name}}Controller {
 		{{.}}.set{{capitalize resource.name}}Id({{resource.name}}Id);
 		this.{{service.name}}Service.remove{{capitalize .}}({{resource.name}}Id, {{.}}Id);
 	}
-	
+
 	{{/resource.subresources}}
 }
 {{/definition}}

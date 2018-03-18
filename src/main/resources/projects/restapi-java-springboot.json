@@ -49,12 +49,12 @@
       "naming_convention": "capitalize"
     },
     {
-      "template": "common/environment_var",
+      "template": "java-springboot/environment_var",
       "filename": "environment.sh",
       "naming_convention": "lowercase"
     },
     {
-      "template": "common/docker_compose",
+      "template": "java-springboot/docker_compose",
       "filename": "docker-compose.yml",
       "naming_convention": "lowercase"
     },
