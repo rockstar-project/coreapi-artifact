@@ -1,18 +1,25 @@
 package {{packageName}};
 
+{{#definition}}
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-{{#definition}}
 {{#dateTimeType}}
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 {{/dateTimeType}}
-{{#dateType}}import org.joda.time.LocalDate;{{/dateType}}
-{{#floatType}}import java.math.BigDecimal;{{/floatType}}
+{{#dateType}}
+import org.joda.time.LocalDate;
+{{/dateType}}
+{{#floatType}}
+import java.math.BigDecimal;
+{{/floatType}}
+{{/definition}}
+
+{{#definition}}
 @Entity
 @Table(name="{{camelcaseToUpperSnakecase name}}")
 public class {{capitalize name}} {
@@ -22,9 +29,11 @@ public class {{capitalize name}} {
 	private String id;
 	
 	{{#primitiveOrObjectFields}}
-	{{#dateTimeType}}@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime"){{/dateTimeType}}
+	{{#dateTimeType}}
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	{{/dateTimeType}}
 	@Column(name="{{camelcaseToUpperSnakecase name}}")
-	private {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}} {{camelcase name}};
+	private {{>java_type}} {{camelcase name}};
 	
 	{{/primitiveOrObjectFields}}
 	{{#manyToOneRelationships}}
@@ -32,7 +41,6 @@ public class {{capitalize name}} {
 	private String {{parent.name}}Id;
 	
 	{{/manyToOneRelationships}}
-	
 	public {{capitalize name}}() {
 	}
 	
@@ -44,10 +52,10 @@ public class {{capitalize name}} {
 	}
 	
     {{#primitiveOrObjectFields}}
-	public {{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}} get{{capitalizeCamelcase name}}() {
+	public {{>java_type}} get{{capitalizeCamelcase name}}() {
 		return this.{{name}};
 	}
-	public void set{{capitalizeCamelcase name}}({{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}} {{name}}) {
+	public void set{{capitalizeCamelcase name}}({{>java_type}} {{name}}) {
 		this.{{name}} = {{name}};
 	}
 	
@@ -69,3 +77,4 @@ public class {{capitalize name}} {
 	}
 }
 {{/definition}}
+{{+java_type}}{{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}}{{/java_type}}

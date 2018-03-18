@@ -1,21 +1,22 @@
 package com.rockstar.artifact.model;
 
-import com.rockstar.artifact.codegen.model.SpecDefinitions;
+import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 import com.rockstar.artifact.util.CheckUtils;
 
 public class ProjectBuilder {
 	
 	private Model model;
-	private SpecDefinitions specs;
+	private MicroserviceDefinition specs;
 
 	public ProjectBuilder() {
 		this.model = new Model();
 	}
 	
-	public ProjectBuilder withArchitecture(String architecture) {
-		CheckUtils.checkArgumentNotNullOrEmpty(architecture);
-		this.model.setArchitecture(architecture);
-		
+	public ProjectBuilder withArchitecture(SelectedValue architecture) {
+		if (architecture != null) {
+			this.model.setArchitecture(architecture.getValue());
+			//this.model.setArchitectureVersion(architecture.getVersion());
+		}
 		return this;
 	}
 	
@@ -151,7 +152,19 @@ public class ProjectBuilder {
 		return this;
 	}
 	
-	public ProjectBuilder withApiSpec(SpecDefinitions specDefinitions) throws Exception {
+	public ProjectBuilder withVersion(String version) {
+		CheckUtils.checkArgumentNotNullOrEmpty(version);
+		this.model.setVersion(version);
+		return this;
+	}
+	
+	public ProjectBuilder withContact(String contactName) {
+		CheckUtils.checkArgumentNotNullOrEmpty(contactName);
+		this.model.setContact(contactName);
+		return this;
+	}
+	
+	public ProjectBuilder withDefinition(MicroserviceDefinition specDefinitions) throws Exception {
 		CheckUtils.checkArgumentNotNull(specDefinitions);
 		this.specs = specDefinitions;
 		return this;

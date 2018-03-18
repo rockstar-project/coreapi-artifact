@@ -9,8 +9,9 @@ public class RepositoryDefinition implements Definition {
 	
 	private String name;
 	private String parent;
+	private boolean pageable;
+	private Collection<ParamDefinition> filters;
 	private Collection<FieldDefinition> uniquefields;
-	private SearchDefinition search;
 	
 	public RepositoryDefinition() {
 	}
@@ -39,12 +40,24 @@ public class RepositoryDefinition implements Definition {
 		this.parent = parent;
 	}
 
-	public SearchDefinition getSearch() {
-		return search;
+	public boolean isPageable() {
+		return pageable;
 	}
 
-	public void setSearch(SearchDefinition search) {
-		this.search = search;
+	public void setPageable(boolean pageable) {
+		this.pageable = pageable;
+	}
+
+	public Collection<ParamDefinition> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(Collection<ParamDefinition> filters) {
+		this.filters = filters;
+	}
+
+	public boolean isSearchable() {
+		return (this.filters != null && !this.filters.isEmpty());
 	}
 
 	public String getUniqueFieldsMethodArguments() {

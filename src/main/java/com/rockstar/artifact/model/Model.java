@@ -41,7 +41,6 @@ public class Model {
 	private String buildVersion;
 	private String testValue;
 	private String testVersion;
-	private Definition generalInfo;
 	private Definition definition;
 	
 	public Model() {
@@ -351,15 +350,6 @@ public class Model {
 		this.definition = definition;
 	}
 
-	public Definition getGeneralInfo() {
-		return generalInfo;
-	}
-
-	public void setGeneralInfo(Definition generalInfo) {
-		this.generalInfo = generalInfo;
-	}
-
-	@Override
 	public String toString() {
 		return "Model [packageName=" + packageName + ", version=" + version + ", contact=" + contact + ", architecture="
 				+ architecture + ", namespace=" + namespace + ", organization=" + organization + ", name=" + name
@@ -374,7 +364,7 @@ public class Model {
 				+ cdVersion + ", scmValue=" + scmValue + ", scmVersion=" + scmVersion + ", registryValue="
 				+ registryValue + ", registryVersion=" + registryVersion + ", buildValue=" + buildValue
 				+ ", buildVersion=" + buildVersion + ", testValue=" + testValue + ", testVersion=" + testVersion
-				+ ", generalInfo=" + generalInfo + ", definition=" + definition + "]";
+				+ ", definition=" + definition + "]";
 	}
 	
 	

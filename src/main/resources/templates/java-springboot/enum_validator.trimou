@@ -3,33 +3,27 @@ package {{packageName}};
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
  
-public class EnumValueValidator implements ConstraintValidator<ValidEnum, String>
-{
-    private ValidEnum annotation;
- 
-    public void initialize(ValidEnum annotation) {
-        this.annotation = annotation;
-    }
- 
-    public boolean isValid(String valueForValidation, ConstraintValidatorContext constraintValidatorContext)
-    {
-        boolean result = false;
-         
-        Object[] enumValues = this.annotation.allowableValues();
-         
-        if(enumValues != null)
-        {
-            for(Object enumValue:enumValues)
-            {
-                if(valueForValidation.equals(enumValue.toString()) 
-                   || (this.annotation.ignoreCase() && valueForValidation.equalsIgnoreCase(enumValue.toString())))
-                {
-                    result = true; 
-                    break;
-                }
-            }
-        }
-         
-        return result;
+public class EnumValueValidator implements ConstraintValidator<ValidEnum, String> {
+
+	private ValidEnum annotation;
+	
+	public void initialize(ValidEnum annotation) {
+		this.annotation = annotation;
+	}
+	
+	public boolean isValid(String valueForValidation, ConstraintValidatorContext constraintValidatorContext) {
+		boolean result = false;
+		Object[] enumValues = this.annotation.allowableValues();
+		
+		if(enumValues != null) {
+			for(Object enumValue:enumValues) {
+				if (valueForValidation.equals(enumValue.toString()) 
+					|| (this.annotation.ignoreCase() && valueForValidation.equalsIgnoreCase(enumValue.toString()))) {
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
     }
 }

@@ -11,21 +11,26 @@ import com.{{organization}}.{{namespace}}.domain.{{capitalize name}};
 {{/entity.childEntities}}
 
 public interface {{capitalize name}}Service {
+
+  public {{capitalize entity.name}} get{{capitalize entity.name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} identifier);
+  public {{capitalize entity.name}} create{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
+  public {{capitalize entity.name}} update{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
+  public void delete{{capitalize entity.name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} identifier);
+  {{#search}}
+  public Page<{{capitalize entity.name}}> search({{#filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/filters}}{{#pageable}}, Pageable pageRequest{{/pageable}});
+  {{/search}}
+  {{^search}}
+  public List<{{capitalize entity.name}}> getAll{{capitalizePlural entity.name}}();
+  {{/search}}
+  
+  {{#entity.childEntities}}
+  public List<{{capitalize name}}> get{{capitalizePlural name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{entity.name}}Id);
+  public {{capitalize name}} get{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{entity.name}}Id, {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id);
+  public {{capitalize name}} add{{capitalize name}}({{capitalize name}} {{name}});
+  public {{capitalize name}} update{{capitalize name}}({{capitalize name}} {{name}});
+  public void remove{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{entity.name}}Id, {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id);
 	
-	public {{capitalize entity.name}} get{{capitalize entity.name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} identifier);
-	public {{capitalize entity.name}} create{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
-	public {{capitalize entity.name}} update{{capitalize entity.name}}({{capitalize entity.name}} {{entity.name}});
-	public void delete{{capitalize entity.name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} identifier);
-	public Page<{{capitalize search.name}}> search({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest);
-	
-	{{#entity.childEntities}}
-	public List<{{capitalize name}}> get{{capitalizePlural name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{entity.name}}Id);
-	public {{capitalize name}} get{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{entity.name}}Id, {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id);
-	public {{capitalize name}} add{{capitalize name}}({{capitalize name}} {{name}});
-	public {{capitalize name}} update{{capitalize name}}({{capitalize name}} {{name}});
-	public void remove{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{entity.name}}Id, {{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id);
-	
-	{{/entity.childEntities}}
+  {{/entity.childEntities}}
 }
 {{/definition}}
 

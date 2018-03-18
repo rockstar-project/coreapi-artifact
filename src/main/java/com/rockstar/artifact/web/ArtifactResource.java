@@ -4,21 +4,22 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
 import com.rockstar.artifact.model.SelectedValue;
-import com.rockstar.artifact.model.Specification;
 
 @Relation(value="artifact", collectionRelation="artifacts")
 public class ArtifactResource extends ResourceSupport  {
 	
-	private String namespace;
+	private String name;
 	private String organization;
-	private String architecture;
+	private String schema;
+	private SelectedValue architecture;
 	private SelectedValue language;
 	private SelectedValue framework;
-	private Specification specification;
+	private SelectedValue specification;
 	private SelectedValue datastore;
 	private SelectedValue http;
 	private SelectedValue messaging;
@@ -37,21 +38,50 @@ public class ArtifactResource extends ResourceSupport  {
 	}
 
 	@NotEmpty
-	public String getNamespace() {
-		return namespace;
+	public String getName() {
+		return name;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@NotEmpty
-	public String getArchitecture() {
+	public String getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+
+	@NotEmpty
+	@URL
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+	@NotNull
+	public SelectedValue getArchitecture() {
 		return architecture;
 	}
 
-	public void setArchitecture(String architecture) {
+	public void setArchitecture(SelectedValue architecture) {
 		this.architecture = architecture;
+	}
+
+	@NotNull
+	@Valid
+	public SelectedValue getSpecification() {
+		return specification;
+	}
+
+	public void setSpecification(SelectedValue specification) {
+		this.specification = specification;
 	}
 
 	@NotNull
@@ -72,29 +102,6 @@ public class ArtifactResource extends ResourceSupport  {
 
 	public void setFramework(SelectedValue framework) {
 		this.framework = framework;
-	}
-	
-	@NotNull
-	@Valid
-	public Specification getSpecification() {
-		return specification;
-	}
-
-	public void setSpecification(Specification specification) {
-		this.specification = specification;
-	}
-
-	@NotEmpty
-	public String getOrganization() {
-		return organization;
-	}
-
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
-	
-	public String getSlug() {
-		return String.format("%s-%s", this.language.getValue(), this.framework.getValue());
 	}
 
 	public SelectedValue getDatastore() {

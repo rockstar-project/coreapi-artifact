@@ -1,11 +1,11 @@
 package com.rockstar.artifact.model;
 
-import com.rockstar.artifact.codegen.model.SpecDefinitions;
+import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 
 public class Project {
 	
 	private Model model;
-	private SpecDefinitions specDefinitions;
+	private MicroserviceDefinition specDefinitions;
 	
 	public Project() {
 	}
@@ -18,11 +18,11 @@ public class Project {
 		this.model = model;
 	}
 
-	public SpecDefinitions getSpecDefinitions() {
+	public MicroserviceDefinition getSpecDefinitions() {
 		return specDefinitions;
 	}
 
-	public void setSpecDefinitions(SpecDefinitions specDefinitions) {
+	public void setSpecDefinitions(MicroserviceDefinition specDefinitions) {
 		this.specDefinitions = specDefinitions;
 	}
 }

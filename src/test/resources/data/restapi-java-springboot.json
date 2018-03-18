@@ -1,7 +1,10 @@
 {
-  "namespace": "ecommerce",
-  "organization": "codefly",
-  "architecture": "restapi",
+  "name": "ecomm",
+  "organization": "cookery",
+  "schema": "https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json",
+  "architecture": {
+  	"value": "restapi"
+  },
   "framework": {
     "value": "springboot",
     "version": "1.5.9"
@@ -11,9 +14,8 @@
     "version": "8"
   },
   "specification": {
-    "type": "openapi",
-    "version": "3",
-    "location": "https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json"
+    "value": "openapi",
+    "version": "3"
   },
   "datastore": {
     "value": "mongodb",

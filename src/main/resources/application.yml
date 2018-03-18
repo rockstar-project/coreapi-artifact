@@ -8,4 +8,20 @@ eureka:
       defaultZone: http://discovery:8761/eureka/
 logging:
   level:
-    com.auth0.spring.security: DEBUG
+    root: WARN
+    com:
+      fasterxml:
+        jackson: ERROR
+      netflix:
+        discovery: ERROR
+      auth0:
+        spring: ERROR
+      google: ERROR
+    org:
+      springframework:
+        security: DEBUG
+        web: ERROR
+      hibernate: ERROR
+      trimou: DEBUG
+      apache:
+        http: ERROR

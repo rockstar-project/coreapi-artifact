@@ -1,11 +1,11 @@
 package com.rockstar.artifact.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
 import org.trimou.engine.config.EngineConfigurationKey;
@@ -13,10 +13,9 @@ import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.SimpleHelpers;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.rockstar.artifact.model.ProjectDirectory;
+import com.rockstar.artifact.model.ProjectTemplate;
+import com.rockstar.artifact.model.ProjectTemplateRegistry;
 import com.rockstar.artifact.service.CodeGenerator;
 import com.rockstar.artifact.util.CheckUtils;
 import com.rockstar.artifact.util.WordUtils;
@@ -25,27 +24,28 @@ import com.rockstar.artifact.util.WordUtils;
 public class ServiceConfig {
 	
 	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Autowired
 	private ApplicationContext applicationContext;
 	
 	
 	@Bean
 	public CodeGenerator codeGenerator() throws Exception {
-		return new CodeGenerator(this.templateEngine(), this.projectDirectory());
+		return new CodeGenerator(this.templateEngine(), this.projectTemplateRegistry());
 	}
 	
 	@Bean
-	public ProjectDirectory projectDirectory() throws Exception {
-		ObjectMapper jsonMapper = new ObjectMapper();
-	    jsonMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-	    jsonMapper.setSerializationInclusion(Include.NON_NULL);
-	    Resource projectDirectoryResource = this.applicationContext.getResource("classpath:projects/java-springboot.json");
-	    ProjectDirectory projectDirectory = jsonMapper.readValue(projectDirectoryResource.getInputStream(), ProjectDirectory.class);
-		return projectDirectory;
-	}
-	
-	@Bean
-	public Resource[] workspaceDefinitionResources() throws Exception {
-		return this.applicationContext.getResources("classpath*:definitions/*.json");
+	public ProjectTemplateRegistry projectTemplateRegistry() throws Exception {
+		ProjectTemplateRegistry projectTemplateRegistry = new ProjectTemplateRegistry();
+		Resource[] templateResources = this.applicationContext.getResources("classpath*:projects/*.json");
+		if (templateResources!= null && templateResources.length > 0) {
+			for (Resource currentResource : templateResources) {
+				projectTemplateRegistry.registerTemplate(StringUtils.substringBefore(currentResource.getFilename(), "."), this.objectMapper.readValue(currentResource.getInputStream(), ProjectTemplate.class));
+			}
+		}
+		
+		return projectTemplateRegistry;
 	}
 	
 	@Bean

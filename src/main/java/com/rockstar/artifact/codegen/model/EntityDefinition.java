@@ -197,8 +197,14 @@ public class EntityDefinition implements Definition {
 	}
 	
 	public boolean hasFieldType(FieldType type) {
-		Collection<FieldDefinition> types = this.getTypes(type);
-		return (types != null && !types.isEmpty());
+		boolean hasType = false;
+		for (FieldDefinition currentField : this.fields) {
+			if (currentField.isType(type)) {
+				hasType = true;
+				break;
+			}
+		}
+		return hasType;
 	}
 
 	public String toString() {

@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.rockstar.artifact.model.InvalidSchemaException;
 import com.rockstar.artifact.model.NotFoundException;
+import com.rockstar.artifact.service.InvalidSchemaException;
 
 @ControllerAdvice
 public class ErrorHandler {

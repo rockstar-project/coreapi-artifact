@@ -1,4 +1,4 @@
-package com.rockstar.artifact.model;
+package com.rockstar.artifact.service;
 
 public class InvalidSchemaException extends RuntimeException {
 

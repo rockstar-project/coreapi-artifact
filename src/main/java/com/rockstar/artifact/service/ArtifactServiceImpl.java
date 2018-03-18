@@ -2,7 +2,6 @@ package com.rockstar.artifact.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.URI;
 
 import javax.inject.Inject;
 
@@ -14,17 +13,15 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.reprezen.kaizen.oasparser.OpenApi3Parser;
-import com.reprezen.kaizen.oasparser.model3.OpenApi3;
-import com.rockstar.artifact.codegen.model.SpecDefinitions;
-import com.rockstar.artifact.converter.openapi.OpenApiToSpecDefinitions;
+import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
+import com.rockstar.artifact.converter.SpecificationToMicroserviceDefinition;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.NotFoundException;
 import com.rockstar.artifact.model.Project;
 import com.rockstar.artifact.model.ProjectBuilder;
+import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.model.Specification;
-import com.rockstar.artifact.model.SpecificationException;
 import com.rockstar.artifact.util.ZipUtils;
 import com.rockstar.artifact.web.ArtifactResource;
 
@@ -33,53 +30,47 @@ public class ArtifactServiceImpl implements ArtifactService {
 
 	static Logger LOGGER = LoggerFactory.getLogger(ArtifactService.class);
 
-	@Inject
-	private CodeGenerator codeGenerator;
-
-	@Inject
-	private OpenApiToSpecDefinitions openApiToDefinitionConverter;
+	@Inject private CodeGenerator codeGenerator;
+	@Inject private SpecificationToMicroserviceDefinition schemaToDefinition;
 
 	public String createArtifact(ArtifactResource artifact) throws Exception {
+		String artifactId = null;
 		Project project = null;
-		SpecDefinitions specDefinition = null;
-
+		GeneratedProject generatedProject = null;
+		String directory = null;
+		
 		if (artifact != null) {
-			Specification specification = artifact.getSpecification();
+			project = new ProjectBuilder()
+					.withArchitecture(artifact.getArchitecture())
+					.withLanguage(artifact.getLanguage())
+					.withFramework(artifact.getFramework())
+					.withNamespace(artifact.getName())
+					.withOrganization(artifact.getOrganization())
+					.withDatastore(artifact.getDatastore())
+					.withHttp(artifact.getHttp())
+					.withMessaging(artifact.getMessaging())
+					.withDiscovery(artifact.getDiscovery())
+					.withMonitoring(artifact.getMonitoring())
+					.withSecurity(artifact.getSecurity())
+					.withTracing(artifact.getTracing())
+					.withCi(artifact.getCi())
+					.withCd(artifact.getCd())
+					.withRegistry(artifact.getRegistry())
+					.withScm(artifact.getScm())
+					.withBuild(artifact.getBuild())
+					.withTest(artifact.getTest())
+					.withDefinition(this.createMicroserviceDefinition(artifact.getSchema(), artifact.getSpecification()))
+					.build();
 
-			if (specification != null) {
-				OpenApi3 openApi = new OpenApi3Parser().parse(new URI(artifact.getSpecification().getLocation()), true);
-				specDefinition = this.openApiToDefinitionConverter.convert(openApi);
-				project = new ProjectBuilder()
-						.withArchitecture(artifact.getArchitecture())
-						.withLanguage(artifact.getLanguage())
-						.withNamespace(artifact.getNamespace())
-						.withOrganization(artifact.getOrganization())
-						.withDatastore(artifact.getDatastore())
-						.withHttp(artifact.getHttp())
-						.withMessaging(artifact.getMessaging())
-						.withDiscovery(artifact.getDiscovery())
-						.withMonitoring(artifact.getMonitoring())
-						.withSecurity(artifact.getSecurity())
-						.withTracing(artifact.getTracing())
-						.withCi(artifact.getCi())
-						.withCd(artifact.getCd())
-						.withRegistry(artifact.getRegistry())
-						.withScm(artifact.getScm())
-						.withBuild(artifact.getBuild())
-						.withTest(artifact.getTest())
-						.withApiSpec(specDefinition)
-						.build();
+			generatedProject = this.codeGenerator.generate(project);
+			directory = this.createProjectFiles(generatedProject);
 
-				String directory = this.createProjectFiles(this.codeGenerator.generate(project));
-
-				ZipUtils.zip(directory, directory + ".zip");
-				FileUtils.deleteDirectory(new File(directory));
-			} else {
-				throw new SpecificationException("missing specification");
-			}
+			ZipUtils.zip(directory, directory + ".zip");
+			FileUtils.deleteDirectory(new File(directory));
+			artifactId = generatedProject.getId();
 		}
 
-		return artifact.getArchitecture() + "-" + artifact.getNamespace();
+		return artifactId;
 	}
 
 	public byte[] getArtifact(String artifactId) throws Exception {
@@ -97,6 +88,17 @@ public class ArtifactServiceImpl implements ArtifactService {
 		}
 
 		return fileContent;
+	}
+	
+	private MicroserviceDefinition createMicroserviceDefinition(String schema, SelectedValue value) throws Exception {
+		Specification specification = null;
+		
+		specification = new Specification();
+		specification.setType(value.getValue());
+		specification.setLocation(schema);
+		specification.setVersion(value.getVersion());
+		
+		return this.schemaToDefinition.convert(specification);
 	}
 
 	private String createProjectFiles(GeneratedProject project) throws Exception {

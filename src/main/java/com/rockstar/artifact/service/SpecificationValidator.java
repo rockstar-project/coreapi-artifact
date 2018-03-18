@@ -3,12 +3,12 @@ package com.rockstar.artifact.service;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.rockstar.artifact.annotation.SupportSpec;
+import com.rockstar.artifact.annotation.ValidSpecification;
 import com.rockstar.artifact.model.Specification;
 
-public class SupportedSpecValidator implements ConstraintValidator<SupportSpec, Specification> {
+public class SpecificationValidator implements ConstraintValidator<ValidSpecification, Specification> {
 
-	public void initialize(SupportSpec type) {
+	public void initialize(ValidSpecification type) {
 		
 	}
 

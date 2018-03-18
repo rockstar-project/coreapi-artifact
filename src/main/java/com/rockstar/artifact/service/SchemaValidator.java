@@ -7,18 +7,15 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.lang.StringUtils;
-import org.raml.v2.api.RamlModelBuilder;
-import org.raml.v2.api.RamlModelResult;
-
 import com.reprezen.kaizen.oasparser.OpenApi3Parser;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
-import com.rockstar.artifact.annotation.ValidSpec;
+import com.rockstar.artifact.annotation.ValidSchema;
 import com.rockstar.artifact.model.Specification;
 
-public class SchemaSpecValidator  implements ConstraintValidator<ValidSpec, Specification>  {
+public class SchemaValidator implements ConstraintValidator<ValidSchema, Specification>  {
 
 	@Override
-	public void initialize(ValidSpec spec) {
+	public void initialize(ValidSchema spec) {
 		
 	}
 
@@ -78,10 +75,7 @@ public class SchemaSpecValidator  implements ConstraintValidator<ValidSpec, Spec
 							if (!StringUtils.isEmpty(specificationLocation)) {
 								
 							} else if (!StringUtils.isEmpty(specificationContent)) {
-								RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(specificationContent);
-								if (ramlModelResult.hasErrors()) {
-									isValid = false;
-								}
+								
 							}
 							break;
 						default:

@@ -16,49 +16,63 @@ import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 
 import com.rockstar.artifact.codegen.model.Definition;
-import com.rockstar.artifact.codegen.model.SpecDefinitions;
+import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.Model;
-import com.rockstar.artifact.model.NotFoundException;
 import com.rockstar.artifact.model.Project;
-import com.rockstar.artifact.model.ProjectDirectory;
 import com.rockstar.artifact.model.ProjectFile;
+import com.rockstar.artifact.model.ProjectTemplate;
+import com.rockstar.artifact.model.ProjectTemplateRegistry;
 
 @Component
 public class CodeGenerator {
 	
 	@Inject private MustacheEngine engine;
-	@Inject private ProjectDirectory projectDirectory;
+	@Inject ProjectTemplateRegistry projectTemplateRegistry;
 	
-	public CodeGenerator(MustacheEngine engine, ProjectDirectory projectDirectory) {
+	public CodeGenerator(MustacheEngine engine, ProjectTemplateRegistry projectTemplateRegistry) {
 		this.engine = engine;
-		this.projectDirectory = projectDirectory;
+		this.projectTemplateRegistry = projectTemplateRegistry;
 	}
 	
-	public GeneratedProject generate(Project project) throws Exception {
+	public GeneratedProject generate(Project project) throws CodeGenerationException {
 		GeneratedProject generatedProject = null;
 		List<GeneratedFile> allfiles = null;
 		List<GeneratedFile> generatedFiles = null;
-		allfiles = new ArrayList<GeneratedFile>();
+		ProjectTemplate projectTemplate = null;
+		Model projectModel = null;
+		Collection<ProjectFile> projectFiles = null;
 		
-		for (ProjectFile file : this.projectDirectory.getFiles()) {
-			generatedFiles = this.generateCode(file, project);
-			if (generatedFiles != null && !generatedFiles.isEmpty()) {
-				allfiles.addAll(generatedFiles);
+		if (project != null) {
+			projectModel = project.getModel();
+			if (projectModel != null) {
+				projectTemplate = this.projectTemplateRegistry.lookup(String.format("%s-%s-%s", projectModel.getArchitecture(), projectModel.getLanguageValue(), projectModel.getFrameworkValue()));
+				
+				projectFiles = projectTemplate.getFiles();
+				if (projectFiles != null && !projectFiles.isEmpty()) {
+					allfiles = new ArrayList<GeneratedFile>();
+					
+					for (ProjectFile file : projectFiles) {
+						generatedFiles = this.generateCode(file, project);
+						if (generatedFiles != null && !generatedFiles.isEmpty()) {
+							allfiles.addAll(generatedFiles);
+						}
+			        }
+			
+					generatedProject = new GeneratedProject();
+					generatedProject.setFiles(allfiles);
+				}
 			}
-        }
-        
-		generatedProject = new GeneratedProject();
-		generatedProject.setFiles(allfiles);
-        
+		}
+		
 		return generatedProject;
 	}
 	
-	public List<GeneratedFile> generateCode(ProjectFile projectFile, Project project) throws Exception {
+	private List<GeneratedFile> generateCode(ProjectFile projectFile, Project project) throws CodeGenerationException {
 		List<GeneratedFile> generatedFiles = null;
 		GeneratedFile generatedFile = null;
-    		SpecDefinitions specDefinitions = project.getSpecDefinitions();
+    		MicroserviceDefinition specDefinitions = project.getSpecDefinitions();
     		generatedFiles = new ArrayList<GeneratedFile>();
     		
     		if (this.includeFile(projectFile, project)) {
@@ -73,6 +87,9 @@ public class CodeGenerator {
     						break;
     					case Resource:
     						definitions = specDefinitions.getDefinitions(Definition.Type.Resource);
+    						break;
+    					case Model:
+    						definitions = specDefinitions.getDefinitions(Definition.Type.Model);
     						break;
     					case Service:
     						definitions = specDefinitions.getDefinitions(Definition.Type.Service);
@@ -115,7 +132,7 @@ public class CodeGenerator {
 	 
 	}
 	
-	public GeneratedFile generateFile(ProjectFile file, Project project, Definition definition) throws Exception {
+	private GeneratedFile generateFile(ProjectFile file, Project project, Definition definition) throws CodeGenerationException {
 		GeneratedFile generatedFile = null;
 		Mustache template = null;
 		
@@ -146,17 +163,17 @@ public class CodeGenerator {
 		return result;
 	}
 	
-	private Mustache getTemplate(String name) throws Exception {
+	private Mustache getTemplate(String name) throws CodeGenerationException {
 		Mustache template = null;
 	    	template = engine.getMustache(name);
 	    	if (template == null) {
-	    		throw new NotFoundException("template", name);
+	    		throw new CodeGenerationException(String.format("template %s not found", name));
 	    	}
 	    	return template;
 		
 	}
 	
-	private String resolveFilename(ProjectFile file, Definition definition) {
+	private String resolveFilename(ProjectFile file, Definition definition) throws CodeGenerationException {
 		String filename = null;
 
 		if (definition != null) {
@@ -178,7 +195,7 @@ public class CodeGenerator {
 					filename = StringUtils.upperCase(filename);
 					break;
 				default:
-					break;
+					throw new CodeGenerationException("unable to resolve filename. missing file naming strategy");
 			}
 		}
 		return filename;

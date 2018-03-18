@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class SpecDefinitions {
+public class MicroserviceDefinition {
 	
 	private Map<Definition.Type, Collection<Definition>> definitions;
 	
-	public SpecDefinitions() {
+	public MicroserviceDefinition() {
 		this.definitions = new HashMap<Definition.Type, Collection<Definition>> ();
 	}
 

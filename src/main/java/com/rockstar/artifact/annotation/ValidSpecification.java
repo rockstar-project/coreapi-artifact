@@ -9,15 +9,16 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.rockstar.artifact.service.SchemaSpecValidator;
+import com.rockstar.artifact.service.SpecificationValidator;
 
 @Documented
-@Constraint(validatedBy = SchemaSpecValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Constraint(validatedBy = SpecificationValidator.class)
+@Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidSpec {
+public @interface ValidSpecification {
  
-    String message() default "invalid schema content";
+     
+    String message() default "specification not selected or valid";
      
     Class<?>[] groups() default {};
      

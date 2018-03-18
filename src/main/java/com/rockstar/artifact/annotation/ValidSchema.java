@@ -9,16 +9,15 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.rockstar.artifact.service.SupportedSpecValidator;
+import com.rockstar.artifact.service.SchemaValidator;
 
 @Documented
-@Constraint(validatedBy = SupportedSpecValidator.class)
-@Target( { ElementType.TYPE })
+@Constraint(validatedBy = SchemaValidator.class)
+@Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SupportSpec {
+public @interface ValidSchema {
  
-     
-    String message() default "specification not supported";
+    String message() default "invalid schema content";
      
     Class<?>[] groups() default {};
      

@@ -3,9 +3,9 @@ package com.rockstar.artifact.model;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.rockstar.artifact.annotation.SupportSpec;
+import com.rockstar.artifact.annotation.ValidSpecification;
 
-@SupportSpec
+@ValidSpecification
 public class Specification {
 	
 	private String location;

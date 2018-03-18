@@ -1,26 +1,29 @@
 package {{packageName}};
 
 {{#definition}}
-{{#isNotNull parent}}import java.util.List;{{/isNotNull}}
-{{#isNotEq search.filters.size 0}}
+{{#isNotNull parent}}import java.util.Collection;{{/isNotNull}}
+{{#pageable}}
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-{{/isNotEq}}
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
+{{/pageable}}
+{{^pageable}}
+import org.springframework.data.jpa.repository.JpaRepository;
+{{/pageable}}
+{{#searchable}}import org.springframework.data.jpa.repository.JpaSpecificationExecutor;{{/searchable}}
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface {{capitalize name}}Repository extends PagingAndSortingRepository<{{capitalize name}}, String>, JpaSpecificationExecutor<{{capitalize name}}> {
+public interface {{capitalize name}}Repository extends {{#pageable}}PagingAndSortingRepository{{/pageable}}{{^pageable}}JpaRepository{{/pageable}}<{{capitalize name}}, String>{{#searchable}}, JpaSpecificationExecutor<{{capitalize name}}>{{/searchable}} {
 
 	{{#isNotEq uniquefields.size 0}}
 	public {{capitalize name}} findBy{{#isNotNull parent}}{{capitalize parent}}IdAnd{{/isNotNull}}{{uniqueFieldsAndSeparated}}({{#isNotNull parent}}String {{parent}}Id, {{/isNotNull}}{{uniqueFieldsMethodArguments}});
 	{{/isNotEq}}
-	{{#isNotEq search.filters.size 0}}
-	public Page<{{capitalize name}}> findBy{{#search.filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/search.filters}}({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest);
-	{{/isNotEq}}
+	{{#searchable}}
+	public {{#pageable}}Page{{/pageable}}{{^pageable}}Collection{{/pageable}}<{{capitalize name}}> findBy{{#filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/filters}}({{#filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/filters}}{{#pageable}}, Pageable pageRequest{{/pageable}});
+	{{/searchable}}
 	{{#isNotNull parent}}
-	public List<{{capitalize name}}> findBy{{capitalize parent}}Id(String {{parent}}Id);
+	public Collection<{{capitalize name}}> findBy{{capitalize parent}}Id(String {{parent}}Id);
 	{{/isNotNull}}
 }
 {{/definition}}

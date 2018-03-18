@@ -14,37 +14,39 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.reprezen.kaizen.oasparser.model3.Info;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
+import com.reprezen.kaizen.oasparser.model3.Operation;
 import com.reprezen.kaizen.oasparser.model3.Path;
 import com.reprezen.kaizen.oasparser.model3.Schema;
 import com.reprezen.kaizen.oasparser.model3.Tag;
 import com.rockstar.artifact.codegen.model.ControllerDefinition;
+import com.rockstar.artifact.codegen.model.Definition;
 import com.rockstar.artifact.codegen.model.Definition.Type;
 import com.rockstar.artifact.codegen.model.EntityDefinition;
 import com.rockstar.artifact.codegen.model.MessagingDefinition;
+import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 import com.rockstar.artifact.codegen.model.MySqlSchemaDefinition;
 import com.rockstar.artifact.codegen.model.RelationshipDefinition;
 import com.rockstar.artifact.codegen.model.RepositoryDefinition;
 import com.rockstar.artifact.codegen.model.ResourceDefinition;
-import com.rockstar.artifact.codegen.model.SampleDataDefinition;
+import com.rockstar.artifact.codegen.model.RestApiTestDefinition;
 import com.rockstar.artifact.codegen.model.SearchDefinition;
 import com.rockstar.artifact.codegen.model.ServiceDefinition;
-import com.rockstar.artifact.codegen.model.SpecDefinitions;
+import com.rockstar.artifact.codegen.model.UnitTestDefinition;
 import com.rockstar.artifact.util.WordUtils;
 
 @Component
-public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinitions> {
+public class OpenApiToRestApiMicroserviceDefinition implements Converter<OpenApi3, MicroserviceDefinition> {
 
-	@Inject private OpenApiInfoToGeneralDefinition openApiInfoToGeneralDefinition;
 	@Inject private OpenApiSchemaToResourceDefinition openApiSchemaToResourceDefinition;
 	@Inject private OpenApiSchemaToEntityDefinition openApiSchemaToEntityDefinition;
 	@Inject private OpenApiPathToSearchDefinition openApiPathToSearchDefinition;
 	@Inject private OpenApiSchemaToMySqlSchemaDefinition openApiSchemaToMySqlSchema;
-	@Inject private OpenApiSchemaToSampleDataDefinition openApiSchemaToSampleData;
+	@Inject private OpenApiSchemaToRestApiTestDefinition openApiSchemaToApiTestDefinition;
+	@Inject private OpenApiSchemaToUnitTestDefinition openApiSchemaToUnitTestDefinition;
 	
-	public SpecDefinitions convert(OpenApi3 openApi) {
-		SpecDefinitions specDefinitions = null;
+	public MicroserviceDefinition convert(OpenApi3 openApi) {
+		MicroserviceDefinition microserviceDefinitions = null;
 		ControllerDefinition controller = null;
 		ResourceDefinition resource = null;
 		ServiceDefinition service = null;
@@ -53,11 +55,11 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		Collection<RelationshipDefinition> childEntityRelationships = null;
 		RepositoryDefinition repository = null;
 		MySqlSchemaDefinition mySqlSchema = null;
-		SampleDataDefinition data = null;
 		MessagingDefinition messaging = null;
 		RepositoryDefinition subrepository = null;
+		RestApiTestDefinition apitest = null;
+		UnitTestDefinition unittest = null;
 		
-		Info info = null;
 		Map<String, Schema> schemas = null;
 		Map<String, Path> pathsByTag = null;
 		Collection<Tag> tags = null;
@@ -65,12 +67,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		Map<String, Collection<String>> resourceHierarchy = null;
 		
 		if (openApi != null) {
-			specDefinitions = new SpecDefinitions();
-			
-			info = openApi.getInfo();
-			if (info != null) {
-				specDefinitions.withDefinition(Type.General, this.openApiInfoToGeneralDefinition.convert(info));
-			}
+			microserviceDefinitions = new MicroserviceDefinition();
 			
 			Schema schema = null;
 			String name = null;
@@ -83,22 +80,30 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 					schema = null;
 					pathsByTag = this.getPathsByTag(currentTag.getName(), openApi.getPaths());
 					resourceHierarchy = this.resolvePathsToResourceHierarchy(currentTag.getName(), pathsByTag);
-					System.out.println(this.printComponentsHierachy(resourceHierarchy));
 					
 					for (Entry<String, Collection<String>> resourceEntry: resourceHierarchy.entrySet()) {
 					
-						
 						schema = schemas.get(StringUtils.capitalize(resourceEntry.getKey()));
 						name = resourceEntry.getKey();
 						
 						if (schema != null) {
 							messaging = new MessagingDefinition();
 							messaging.setName(name);
+							microserviceDefinitions.withDefinition(Type.Messaging, messaging);
 							
-							data = this.openApiSchemaToSampleData.convert(schema);
+							apitest = this.openApiSchemaToApiTestDefinition.convert(schema);
+							apitest.setName(name);
+							microserviceDefinitions.withDefinition(Definition.Type.ApiTest, apitest);
+							
+							unittest = this.openApiSchemaToUnitTestDefinition.convert(schema);
+							unittest.setName(name);
+							microserviceDefinitions.withDefinition(Definition.Type.UnitTest, unittest);
 						
-							search = this.openApiPathToSearchDefinition.convert(pathsByTag);
-							search.setName(name);
+							Operation searchOperation = this.getSearchOperation(name, pathsByTag);
+							if (searchOperation != null) {
+								search = this.openApiPathToSearchDefinition.convert(searchOperation);
+								search.setName(name);
+							}
 							
 							entity = this.openApiSchemaToEntityDefinition.convert(schema);
 							entity.setName(name);
@@ -106,7 +111,12 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 							repository = new RepositoryDefinition();
 							repository.setName(name);
 							repository.setUniquefields(entity.getUniquefields());
-							repository.setSearch(search);
+							if (search != null) {
+								if (search.isPageable()) {
+									repository.setPageable(true);
+								}
+								repository.setFilters(search.getFilters());
+							}
 				
 							if (entity.getChildEntities() != null && !entity.getChildEntities().isEmpty()) {
 								for (EntityDefinition childEntity : entity.getChildEntities()) {
@@ -119,7 +129,6 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 									if (childEntityRelationships != null && !childEntityRelationships.isEmpty()) {
 										for (RelationshipDefinition childEntityRelationship : childEntityRelationships) {
 											if (childEntityRelationship.isManyToOne()) {
-												System.out.println("many to one relationship found...");
 												childEntityRelationship.setParent(entity);
 											}
 										}
@@ -128,20 +137,19 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 							}
 							entity.setRepository(repository);
 							
-							specDefinitions.withDefinition(Type.Entity, entity);
-							specDefinitions.withDefinition(Type.Repository, repository);
+							microserviceDefinitions.withDefinition(Type.Entity, entity);
+							microserviceDefinitions.withDefinition(Type.Repository, repository);
 							for (EntityDefinition current : entity.getChildEntities()) {
-								specDefinitions.withDefinition(Type.Entity, current);
-								specDefinitions.withDefinition(Type.Repository, current.getRepository());
+								microserviceDefinitions.withDefinition(Type.Entity, current);
+								microserviceDefinitions.withDefinition(Type.Repository, current.getRepository());
 							}
-							
 							
 							resource = this.openApiSchemaToResourceDefinition.convert(schema);
 							resource.setName(name);
 							resource.setParent(name);
 							resource.setEntity(entity);
 							resource.setSubresources(resourceEntry.getValue());
-							specDefinitions.withDefinition(Type.Resource, resource);
+							microserviceDefinitions.withDefinition(Type.Resource, resource);
 							
 							for (String current : resource.getSubresources()) {
 								Schema subresourceSchema = schemas.get(StringUtils.capitalize(current));
@@ -149,7 +157,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 								subresourceDefinition.setName(current);
 								subresourceDefinition.setParent(resource.getName());
 								subresourceDefinition.setEntity(entity.getChildEntity(current));
-								specDefinitions.withDefinition(Type.Resource, subresourceDefinition);
+								microserviceDefinitions.withDefinition(Type.Resource, subresourceDefinition);
 							}
 				
 							service = new ServiceDefinition();
@@ -157,6 +165,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 							service.setSearch(search);
 							service.setEntity(entity);
 							service.setMessaging(messaging);
+							microserviceDefinitions.withDefinition(Type.Service, service);
 							
 							controller = new ControllerDefinition();
 							controller.setName(name);
@@ -164,14 +173,7 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 							controller.setSearch(search);
 							controller.setService(service);
 							controller.setEntity(entity);
-							
-							specDefinitions.withDefinition(Type.Messaging, messaging);
-							
-							specDefinitions.withDefinition(Type.Service, service);
-							
-							specDefinitions.withDefinition(Type.Controller, controller);
-							
-							//System.out.println(controller);
+							microserviceDefinitions.withDefinition(Type.Controller, controller);
 						} else {
 							System.out.println("schema not found for resource " + resourceEntry.getKey());
 						}
@@ -179,9 +181,9 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 				}
 			}
 			mySqlSchema = this.openApiSchemaToMySqlSchema.convert(schemas);
-			specDefinitions.withDefinition(Type.MySqlSchema, mySqlSchema);
+			microserviceDefinitions.withDefinition(Type.MySqlSchema, mySqlSchema);
 		}
-		return specDefinitions;
+		return microserviceDefinitions;
 	}
 	
 	private Map<String, Collection<String>> resolvePathsToResourceHierarchy(String tagname, Map<String, Path> paths) {
@@ -231,20 +233,6 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		return resources.asMap();
 	}
 	
-	private String printComponentsHierachy(Map<String, Collection<String>> componentsHierachy) {
-		StringBuilder componentHierarchyStringBuilder = new StringBuilder();
-		if (componentsHierachy != null && !componentsHierachy.isEmpty()) {
-			for (Entry<String, Collection<String>> currentEntry : componentsHierachy.entrySet()) {
-				componentHierarchyStringBuilder.append(currentEntry.getKey() + " =>");
-				for (String current : currentEntry.getValue()) {
-					componentHierarchyStringBuilder.append(current);
-				}
-				componentHierarchyStringBuilder.append("\n");
-			}
-		}
-		return componentHierarchyStringBuilder.toString();
-	}
-	
 	private Collection<String> getPathUris(String tagname, Map<String, Path> paths) {
 		Collection<String> uris = new ArrayList<String> ();
 		for (Entry<String, Path> pathEntry: paths.entrySet()) {
@@ -265,6 +253,23 @@ public class OpenApiToSpecDefinitions implements Converter<OpenApi3, SpecDefinit
 		}
 		
 		return taggedPaths;
+	}
+	
+	private Operation getSearchOperation(String resource, Map<String, Path> paths) {
+		Path currentPath = null;
+		Operation currentOperation = null;
+		
+		for (Entry<String, Path> pathEntry: paths.entrySet()) {
+			if (pathEntry.getKey().equalsIgnoreCase("/" + StringUtils.lowerCase(resource))) {
+				currentPath = pathEntry.getValue();
+				currentOperation = currentPath.getOperation("get");
+				if (currentOperation != null) {
+					break;
+				}
+			}
+		}
+		
+		return currentOperation;
 	}
 	
 }

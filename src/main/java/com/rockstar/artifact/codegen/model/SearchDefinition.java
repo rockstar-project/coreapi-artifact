@@ -31,7 +31,7 @@ public class SearchDefinition implements Definition {
 		return this.getSearchParams(SearchParamType.Filter);
 	}
 	
-	public ParamDefinition getQueryParam() {
+	public ParamDefinition getSearchTermParam() {
 		return this.getSearchParam(SearchParamType.SearchTerm);
 	}
 	
@@ -45,6 +45,18 @@ public class SearchDefinition implements Definition {
 	
 	public Collection<ParamDefinition> getSortParams() {
 		return this.getSearchParams(SearchParamType.Sort);
+	}
+	
+	public boolean isPageable() {
+		return  (this.getPageSizeParam() != null && this.getPageNumberParam() != null);
+	}
+	
+	public boolean isFilterable() {
+		return  ( this.getFilters() != null && !this.getFilters().isEmpty() );
+	}
+	
+	public boolean hasSearchTerm() {
+		return (this.getSearchParam(SearchParamType.SearchTerm) != null);
 	}
 	
 	public ParamDefinition getSearchParam(SearchParamType paramType) {

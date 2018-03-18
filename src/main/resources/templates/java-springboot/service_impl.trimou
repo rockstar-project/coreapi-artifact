@@ -27,9 +27,16 @@ public class {{capitalize name}}ServiceImpl implements {{capitalize name}}Servic
 	{{/isNotEq}}
 	{{#isNotNull messagingValue}}@Autowired private ApplicationEventPublisher eventPublisher;{{/isNotNull}}
 	
-	public Page<{{capitalize search.name}}> search({{#search.filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, Pageable pageRequest) {
+	{{#search}}
+	public Page<{{capitalize name}}> search({{#filters}}{{type}} {{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/filters}}{{#pageable}}, Pageable pageRequest{{/pageable}}) {
 		return this.{{entity.repository.name}}Repository.findBy{{#search.filters}}{{capitalize name}}{{#iter.hasNext}}And{{/iter.hasNext}}{{/search.filters}}({{#search.filters}}{{camelcase name}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/search.filters}}, pageRequest);
 	}
+	{{/search}}
+	{{^search}}
+	public List<{{capitalize entity.name}}> getAll{{capitalizePlural entity.name}}() {
+		return this.{{entity.repository.name}}Repository.findAll();
+	}
+	{{/search}}
 	
 	public {{capitalize name}} get{{capitalize name}}({{#isEq datastoreValue 'cassandra'}}UUID{{/isEq}}{{#isEq datastoreValue 'mysql'}}String{{/isEq}}{{#isEq datastoreValue 'mongodb'}}String{{/isEq}} {{name}}Id) { 
 		{{capitalize entity.name}} {{entity.name}} = this.retrieve{{capitalize entity.name}}ById({{entity.name}}Id);

@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "template": "java-springboot/maven",
+      "filename": "pom.xml",
+      "naming_convention": "lowercase"
+    },
+    {
+      "template": "java-springboot/gitignore",
+      "filename": ".gitignore",
+      "naming_convention": "lowercase"
+    }
+  ]
+}

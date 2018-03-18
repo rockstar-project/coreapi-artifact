@@ -37,7 +37,7 @@ public class ArtifactController {
 		byte[] artifactContent = this.artifactService.getArtifact(artifactId);
 		
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentDispositionFormData("attachment", "kickster-artifact.zip");
+		headers.setContentDispositionFormData("attachment", "rockstar-artifact.zip");
         headers.setContentLength(artifactContent.length);
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         

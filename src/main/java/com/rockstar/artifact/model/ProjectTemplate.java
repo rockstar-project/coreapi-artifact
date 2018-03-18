@@ -2,11 +2,11 @@ package com.rockstar.artifact.model;
 
 import java.util.Collection;
 
-public class ProjectDirectory {
+public class ProjectTemplate {
 	
 	private Collection<ProjectFile> files;
 	
-	public ProjectDirectory() {
+	public ProjectTemplate() {
 	}
 
 	public Collection<ProjectFile> getFiles() {

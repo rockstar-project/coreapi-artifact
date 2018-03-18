@@ -1,11 +1,22 @@
 package com.rockstar.artifact;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,16 +27,17 @@ import com.reprezen.kaizen.oasparser.OpenApi3Parser;
 import com.reprezen.kaizen.oasparser.model3.OpenApi3;
 import com.reprezen.kaizen.oasparser.val.ValidationResults.ValidationItem;
 import com.rockstar.artifact.codegen.model.Definition;
-import com.rockstar.artifact.codegen.model.SpecDefinitions;
-import com.rockstar.artifact.converter.openapi.OpenApiToSpecDefinitions;
-import com.rockstar.artifact.model.InvalidSchemaException;
+import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
+import com.rockstar.artifact.converter.openapi.OpenApiToRestApiMicroserviceDefinition;
 import com.rockstar.artifact.model.Model;
+import com.rockstar.artifact.service.InvalidSchemaException;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TrimouTemplateTest {
 	
-	@Inject private OpenApiToSpecDefinitions openApiToSpecDefinitions;
+	@Inject private OpenApiToRestApiMicroserviceDefinition openApiToSpecDefinitions;
 	@Inject private MustacheEngine templateEngine;
 	
 	@Test
@@ -64,17 +76,21 @@ public class TrimouTemplateTest {
 				throw new InvalidSchemaException(item.getMsg());
 			}
 		} else {
+			// STATIC TEMPLATES
+			//this.renderTemplate("maven", model);
+			//this.renderTemplate("enum_validator", model);
+			
 			// ENTITY COMPONENT TEMPLATES
-			//this.renderTemplate(Definition.Type.Repository, "mysql_entity", openApi, model);
+			//this.renderTemplate(Definition.Type.Entity, "mysql_entity", openApi, model);
 			// NOT TESTED: this.renderTemplate(Definition.Type.Repository, "mysql_schema", openApi, model);
 		    		
 			// REPOSITORY COMPONENT TEMPLATES
-			// this.renderTemplate(Definition.Type.Repository, "mysql_repository", openApi, model);
+			//this.renderTemplate(Definition.Type.Repository, "mysql_repository", openApi, model);
 			
 			// SERVICE COMPONENT TEMPLATES
 			//this.renderTemplate(Definition.Type.Service, "search_criteria", openApi, model);
 			//this.renderTemplate(Definition.Type.Service, "service_interface", openApi, model);
-			this.renderTemplate(Definition.Type.Service, "service_impl", openApi, model);
+			//this.renderTemplate(Definition.Type.Service, "service_impl", openApi, model);
 			//this.renderTemplate(Definition.Type.Service, "search_specification", openApi, model);
 			
 			// RESOURCE COMPONENT TEMPLATES
@@ -82,7 +98,7 @@ public class TrimouTemplateTest {
 			// this.renderTemplate(Definition.Type.Resource, "resource_assembler", openApi, model);
 			
 			// CONTROLLER COMPONENT TEMPLATE
-			//this.renderTemplate(Definition.Type.Controller, "controller", openApi, model);
+			this.renderTemplate(Definition.Type.Controller, "controller", openApi, model);
 			
 			// MYSQL Table COMPONENT TEMPLATE
 			//this.renderTemplate(Definition.Type.MySqlSchema, "mysql_schema", openApi, model);
@@ -91,19 +107,51 @@ public class TrimouTemplateTest {
 		}
 	}
 	
+	private void renderTemplate(String template, Model model) {
+		String generatedCode = templateEngine.getMustache("java-springboot/" + template).render(model);
+		System.out.println(generatedCode);
+	}
+	
 	private void renderTemplate(Definition.Type type, String template, OpenApi3 openApi, Model model) {
-		SpecDefinitions specDefinitions = this.openApiToSpecDefinitions.convert(openApi);
+		MicroserviceDefinition specDefinitions = this.openApiToSpecDefinitions.convert(openApi);
 		Collection<Definition> definitions = specDefinitions.getDefinitions(type);
 		if (definitions != null && !definitions.isEmpty()) {
 			for (Definition current : definitions) {
 	    			model.setName(StringUtils.lowerCase(current.getName()));
 	    			model.setDefinition(current);
-	    		
-	    			System.out.println(templateEngine.getMustache("java-springboot/" + template).render(model));
+	    			String generatedCode = templateEngine.getMustache("java-springboot/" + template).render(model);
+	    			System.out.println(generatedCode);
 	    		}
 		}
 	}
-
+	
+	private void renderImageTemplate(Definition.Type type, String template, OpenApi3 openApi, Model model) {
+		MicroserviceDefinition specDefinitions = this.openApiToSpecDefinitions.convert(openApi);
+		Collection<Definition> definitions = specDefinitions.getDefinitions(type);
+		if (definitions != null && !definitions.isEmpty()) {
+			for (Definition current : definitions) {
+	    			model.setName(StringUtils.lowerCase(current.getName()));
+	    			model.setDefinition(current);
+	    			String generatedCode = templateEngine.getMustache("java-springboot/" + template).render(model);
+	    			System.out.println(generatedCode);
+	    			
+	    			try {
+	    				String fullPath = System.getProperty("user.home") + File.separator + "generated-image/demo.png";
+		    			//OutputStream outputStream = Files.newOutputStream(Paths.get(fullPath));
+	    				//outputStream.write(generatedCode.getBytes());
+		    			BufferedImage bufferedImage = new BufferedImage(960, 640, BufferedImage.TYPE_INT_ARGB);
+		    			Graphics graphics = bufferedImage.getGraphics();
+		    			graphics.drawString(generatedCode, 10, 20);
+		    			
+		    			ImageIO.write(bufferedImage,  "png", new File(fullPath));
+	    			} catch (Exception ex) {
+	    				ex.printStackTrace();
+	    			}
+	    			
+	    		}
+		}
+	}
+	
 }
 
 

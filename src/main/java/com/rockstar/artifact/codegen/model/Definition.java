@@ -14,8 +14,10 @@ public interface Definition {
 		Model,
 		Entity,
 		Repository,
-		Security ,
-		MySqlSchema
+		Security,
+		MySqlSchema,
+		ApiTest,
+		UnitTest
 	};
 	
 	public String getName();
