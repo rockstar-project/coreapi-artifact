@@ -14,8 +14,8 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.SimpleHelpers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rockstar.artifact.model.ProjectTemplate;
-import com.rockstar.artifact.model.ProjectTemplateRegistry;
+import com.rockstar.artifact.model.TemplateDirectory;
+import com.rockstar.artifact.model.TemplateRegistry;
 import com.rockstar.artifact.service.CodeGenerator;
 import com.rockstar.artifact.util.CheckUtils;
 import com.rockstar.artifact.util.WordUtils;
@@ -36,12 +36,12 @@ public class ServiceConfig {
 	}
 	
 	@Bean
-	public ProjectTemplateRegistry projectTemplateRegistry() throws Exception {
-		ProjectTemplateRegistry projectTemplateRegistry = new ProjectTemplateRegistry();
+	public TemplateRegistry projectTemplateRegistry() throws Exception {
+		TemplateRegistry projectTemplateRegistry = new TemplateRegistry();
 		Resource[] templateResources = this.applicationContext.getResources("classpath*:projects/*.json");
 		if (templateResources!= null && templateResources.length > 0) {
 			for (Resource currentResource : templateResources) {
-				projectTemplateRegistry.registerTemplate(StringUtils.substringBefore(currentResource.getFilename(), "."), this.objectMapper.readValue(currentResource.getInputStream(), ProjectTemplate.class));
+				projectTemplateRegistry.registerTemplate(StringUtils.substringBefore(currentResource.getFilename(), "."), this.objectMapper.readValue(currentResource.getInputStream(), TemplateDirectory.class));
 			}
 		}
 		
@@ -63,6 +63,12 @@ public class ServiceConfig {
                                 .addIsNotEqual()
                                 .addInclude()
                                 .addJoin()
+                                .addChoose()
+                                .addIf()
+                                .addIs()
+                                .addSet()
+                                .addUnless()
+                                .addWith()
                                 .build())
 	        	.registerHelper("capitalizePlural", SimpleHelpers.execute(
 	                    (o, c) -> {

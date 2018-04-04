@@ -1,48 +1,58 @@
 {
   "files": [
     {
+    	  "option": "build",
       "template": "java-springboot/maven",
       "filename": "pom.xml",
       "naming_convention": "lowercase"
     },
     {
+      "option": "scm",
+      "rule": "scmValue == 'github'",
       "template": "java-springboot/gitignore",
       "filename": ".gitignore",
       "naming_convention": "lowercase"
     },
     {
+    	  "option": "ci",
       "template": "java-springboot/travis",
       "filename": ".travis.yml",
       "naming_convention": "lowercase"
     },
     {
+      "option": "doc",
       "template": "java-springboot/readme",
       "filename": "README.md"
     },
     {
+      "option": "package",
       "template": "java-springboot/dockerfile_java",
       "filename": "Dockerfile",
       "naming_convention": "capitalize"
     },
     {
+      "option": "package",
       "rule": "datastoreValue == 'mysql'",
       "template": "java-springboot/dockerfile_mysql",
       "filename": "Dockerfile-datastore",
       "naming_convention": "capitalize"
     },
     {
+      "option": "datastore",
       "rule": "datastoreValue == 'mysql'",
       "template": "java-springboot/mysql_schema",
       "filename": "schema.sql",
       "naming_convention": "lowercase"
     },
     {
+      "option": "datastore",
       "rule": "datastoreValue == 'cassandra'",
       "template": "java-springboot/cassandra_schema",
       "filename": "schema.cql",
       "naming_convention": "lowercase"
     },
     {
+      "option": "package",
       "rule": "datastoreValue == 'cassandra'",
       "template": "java-springboot/dockerfile_cassandra",
       "filename": "Dockerfile-datastore",
@@ -54,6 +64,7 @@
       "naming_convention": "lowercase"
     },
     {
+      "option": "deploy",
       "template": "java-springboot/docker_compose",
       "filename": "docker-compose.yml",
       "naming_convention": "lowercase"
@@ -67,6 +78,7 @@
       "package_dir": "'com/'+organization+'/'+namespace"
     },
     {
+      "option": "security",
       "base_dir": "src/main/java",
       "rule": "securityValue == 'auth0'",
       "template": "java-springboot/auth0_security",
@@ -75,6 +87,7 @@
       "package_dir": "'com/'+organization+'/'+namespace+'/config'"
     },
     {
+      "option": "messaging",
       "base_dir": "src/main/java",
       "rule": "messagingValue == 'nats'",
       "template": "java-springboot/nats_config",
@@ -225,6 +238,42 @@
     },
     {
       "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'redis'",
+      "template": "java-springboot/redis_entity",
+      "filename": "name+'.java'",
+      "component": "entity",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'redis'",
+      "template": "java-springboot/redis_repository",
+      "filename": "name+'Repository.java'",
+      "component": "repository",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'elasticsearch'",
+      "template": "java-springboot/elasticsearch_entity",
+      "filename": "name+'.java'",
+      "component": "entity",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
+      "rule": "datastoreValue == 'elasticsearch'",
+      "template": "java-springboot/elasticsearch_repository",
+      "filename": "name+'Repository.java'",
+      "component": "repository",
+      "naming_convention": "capitalize",
+      "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
+    },
+    {
+      "base_dir": "src/main/java",
       "template": "java-springboot/service_impl",
       "filename": "name+'ServiceImpl.java'",
       "component": "service",
@@ -258,6 +307,7 @@
       "package_dir": "'com/'+organization+'/'+namespace+'/domain'"
     },
     {
+      "option": "messaging",
       "rule": "messagingValue == 'rabbitmq'",
       "base_dir": "src/main/java",
       "template": "java-springboot/rabbitmq_config",
@@ -266,6 +316,7 @@
       "package_dir": "'com/'+organization+'/'+namespace+'/config'"
     },
     {
+      "option": "messaging",
     	  "rule": "messagingValue == 'rabbitmq'",
       "base_dir": "src/main/java",
       "template": "java-springboot/rabbitmq_message_producer",

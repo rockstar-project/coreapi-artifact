@@ -1,16 +1,18 @@
 package com.rockstar.artifact.model;
 
-public class ProjectFile {
+public class Template {
 	
 	private String baseDir;
 	private String template;
 	private String filename;
 	private String rule;
 	private String component;
+	private String layer;
+	private String option;
 	private String namingConvention;
 	private String packageDir;
 	
-	public ProjectFile() {
+	public Template() {
 	}
 
 	public String getTemplate() {
@@ -45,6 +47,14 @@ public class ProjectFile {
 		this.rule = rule;
 	}
 
+	public String getLayer() {
+		return layer;
+	}
+
+	public void setLayer(String layer) {
+		this.layer = layer;
+	}
+
 	public String getComponent() {
 		return component;
 	}
@@ -53,6 +63,14 @@ public class ProjectFile {
 		this.component = component;
 	}
 	
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
+	}
+
 	public String getNamingConvention() {
 		return namingConvention;
 	}

@@ -12,7 +12,7 @@ import com.rockstar.artifact.web.ArtifactResource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CreateRestApiJavaSpringbootArtifactTest {
+public class RestApiSwaggerJavaSpringbootCreateArtifactTest {
 
 	@Inject private ArtifactService artifactService;
 	
@@ -23,8 +23,8 @@ public class CreateRestApiJavaSpringbootArtifactTest {
 	@Test
 	public void createArtifactTest() throws Exception {
 		SelectedValue specification = new SelectedValue();
-		specification.setValue("openapi");
-		specification.setVersion("3");
+		specification.setValue("swagger");
+		specification.setVersion("2");
 		
 		SelectedValue architecture = new SelectedValue();
 		architecture.setValue("restapi");
@@ -38,14 +38,8 @@ public class CreateRestApiJavaSpringbootArtifactTest {
 		framework.setVersion("1.5.9.RELEASE");
 		
 		SelectedValue datastoreOption = new SelectedValue();
-		datastoreOption.setValue("mysql");
-		datastoreOption.setVersion("5.7");
-		
-		//datastoreOption.setValue("cassandra");
-		//datastoreOption.setVersion("3.11");
-		
-		//datastoreOption.setValue("mongodb");
-		//datastoreOption.setVersion("3.6");
+		datastoreOption.setValue("cassandra");
+		datastoreOption.setVersion("3.11");
 		
 		SelectedValue securityOption = new SelectedValue();
 		securityOption.setValue("auth0");
@@ -77,9 +71,9 @@ public class CreateRestApiJavaSpringbootArtifactTest {
 		
 		ArtifactResource artifact = new ArtifactResource();
 		
-		artifact.setName("collection");
-		artifact.setOrganization("cookery");
-		artifact.setSchema("https://api.swaggerhub.com/apis/rockstar/Collections/1.0.0/swagger.json");
+		artifact.setName("encryption");
+		artifact.setOrganization("gravitant");
+		artifact.setSchema("https://api.swaggerhub.com/apis/rockstar/Encryption/1.0.0/swagger.json");
 		artifact.setArchitecture(architecture);
 		artifact.setLanguage(language);
 		artifact.setFramework(framework);

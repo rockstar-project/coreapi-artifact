@@ -85,7 +85,7 @@ public class {{capitalize name}}Controller {
 		{{capitalize resource.name}} {{service.entity.name}} = this.{{name}}Service.get{{capitalize name}}(id);
 		{{capitalize resource.name}}Resource {{resource.name}}Resource = this.{{resource.name}}ResourceAssembler.toResource({{resource.name}});
 		return new ResponseEntity<{{capitalize name}}Resource>({{resource.name}}Resource, HttpStatus.OK);
-}
+	}
 
 	@PatchMapping(value="/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

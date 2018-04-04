@@ -64,7 +64,7 @@ public class ArtifactServiceImpl implements ArtifactService {
 
 			generatedProject = this.codeGenerator.generate(project);
 			directory = this.createProjectFiles(generatedProject);
-
+			System.out.println("output dir: " + directory + ".zip");
 			ZipUtils.zip(directory, directory + ".zip");
 			FileUtils.deleteDirectory(new File(directory));
 			artifactId = generatedProject.getId();

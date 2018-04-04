@@ -22,7 +22,11 @@ import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 import com.rockstar.artifact.converter.apiblueprint.ApiBlueprintASTToApiMicroserviceDefinition;
 import com.rockstar.artifact.converter.jsonschema.draft06.JsonSchemaToEventDrivenMicroserviceDefinition;
 import com.rockstar.artifact.converter.openapi.OpenApiToRestApiMicroserviceDefinition;
+import com.rockstar.artifact.converter.swagger.SwaggerToRestApiMicroserviceDefinition;
 import com.rockstar.artifact.model.Specification;
+
+import io.swagger.models.Swagger;
+import io.swagger.parser.SwaggerParser;
 
 @Component
 public class SpecificationToMicroserviceDefinition implements Converter<Specification, MicroserviceDefinition>  {
@@ -32,6 +36,7 @@ public class SpecificationToMicroserviceDefinition implements Converter<Specific
 	@Inject private OpenApiToRestApiMicroserviceDefinition openApiToRestApiMicroservice;
 	@Inject private ApiBlueprintASTToApiMicroserviceDefinition apiblueprintToApiMicroservice;
 	@Inject private JsonSchemaToEventDrivenMicroserviceDefinition jsonSchemaToEventDrivenMicroservice;
+	@Inject private SwaggerToRestApiMicroserviceDefinition swaggerToRestApiMicroservice;
 	
 	public MicroserviceDefinition convert(Specification specification) {
 		MicroserviceDefinition microserviceDefinition = null;
@@ -60,6 +65,17 @@ public class SpecificationToMicroserviceDefinition implements Converter<Specific
 						OpenApi3 openApi = null;
 						openApi = new OpenApi3Parser().parse(location, true);
 						microserviceDefinition = this.openApiToRestApiMicroservice.convert(openApi);
+					} else if (format.equalsIgnoreCase("swagger")) {
+						switch (version) {
+							case "2":
+								Swagger swagger = null;
+								swagger = new SwaggerParser().read(location.toString());
+								microserviceDefinition = this.swaggerToRestApiMicroservice.convert(swagger);
+								break;
+							default:
+								break;
+						}
+						
 					} else if (format.equalsIgnoreCase("apiblueprint")) {
 						BlueprintParserService parser = null;
 						ParserConfiguration parserConfig = null;

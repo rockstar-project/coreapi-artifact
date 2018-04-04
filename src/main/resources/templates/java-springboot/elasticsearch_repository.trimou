@@ -1,0 +1,6 @@
+package {{packageName}};
+
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+
+public interface {{capitalize name}}Repository extends ElasticsearchRepository<{{capitalize name}}, String> {
+}

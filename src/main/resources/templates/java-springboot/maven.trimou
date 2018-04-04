@@ -31,6 +31,12 @@
 		{{#isEq datastoreValue "postgresql"}}
 		<postgresql.version>9.4-1206-jdbc42</postgresql.version>
 		{{/isEq}}
+		{{#isEq securityValue "auth0"}}
+		<auth0.version>1.0.0-rc.3</auth0.version>
+		{{/isEq}}
+		{{#isEq monitoringValue "prometheus"}}
+		<prometheus.version>{{monitoringVersion}}</prometheus.version>
+		{{/isEq}}
 	</properties>
 	
 	<dependencyManagement>
@@ -47,46 +53,74 @@
 	
 	<dependencies>
 		{{#isEq architecture "restapi"}}
-    		<dependency>
-    			<groupId>org.springframework.boot</groupId>
-    			<artifactId>spring-boot-starter-hateoas</artifactId>
-    		</dependency>
-    		{{/isEq}}
-    		{{#isEq securityValue "auth0"}}
-    		<dependency>
-    			<groupId>com.auth0</groupId>
-    			<artifactId>auth0-spring-security-api</artifactId>
-    			<version>1.0.0-rc.3</version>
-    		</dependency>
-    		{{/isEq}}
-    		{{#isEq discoveryValue "eureka"}}
-    		<dependency>
-    			<groupId>org.springframework.cloud</groupId>
-    			<artifactId>spring-cloud-starter-eureka</artifactId>
-    		</dependency>
-    		{{/isEq}}
-    		{{#isEq messagingValue "rabbitmq"}}
-    		<dependency>
-    			<groupId>org.springframework.boot</groupId>
-    			<artifactId>spring-boot-starter-amqp</artifactId>
-    		</dependency>
-    		{{/isEq}}
-    		{{#isEq datastoreValue "mysql" }}
-    		<dependency>
-    			<groupId>org.springframework.boot</groupId>
-    			<artifactId>spring-boot-starter-data-jpa</artifactId>
-    		</dependency>
-    		<dependency>
-    			<groupId>mysql</groupId>
-    			<artifactId>mysql-connector-java</artifactId>
-    			<scope>runtime</scope>
-    		</dependency>
-    		{{/isEq}}
-    		{{#isEq datastoreValue "cassandra" }}
-    		<dependency>
-    			<groupId>org.springframework.boot</groupId>
-    			<artifactId>spring-boot-starter-data-cassandra</artifactId>
-    		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+			{{#isEq httpValue 'jetty'}}
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+			{{/isEq}}
+			{{#isEq httpValue 'undertow'}}
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+			{{/isEq}}
+		</dependency>
+		{{/isEq}}
+		{{#isEq httpValue "jetty"}}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq httpValue "undertow"}}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq securityValue "auth0"}}
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>auth0-spring-security-api</artifactId>
+			<version>${auth0.version}</version>
+		</dependency>
+		{{/isEq}}
+		{{#isEq discoveryValue "eureka"}}
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq messagingValue "rabbitmq"}}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "mysql" }}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "cassandra" }}
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-cassandra</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.cassandraunit</groupId>
 			<artifactId>cassandra-unit-spring</artifactId>
@@ -107,9 +141,9 @@
 		{{/isEq}}
 		{{#isEq datastoreValue "postgresql" }}
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -118,17 +152,17 @@
 		{{/isEq}}
 		{{#isEq datastoreValue "mariadb" }}
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<version>1.1.9</version>
 		</dependency>
 		{{/isEq}}
-        {{#isEq datastoreValue "neo4j" }}
-        <dependency>
+		{{#isEq datastoreValue "neo4j" }}
+		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
 		</dependency>
@@ -136,18 +170,30 @@
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-http-driver</artifactId>
 		</dependency>
-        {{/isEq}}
-        {{#isEq datastoreValue "redis" }}
-        <dependency>
+		{{/isEq}}
+		{{#isEq datastoreValue "redis" }}
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-redis</artifactId>
 			<version>1.4.4.RELEASE</version>
 		</dependency>
 		{{/isEq}}
 		{{#isEq datastoreValue "couchdb" }}
-        <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-couchbase</artifactId>
+		</dependency>
+		{{/isEq}}
+		{{#isEq monitoringValue "prometheus" }}
+		<dependency>
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient_spring_boot</artifactId>
+			<version>${prometheus.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient_hotspot</artifactId>
+			<version>${prometheus.version}</version>
 		</dependency>
 		{{/isEq}}
 		<dependency>
@@ -157,6 +203,10 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -186,5 +236,5 @@
 			</plugin>
 		</plugins>
 	</build>
-    
+
 </project>

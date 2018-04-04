@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/products/**").hasAuthority("create:products")
 				.antMatchers(HttpMethod.PUT, "/products/**").hasAuthority("update:products")
 				.antMatchers(HttpMethod.DELETE, "/products/**").hasAuthority("delete:products")
+				{{#isEq monitoringValue "prometheus"}}.antMatchers(HttpMethod.GET, "/prometheus").permitAll(){{/isEq}}
 				.anyRequest().authenticated();
     }
 }

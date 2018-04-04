@@ -23,6 +23,7 @@
         <jsonschematopojo.version>0.5.1</jsonschematopojo.version>
         <trimou.version>2.4.0.Final</trimou.version>
         <openapi-parser.version>0.0.3.201802081723</openapi-parser.version>
+        <swagger-parser.version>1.0.34</swagger-parser.version>
 	</properties>
 
 	<dependencyManagement>
@@ -39,10 +40,11 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>org.eclipse.jdt</groupId>
-		    <artifactId>core</artifactId>
-		    <version>3.3.0-v_771</version>
+		    <groupId>io.swagger</groupId>
+		    <artifactId>swagger-parser</artifactId>
+		    <version>${swagger-parser.version}</version>
 		</dependency>
+      
 		<dependency>
 		    <groupId>com.gatehill.apib</groupId>
 		    <artifactId>apib-parser</artifactId>
@@ -62,7 +64,7 @@
 		    <artifactId>openapi-parser</artifactId>
 		    <version>${openapi-parser.version}</version>
 		</dependency>
-      
+		
         <dependency>
             <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>

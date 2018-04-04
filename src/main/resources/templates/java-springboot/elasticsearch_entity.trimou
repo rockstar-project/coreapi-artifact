@@ -1,0 +1,35 @@
+package {{packageName}}
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
+{{#definition}}
+@Document(indexName = "order", type = "volume")
+public class {{capitalize name}} {
+	
+	@Id
+	private String id;
+	
+	{{#primitiveOrObjectFields}}
+	{{>field_annotation}}
+	private {{>java_type}} {{camelcase name}};
+	
+	{{/primitiveOrObjectFields}}
+	
+	public {{capitalize name}}() {
+	}
+	
+	public String getId() {
+		return this.id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+
+}
+{{/definition}}
+{{+java_type}}{{#stringType}}String{{/stringType}}{{#booleanType}}Boolean{{/booleanType}}{{#integerType}}Integer{{/integerType}}{{#longType}}Long{{/longType}}{{#doubleType}}Double{{/doubleType}}{{#dateTimeType}}DateTime{{/dateTimeType}}{{#dateType}}LocalDate{{/dateType}}{{#objectType}}{{capitalize name}}{{/objectType}}{{/java_type}}
+{{+field_annotation }}{{#dateTimeType}}@Field (type = FieldType.Date, format = DateFormat.custom, pattern = "yyyy-MM-dd HH:mm:ss"){{/dateTimeType}}{{#stringType}}@Field (type = FieldType.String){{/stringType}}{{#longType}}@Field(type = FieldType.Long){{/longType}}{{/field_annotation}}

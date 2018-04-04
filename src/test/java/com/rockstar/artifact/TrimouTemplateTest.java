@@ -10,13 +10,6 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jdt.core.ToolFactory;
-import org.eclipse.jdt.core.formatter.CodeFormatter;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +23,7 @@ import com.rockstar.artifact.codegen.model.Definition;
 import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 import com.rockstar.artifact.converter.openapi.OpenApiToRestApiMicroserviceDefinition;
 import com.rockstar.artifact.model.Model;
+import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.service.InvalidSchemaException;
 
 
@@ -58,17 +52,20 @@ public class TrimouTemplateTest {
 		model.setDatastoreValue("mysql");
 		model.setDatastoreVersion("8.5");
 		
-		model.setHttpValue("http");
+		model.setHttpValue("undertow");
 		model.setHttpVersion("8.5.27");
 		
 		model.setDiscoveryValue("eureka");
 		model.setDiscoveryVersion("1.5.9");
 		
-		model.setArchitecture("restapi");
-		model.setNamespace("storage");
-		model.setOrganization("ibmcloud");
+		//model.setMonitoringValue("prometheus");
+		//model.setMonitoringVersion("0.1.0");
 		
-		model.setPackageName("com.ibmcloud.storage");
+		model.setArchitecture("restapi");
+		model.setNamespace("collection");
+		model.setOrganization("cookery");
+		
+		model.setPackageName("com.cookery.recipe");
 		
 		OpenApi3 openApi = new OpenApi3Parser().parse(new URI(specUri), true);
 		if (!openApi.isValid()) {
@@ -79,6 +76,7 @@ public class TrimouTemplateTest {
 			// STATIC TEMPLATES
 			//this.renderTemplate("java-springboot/maven", model);
 			//this.renderTemplate("java-springboot/enum_validator", model);
+			this.renderTemplate("java-springboot/restapi", model);
 			
 			// ENTITY COMPONENT TEMPLATES
 			//this.renderTemplate(Definition.Type.Entity, "java-springboot/mysql_entity", openApi, model);
@@ -98,7 +96,7 @@ public class TrimouTemplateTest {
 			// this.renderTemplate(Definition.Type.Resource, "java-springboot/resource_assembler", openApi, model);
 			
 			// CONTROLLER COMPONENT TEMPLATE
-			this.renderTemplate(Definition.Type.Controller, "java-springboot/controller", openApi, model);
+			//this.renderTemplate(Definition.Type.Controller, "java-springboot/controller", openApi, model);
 			// MYSQL Table COMPONENT TEMPLATE
 			//this.renderTemplate(Definition.Type.MySqlSchema, "java-springboot/mysql_schema", openApi, model);
 			

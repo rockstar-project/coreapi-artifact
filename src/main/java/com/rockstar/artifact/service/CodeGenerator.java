@@ -21,39 +21,39 @@ import com.rockstar.artifact.model.GeneratedFile;
 import com.rockstar.artifact.model.GeneratedProject;
 import com.rockstar.artifact.model.Model;
 import com.rockstar.artifact.model.Project;
-import com.rockstar.artifact.model.ProjectFile;
-import com.rockstar.artifact.model.ProjectTemplate;
-import com.rockstar.artifact.model.ProjectTemplateRegistry;
+import com.rockstar.artifact.model.Template;
+import com.rockstar.artifact.model.TemplateDirectory;
+import com.rockstar.artifact.model.TemplateRegistry;
 
 @Component
 public class CodeGenerator {
 	
 	@Inject private MustacheEngine engine;
-	@Inject ProjectTemplateRegistry projectTemplateRegistry;
+	@Inject TemplateRegistry templateRegistry;
 	
-	public CodeGenerator(MustacheEngine engine, ProjectTemplateRegistry projectTemplateRegistry) {
+	public CodeGenerator(MustacheEngine engine, TemplateRegistry projectTemplateRegistry) {
 		this.engine = engine;
-		this.projectTemplateRegistry = projectTemplateRegistry;
+		this.templateRegistry = projectTemplateRegistry;
 	}
 	
 	public GeneratedProject generate(Project project) throws CodeGenerationException {
 		GeneratedProject generatedProject = null;
 		List<GeneratedFile> allfiles = null;
 		List<GeneratedFile> generatedFiles = null;
-		ProjectTemplate projectTemplate = null;
+		TemplateDirectory projectTemplate = null;
 		Model projectModel = null;
-		Collection<ProjectFile> projectFiles = null;
+		Collection<Template> projectFiles = null;
 		
 		if (project != null) {
 			projectModel = project.getModel();
 			if (projectModel != null) {
-				projectTemplate = this.projectTemplateRegistry.lookup(String.format("%s-%s-%s", projectModel.getArchitecture(), projectModel.getLanguageValue(), projectModel.getFrameworkValue()));
+				projectTemplate = this.templateRegistry.lookup(String.format("%s-%s-%s", projectModel.getArchitecture(), projectModel.getLanguageValue(), projectModel.getFrameworkValue()));
 				
 				projectFiles = projectTemplate.getFiles();
 				if (projectFiles != null && !projectFiles.isEmpty()) {
 					allfiles = new ArrayList<GeneratedFile>();
 					
-					for (ProjectFile file : projectFiles) {
+					for (Template file : projectFiles) {
 						generatedFiles = this.generateCode(file, project);
 						if (generatedFiles != null && !generatedFiles.isEmpty()) {
 							allfiles.addAll(generatedFiles);
@@ -69,7 +69,7 @@ public class CodeGenerator {
 		return generatedProject;
 	}
 	
-	private List<GeneratedFile> generateCode(ProjectFile projectFile, Project project) throws CodeGenerationException {
+	private List<GeneratedFile> generateCode(Template projectFile, Project project) throws CodeGenerationException {
 		List<GeneratedFile> generatedFiles = null;
 		GeneratedFile generatedFile = null;
     		MicroserviceDefinition specDefinitions = project.getSpecDefinitions();
@@ -132,7 +132,7 @@ public class CodeGenerator {
 	 
 	}
 	
-	private GeneratedFile generateFile(ProjectFile file, Project project, Definition definition) throws CodeGenerationException {
+	private GeneratedFile generateFile(Template file, Project project, Definition definition) throws CodeGenerationException {
 		GeneratedFile generatedFile = null;
 		Mustache template = null;
 		
@@ -149,7 +149,7 @@ public class CodeGenerator {
     		return generatedFile;
 	}
 	
-	private Boolean includeFile(ProjectFile file, Project project) {
+	private Boolean includeFile(Template file, Project project) {
 		boolean result = false;
 		if (file != null) {
 			if (StringUtils.isNotEmpty(file.getRule())) {
@@ -173,7 +173,7 @@ public class CodeGenerator {
 		
 	}
 	
-	private String resolveFilename(ProjectFile file, Definition definition) throws CodeGenerationException {
+	private String resolveFilename(Template file, Definition definition) throws CodeGenerationException {
 		String filename = null;
 
 		if (definition != null) {
@@ -201,7 +201,7 @@ public class CodeGenerator {
 		return filename;
 	}
 	
-	private String resolveOutputPath(ProjectFile projectFile, Project project) {
+	private String resolveOutputPath(Template projectFile, Project project) {
 		StringBuilder outputPathBuilder = new StringBuilder();
 		
 		outputPathBuilder.append(project.getModel().getArchitecture());
@@ -219,13 +219,13 @@ public class CodeGenerator {
 		return outputPathBuilder.toString();
 	}
 	
-	private String resolvePackageDirectory(ProjectFile projectFile, Model model) {
+	private String resolvePackageDirectory(Template projectFile, Model model) {
 		ExpressionParser expressionParser = new SpelExpressionParser();
 		Expression expression = expressionParser.parseExpression(projectFile.getPackageDir());
 		return expression.getValue(model, String.class);
 	}
 	
-	private String resolvePackagename(ProjectFile projectFile, Model model) {
+	private String resolvePackagename(Template projectFile, Model model) {
 		ExpressionParser expressionParser = new SpelExpressionParser();
 		Expression expression = expressionParser.parseExpression(projectFile.getPackageDir());
 		String packageDir = expression.getValue(model, String.class);

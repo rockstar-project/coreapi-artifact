@@ -5,9 +5,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 {{#isEq discoveryValue "eureka" }}
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 {{/isEq}}
+{{#isEq monitoringValue "prometheus"}}
+import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
+import io.prometheus.client.spring.boot.EnableSpringBootMetricsCollector;
+{{/isEq}}
 
-{{#isEq discoveryValue "eureka" }}
-@EnableDiscoveryClient
+{{#isEq discoveryValue "eureka" }}@EnableDiscoveryClient{{/isEq}}
+{{#isEq monitoringValue "prometheus"}}
+@EnablePrometheusEndpoint
+@EnableSpringBootMetricsCollector
 {{/isEq}}
 @SpringBootApplication
 public class RestApiService {
