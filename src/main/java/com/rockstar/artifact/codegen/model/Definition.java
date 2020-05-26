@@ -15,7 +15,7 @@ public interface Definition {
 		Entity,
 		Repository,
 		Security,
-		MySqlSchema,
+		Schema,
 		ApiTest,
 		UnitTest
 	};

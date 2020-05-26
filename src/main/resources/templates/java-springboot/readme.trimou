@@ -1,94 +1,76 @@
 ### {{capitalize namespace}} REST API Microservice
 
-### Getting Started
+#### Getting Started
 
 * Install [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/)
 * [Download](https://maven.apache.org/download.cgi) and [install](https://maven.apache.org/install.html) Apache Maven build systemj.
 * Download & Install [Docker Toolbox](https://www.docker.com/products/docker-toolbox) on your computer.
 * Click Docker Quickstart Terminal icon to open command line console
 
-#### Configure Environment
+##### Configure Environment
 
-```
-$ source .env
+```sh
+source environment.sh
 ```
 
 #### Start virtual machine
 
-```
-$ docker-machine create -d virtualbox --virtualbox-memory 4096 {{architecture}}-{{namespace}}-vb-node
-$ eval $(docker-machine env {{architecture}}-{{namespace}}-vb-node)
+```sh
+docker-machine create -d virtualbox --virtualbox-memory 4096 {{architecture}}-{{namespace}}
+eval $(docker-machine env {{architecture}}-{{namespace}})
 ```
 {{#isEq datastoreValue "mysql" }}
 #### Run MySQL database
 
-```
-$ docker-compose up -d {{namespace}}api
+```sh
+docker-compose up -d {{namespace}}mysql
 ```
 {{/isEq}}
 
-#### Install Template Schema
+#### Install {{capitalize namespace}} Schema
 
-
-```bash
-docker-compose -f docker-compose.develop.yml exec templatemysql /bin/bash
-mysql --user=kickster --password=kickster123 --database=kickster_db_template < template/schema.sql
-mysql --user=kickster --password=kickster123 --database=kickster_db_template < template/seed.sql
+```sh
+docker-compose -f docker-compose.develop.yml exec {{namespace}}mysql /bin/bash
+mysql --user=$DATABASE_USER --password=$DATABASE_PASSWORD --database={{organization}}_db_{{namespace}} < schema.sql
 ```
-{{#isEq options.discovery.value "eureka" }}
+{{#isEq discoveryValue "eureka" }}
 #### Run Discovery Service
 
-```bash
+```sh
 docker-compose -f docker-compose.develop.yml up -d discovery-service
 ```
 {{/isEq}}
 #### Run {{capitalize namespace}} API microservice
 
-```bash
+```sh
 docker-compose -f docker-compose.develop.yml up -d {{namespace}}api
 ```
 
 #### Connect to the API endpoint
 
-```bash
-curl http://$(docker-machine ip {{architecture}}-{{namespace}}-vb-node):8080/templates | jq .
+```sh
+curl http://$(docker-machine ip {{architecture}}-{{namespace}}):8080/{{pluralize namespace}} | jq .
 ```
 
+{{#isEq datastoreValue "cassandra" }}
 #### Verify Cassandra Datastore Installation
 
-```bash
+```sh
 docker-compose -f docker-compose.develop.yml exec {{namespace}}cassandra /bin/bash
 cqlsh
-USE {{organization}}_{{namespace}};
-select * from storage;
+USE {{organization}}_db_{{namespace}};
+select * from {{namespace}};
 
 ```
+{{/isEq}}
 
 #### Redeploy with code changes
 
-```bash
+```sh
 docker-compose stop {{namespace}}api && docker-compose rm -f {{namespace}}api
 docker rmi $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{architecture}}-{{namespace}}
 mvn clean package
 docker build -t $DOCKER_REGISTRY/$DOCKER_NAMESPACE/{{architecture}}-{{namespace}} .
 docker-compose up -d {{namespace}}api
 docker-compose logs --follow {{namespace}}api
-```
-
-You can see what urls are available using curl:
-
-```sh
-$ curl localhost:8080
-```
-
-You can view existing people objects using a similar request:
-
-```sh
-$ curl localhost:8080/persons
-```
-
-and can create new ones using a POST:
-
-```sh
-$ curl -X POST -H "Content-Type:application/json" -d '{ "firstName" : "Karl", "lastName" : "Penzhorn" }' localhost:8080/persons
 ```

@@ -10,7 +10,7 @@ function docurl() {
   echo "curl $headers $@"
   if $PAUSE ; then read -s ; fi
   echo -n '==> '
-  curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' $headers "$@" | jq -r .
+  curl -s -H 'Content-Type: application/hal+json' -H 'Accept: application/hal+json' $headers "$@" | jq -r .
   echo ""
   echo ""
   if $PAUSE ; then read -s ; fi

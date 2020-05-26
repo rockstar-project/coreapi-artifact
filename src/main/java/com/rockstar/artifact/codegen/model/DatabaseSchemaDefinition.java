@@ -2,10 +2,10 @@ package com.rockstar.artifact.codegen.model;
 
 import java.util.Collection;
 
-public class MySqlSchemaDefinition implements Definition {
+public class DatabaseSchemaDefinition implements Definition {
 
 	private String name;
-	private Collection<MySqlTableDefinition> tables;
+	private Collection<TableDefinition> tables;
 	
 	public String getName() {
 		return this.name;
@@ -15,11 +15,11 @@ public class MySqlSchemaDefinition implements Definition {
 		this.name = name;
 	}
 
-	public Collection<MySqlTableDefinition> getTables() {
+	public Collection<TableDefinition> getTables() {
 		return tables;
 	}
 
-	public void setTables(Collection<MySqlTableDefinition> tables) {
+	public void setTables(Collection<TableDefinition> tables) {
 		this.tables = tables;
 	}
 

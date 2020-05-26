@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.rockstar.artifact.codegen.model.ControllerDefinition;
+import com.rockstar.artifact.codegen.model.DatabaseSchemaDefinition;
 import com.rockstar.artifact.codegen.model.Definition;
 import com.rockstar.artifact.codegen.model.Definition.Type;
 import com.rockstar.artifact.codegen.model.EntityDefinition;
 import com.rockstar.artifact.codegen.model.MessagingDefinition;
 import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
-import com.rockstar.artifact.codegen.model.MySqlSchemaDefinition;
 import com.rockstar.artifact.codegen.model.RelationshipDefinition;
 import com.rockstar.artifact.codegen.model.RepositoryDefinition;
 import com.rockstar.artifact.codegen.model.ResourceDefinition;
@@ -42,7 +42,7 @@ public class SwaggerToRestApiMicroserviceDefinition implements Converter<Swagger
 	@Inject private SwaggerModelToResourceDefinition swaggerModelToResourceDefinition;
 	@Inject private SwaggerModelToEntityDefinition swaggerModelToEntityDefinition;
 	@Inject private SwaggerOperationToSearchDefinition swaggerOperationToSearchDefinition;
-	@Inject private SwaggerDefinitionToMySqlSchemaDefinition swaggerDefinitionToMySqlSchema;
+	@Inject private SwaggerDefinitionToDatabaseSchemaDefinition swaggerDefinitionToDatabaseSchema;
 	@Inject private SwaggerDefinitionToRestApiTestDefinition swaggerDefinitionToApiTestDefinition;
 	@Inject private SwaggerDefinitionToUnitTestDefinition swaggerDefinitionToUnitTestDefinition;
 	
@@ -55,7 +55,7 @@ public class SwaggerToRestApiMicroserviceDefinition implements Converter<Swagger
 		EntityDefinition entity = null;
 		Collection<RelationshipDefinition> childEntityRelationships = null;
 		RepositoryDefinition repository = null;
-		MySqlSchemaDefinition mySqlSchema = null;
+		DatabaseSchemaDefinition mySqlSchema = null;
 		MessagingDefinition messaging = null;
 		RepositoryDefinition subrepository = null;
 		RestApiTestDefinition apitest = null;
@@ -187,7 +187,7 @@ public class SwaggerToRestApiMicroserviceDefinition implements Converter<Swagger
 				}
 			}
 			//mySqlSchema = this.swaggerDefinitionToMySqlSchema.convert(schemas);
-			microserviceDefinitions.withDefinition(Type.MySqlSchema, mySqlSchema);
+			microserviceDefinitions.withDefinition(Type.Schema, mySqlSchema);
 		}
 		return microserviceDefinitions;
 	}

@@ -1,11 +1,10 @@
 package com.rockstar.artifact.web;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.springframework.hateoas.ExposesResourceFor;
+import org.springframework.hateoas.server.ExposesResourceFor;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class ArtifactController {
 	@RequestMapping(method=RequestMethod.POST )
 	public ResponseEntity<Void> createArtifact(@RequestBody @Valid ArtifactResource  artifact) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(linkTo(ArtifactController.class).slash(this.artifactService.createArtifact(artifact)).toUri());
+		headers.setLocation(WebMvcLinkBuilder.linkTo(ArtifactController.class).slash(this.artifactService.createArtifact(artifact)).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 	

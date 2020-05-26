@@ -25,7 +25,7 @@ import com.rockstar.artifact.codegen.model.Definition.Type;
 import com.rockstar.artifact.codegen.model.EntityDefinition;
 import com.rockstar.artifact.codegen.model.MessagingDefinition;
 import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
-import com.rockstar.artifact.codegen.model.MySqlSchemaDefinition;
+import com.rockstar.artifact.codegen.model.DatabaseSchemaDefinition;
 import com.rockstar.artifact.codegen.model.RelationshipDefinition;
 import com.rockstar.artifact.codegen.model.RepositoryDefinition;
 import com.rockstar.artifact.codegen.model.ResourceDefinition;
@@ -41,7 +41,7 @@ public class OpenApiToRestApiMicroserviceDefinition implements Converter<OpenApi
 	@Inject private OpenApiSchemaToResourceDefinition openApiSchemaToResourceDefinition;
 	@Inject private OpenApiSchemaToEntityDefinition openApiSchemaToEntityDefinition;
 	@Inject private OpenApiPathToSearchDefinition openApiPathToSearchDefinition;
-	@Inject private OpenApiSchemaToMySqlSchemaDefinition openApiSchemaToMySqlSchema;
+	@Inject private OpenApiSchemaToDatabaseSchemaDefinition openApiSchemaToMySqlSchema;
 	@Inject private OpenApiSchemaToRestApiTestDefinition openApiSchemaToApiTestDefinition;
 	@Inject private OpenApiSchemaToUnitTestDefinition openApiSchemaToUnitTestDefinition;
 	
@@ -54,7 +54,7 @@ public class OpenApiToRestApiMicroserviceDefinition implements Converter<OpenApi
 		EntityDefinition entity = null;
 		Collection<RelationshipDefinition> childEntityRelationships = null;
 		RepositoryDefinition repository = null;
-		MySqlSchemaDefinition mySqlSchema = null;
+		DatabaseSchemaDefinition mySqlSchema = null;
 		MessagingDefinition messaging = null;
 		RepositoryDefinition subrepository = null;
 		RestApiTestDefinition apitest = null;
@@ -181,7 +181,7 @@ public class OpenApiToRestApiMicroserviceDefinition implements Converter<OpenApi
 				}
 			}
 			mySqlSchema = this.openApiSchemaToMySqlSchema.convert(schemas);
-			microserviceDefinitions.withDefinition(Type.MySqlSchema, mySqlSchema);
+			microserviceDefinitions.withDefinition(Type.Schema, mySqlSchema);
 		}
 		return microserviceDefinitions;
 	}

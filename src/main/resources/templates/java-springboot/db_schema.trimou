@@ -1,0 +1,38 @@
+{{#definition}}
+{{#isEq datastoreValue "cassandra"}}
+CREATE KEYSPACE IF NOT EXISTS {{organization}}_db_{{namespace}} WITH durable_writes = true AND replication = {'class' : 'SimpleStrategy','replication_factor' : 1};
+
+USE {{organization}}_db_{{namespace}};
+
+{{#tables}}
+CREATE TABLE IF NOT EXISTS {{organization}}_db_{{namespace}}.{{name}} (id uuid, {{>cassandra_columns}} PRIMARY KEY (id));
+{{#indexFields}}CREATE INDEX {{name}}_index ON {{organization}}_db_{{namespace}}.{{name}} ({{>cassandra_index}});{{/indexFields}}
+{{/tables}}
+{{/isEq}}
+{{#isEq datastoreValue "mysql"}}
+USE {{organization}}_db_{{namespace}};
+
+{{#tables}}
+CREATE TABLE IF NOT EXISTS {{camelcaseToUpperSnakecase name}} (
+{{>mysql_columns}}
+ID varchar(36) PRIMARY KEY);
+
+{{/tables}}
+{{/isEq}}
+{{/definition}}
+{{+cassandra_index}}{{#indexFields}}{{name}}{{name}}{{/indexFields}}{{#iter.hasNext}},{{/iter.hasNext}}{{/cassandra_index}}
+{{+cassandra_columns}}{{#columns}}{{name}} {{>cassandra_column_type}},{{/columns}}{{/cassandra_columns}}
+{{+cassandra_column_type}}{{>cassandra_string_type}}{{>cassandra_number_type}}{{>cassandra_boolean_type}}{{>cassandra_date_type}}{{>cassandra_blob_type}}{{/cassandra_column_type}}
+{{+cassandra_number_type}}{{#integerType}}int{{/integerType}}{{#longType}}bigint{{/longType}}{{#doubleType}}double{{/doubleType}}{{#floatType}}float{{/floatType}}{{/cassandra_number_type}}
+{{+cassandra_string_type}}{{#stringType}}text{{/stringType}}{{/cassandra_string_type}}
+{{+cassandra_boolean_type}}{{#booleanType}}Boolean{{/booleanType}}{{/cassandra_boolean_type}}
+{{+cassandra_blob_type}}{{#binaryType}}blob{{/binaryType}}{{/cassandra_blob_type}}
+{{+cassandra_date_type}}{{#dateType}}date{{/dateType}}{{#datetimeType}}datetime{{/datetimeType}}{{/cassandra_date_type}}
+{{+mysql_columns}}{{#columns}}{{camelcaseToUpperSnakecase name}} {{>mysql_column_type}},
+{{/columns}}{{/mysql_columns}}
+{{+mysql_column_type}}{{>mysql_string_type}}{{>mysql_number_type}}{{>mysql_boolean_type}}{{>mysql_date_type}}{{>mysql_blob_type}}{{/mysql_column_type}}
+{{+mysql_number_type}}{{#integerType}}int{{/integerType}}{{#longType}}bigint{{/longType}}{{#shortType}}smallint{{/shortType}}{{#doubleType}}double{{/doubleType}}{{#floatType}}float{{/floatType}}{{/mysql_number_type}}
+{{+mysql_string_type}}{{#stringType}}varchar({{maxLength}}){{/stringType}}{{/mysql_string_type}}
+{{+mysql_boolean_type}}{{#booleanType}}tinyint{{/booleanType}}{{/mysql_boolean_type}}
+{{+mysql_blob_type}}{{#binaryType}}blob{{/binaryType}}{{/mysql_blob_type}}
+{{+mysql_date_type}}{{#dateType}}date{{/dateType}}{{#datetimeType}}datetime{{/datetimeType}}{{/mysql_date_type}}

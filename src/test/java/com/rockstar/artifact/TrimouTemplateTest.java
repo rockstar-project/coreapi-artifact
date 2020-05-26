@@ -23,7 +23,6 @@ import com.rockstar.artifact.codegen.model.Definition;
 import com.rockstar.artifact.codegen.model.MicroserviceDefinition;
 import com.rockstar.artifact.converter.openapi.OpenApiToRestApiMicroserviceDefinition;
 import com.rockstar.artifact.model.Model;
-import com.rockstar.artifact.model.SelectedValue;
 import com.rockstar.artifact.service.InvalidSchemaException;
 
 
@@ -52,6 +51,9 @@ public class TrimouTemplateTest {
 		model.setDatastoreValue("mysql");
 		model.setDatastoreVersion("8.5");
 		
+		model.setDatastoreValue("cassandra");
+		model.setDatastoreVersion("2.2");
+		
 		model.setHttpValue("undertow");
 		model.setHttpVersion("8.5.27");
 		
@@ -76,7 +78,7 @@ public class TrimouTemplateTest {
 			// STATIC TEMPLATES
 			//this.renderTemplate("java-springboot/maven", model);
 			//this.renderTemplate("java-springboot/enum_validator", model);
-			this.renderTemplate("java-springboot/restapi", model);
+			//this.renderTemplate("java-springboot/restapi", model);
 			
 			// ENTITY COMPONENT TEMPLATES
 			//this.renderTemplate(Definition.Type.Entity, "java-springboot/mysql_entity", openApi, model);
@@ -97,8 +99,9 @@ public class TrimouTemplateTest {
 			
 			// CONTROLLER COMPONENT TEMPLATE
 			//this.renderTemplate(Definition.Type.Controller, "java-springboot/controller", openApi, model);
-			// MYSQL Table COMPONENT TEMPLATE
-			//this.renderTemplate(Definition.Type.MySqlSchema, "java-springboot/mysql_schema", openApi, model);
+			
+			// SCHEMA COMPONENT TEMPLATE
+			this.renderTemplate(Definition.Type.Schema, "java-springboot/db_schema", openApi, model);
 			
 			//this.renderTemplate(Definition.Type.Resource, "java-springboot/messages", openApi, model);
 		}

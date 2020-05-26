@@ -1,18 +1,23 @@
-export APP_HOME=$HOME/workspace-{{namespace}}api
+export APP_HOME=$HOME/workspace-{{organization}}
 export DOCKER_USER=
 export DOCKER_PASSWORD=
 export DOCKER_NAMESPACE={{organization}}
 export DOCKER_REGISTRY=
+{{#isEq ciValue "github" }}
 export GITHUB_NAME=
 export GITHUB_EMAIL=
 export GITHUB_USER=
 export GITHUB_PASSWORD=
-export DATASTORE_USER=
-export DATASTORE_PASSWORD=
-export MESSAGING_USER=
-export MESSAGING_PASSWORD=
+{{/isEq}}
+{{#datastoreValue}}
+export DATASTORE_USER={{organization}}
+export DATASTORE_PASSWORD={{organization}}123
+{{/datastoreValue}}
+{{#messagingValue}}
+export MESSAGING_USER={{organization}}
+export MESSAGING_PASSWORD={{organization}}123
+{{/messagingValue}}
+{{#isEq securityValue "auth0" }}
 export AUTH0_ISSUER=https://{{organization}}.auth0.com/
 export AUTH0_AUDIENCE=
-export AWS_DEFAULT_REGION=
-export AWS_SECRET_ACCESS_KEY=
-export AWS_ACCESS_KEY_ID=
+{{/isEq}}

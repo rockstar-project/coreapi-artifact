@@ -2,16 +2,21 @@ package com.rockstar.artifact.codegen.model;
 
 public class FieldDefinition {
 	
+	private static final Integer DEFAULT_MAX_LENGTH = new Integer(255);
 	private String name;
 	private FieldType type;
 	private Boolean unique;
 	private Boolean enumeration;
 	private Boolean readOnly;
+	private Boolean index;
+	private Integer maxLength;
 	
 	public FieldDefinition() {
+		this.maxLength = DEFAULT_MAX_LENGTH;
 		this.readOnly = Boolean.FALSE;
 		this.unique = Boolean.FALSE;
 		this.enumeration = Boolean.FALSE;
+		this.index = Boolean.FALSE;
 	}
 
 	public String getName() {
@@ -56,6 +61,14 @@ public class FieldDefinition {
 	
 	public boolean isType(FieldType type) {
 		return (this.type != null && this.type.equals(type));
+	}
+	
+	public boolean isUUIDType() {
+		return (this.type != null && this.type.equals(FieldType.UUID));
+	}
+	
+	public boolean isBinaryType() {
+		return (this.type != null && this.type.equals(FieldType.Byte));
 	}
 	
 	public boolean isStringType() {
@@ -114,6 +127,21 @@ public class FieldDefinition {
 		return (this.type != null && this.type.equals(FieldType.Object));
 	}
 	
+	public Boolean getIndex() {
+		return index;
+	}
+
+	public void setIndex(Boolean index) {
+		this.index = index;
+	}
+
+	public Integer getMaxLength() {
+		return maxLength;
+	}
+
+	public void setMaxLength(Integer maxLength) {
+		this.maxLength = maxLength;
+	}
 
 	public String toString() {
 		StringBuilder fieldStringBuilder = new StringBuilder();

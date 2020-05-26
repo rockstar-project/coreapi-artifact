@@ -1,17 +1,14 @@
 package com.rockstar.artifact.web;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.URL;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.RepresentationModel;
 
 import com.rockstar.artifact.model.SelectedValue;
 
-@Relation(value="artifact", collectionRelation="artifacts")
-public class ArtifactResource extends ResourceSupport  {
+public class ArtifactResource extends RepresentationModel<ArtifactResource>  {
 	
 	private String name;
 	private String organization;
@@ -56,7 +53,6 @@ public class ArtifactResource extends ResourceSupport  {
 	}
 
 	@NotEmpty
-	@URL
 	public String getSchema() {
 		return schema;
 	}

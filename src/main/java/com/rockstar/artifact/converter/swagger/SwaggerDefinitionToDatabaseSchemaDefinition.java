@@ -10,25 +10,25 @@ import javax.inject.Inject;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.rockstar.artifact.codegen.model.MySqlSchemaDefinition;
-import com.rockstar.artifact.codegen.model.MySqlTableDefinition;
+import com.rockstar.artifact.codegen.model.DatabaseSchemaDefinition;
+import com.rockstar.artifact.codegen.model.TableDefinition;
 
 import io.swagger.models.Model;
 
 @Component
-public class SwaggerDefinitionToMySqlSchemaDefinition implements Converter<Map<String, Model>, MySqlSchemaDefinition> {
+public class SwaggerDefinitionToDatabaseSchemaDefinition implements Converter<Map<String, Model>, DatabaseSchemaDefinition> {
 
 	@Inject
-	private SwaggerModelToMySqlTableDefinition swaggerModelToMySqlTableDefinition;
+	private SwaggerModelToTableDefinition swaggerModelToMySqlTableDefinition;
 	
-	public MySqlSchemaDefinition convert(Map<String, Model> schemas) {
-		MySqlSchemaDefinition mySqlSchemaDefinition = null;
-		Collection<MySqlTableDefinition> tableDefinitions = null;
-		MySqlTableDefinition table = null;
+	public DatabaseSchemaDefinition convert(Map<String, Model> schemas) {
+		DatabaseSchemaDefinition mySqlSchemaDefinition = null;
+		Collection<TableDefinition> tableDefinitions = null;
+		TableDefinition table = null;
 		
 		if (schemas != null) {
-			mySqlSchemaDefinition = new MySqlSchemaDefinition();
-			tableDefinitions = new ArrayList<MySqlTableDefinition> ();
+			mySqlSchemaDefinition = new DatabaseSchemaDefinition();
+			tableDefinitions = new ArrayList<TableDefinition> ();
 			for (Entry<String, Model> schemaEntry : schemas.entrySet()) {
 				table = this.swaggerModelToMySqlTableDefinition.convert(schemaEntry.getValue());
 				table.setName(schemaEntry.getKey());

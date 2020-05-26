@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.stereotype.Component;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 
@@ -25,11 +22,10 @@ import com.rockstar.artifact.model.Template;
 import com.rockstar.artifact.model.TemplateDirectory;
 import com.rockstar.artifact.model.TemplateRegistry;
 
-@Component
 public class CodeGenerator {
 	
-	@Inject private MustacheEngine engine;
-	@Inject TemplateRegistry templateRegistry;
+	private MustacheEngine engine;
+	private TemplateRegistry templateRegistry;
 	
 	public CodeGenerator(MustacheEngine engine, TemplateRegistry projectTemplateRegistry) {
 		this.engine = engine;
@@ -100,8 +96,8 @@ public class CodeGenerator {
     					case Repository:
     						definitions = specDefinitions.getDefinitions(Definition.Type.Repository);
     						break;
-    					case MySqlSchema:
-    						definitions = specDefinitions.getDefinitions(Definition.Type.MySqlSchema);
+    					case Schema:
+    						definitions = specDefinitions.getDefinitions(Definition.Type.Schema);
     						break;
     					case Messaging:
     						definitions = specDefinitions.getDefinitions(Definition.Type.Messaging);

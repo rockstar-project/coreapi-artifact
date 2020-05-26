@@ -31,38 +31,50 @@ services:
       - {{namespace}}-{{datastoreValue}}
   {{#isEq datastoreValue "mysql"}}
   {{namespace}}-mysql:
-    image: $DOCKER_REGISTRY/$DOCKER_NAMESPACE/datastore-{{namespace}}
+    image: {{datastoreValue}}:{{datastoreVersion}}
     volumes:
       - {{namespace}}-data:/var/lib/mysql
+    ports:
+      - "3306"
     environment:
       - MYSQL_DATABASE={{organization}}_db_{{namespace}}
-      - MYSQL_USER=$DATASTORE_USER
-      - MYSQL_PASSWORD=$DATASTORE_PASSWORD
-      - MYSQL_ROOT_PASSWORD=$DATASTORE_PASSWORD
+      - MYSQL_USER=${DATASTORE_USER}
+      - MYSQL_PASSWORD=${DATASTORE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DATASTORE_PASSWORD}
   {{/isEq}}
+  {{#isEq datastoreValue "mongodb"}}
   {{namespace}}-mongodb:
-    image: $DOCKER_REGISTRY/$DOCKER_NAMESPACE/datastore-{{namespace}}
+    image: {{datastoreValue}}:{{datastoreVersion}}
     ports:
-      - "27017:27017"
+      - "27017"
     volumes:
       - {{namespace}}-data:/data/db
+  {{/isEq}}
   {{#isEq datastoreValue "elasticsearch"}}
   {{namespace}}-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.1
+    image: {{datastoreValue}}:{{datastoreVersion}}
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9200"
+      - "9300"
   {{/isEq}}
-  {{#isEq messagingValue "rabbitmq"}}
+  {{#isEq datastoreValue "dynamodb"}}
+  {{namespace}}-dynamodb:
+    image: dwmkerr/{{datastoreValue}}
+    ports:
+      - "8000"
+  {{/isEq}}
+ {{#messagingValue}} 
   messagebroker:
+ {{#isEq messagingValue "rabbitmq"}}
   	image: "rabbitmq:3-management"
   	environment:
       - RABBITMQ_DEFAULT_USER=${MESSAGING_USER}
-    	  - RABBITMQ_DEFAULT_PASS=${MESSAGING_PASSWORD}
+      - RABBITMQ_DEFAULT_PASS=${MESSAGING_PASSWORD}
   	ports:
-    	  - "15672:15672"
-    	  - "5672:5672"
+      - "15672:15672"
+      - "5672"
  {{/isEq}}
+ {{/messagingValue}}
  
  volumes:
   {{#isEq datastoreValue "mysql"}}

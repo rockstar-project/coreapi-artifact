@@ -14,7 +14,7 @@
       "naming_convention": "lowercase"
     },
     {
-    	  "option": "ci",
+      "option": "ci",
       "template": "java-springboot/travis",
       "filename": ".travis.yml",
       "naming_convention": "lowercase"
@@ -31,32 +31,20 @@
       "naming_convention": "capitalize"
     },
     {
-      "option": "package",
-      "rule": "datastoreValue == 'mysql'",
-      "template": "java-springboot/dockerfile_mysql",
-      "filename": "Dockerfile-datastore",
-      "naming_convention": "capitalize"
-    },
-    {
+      "component": "schema",
       "option": "datastore",
       "rule": "datastoreValue == 'mysql'",
-      "template": "java-springboot/mysql_schema",
-      "filename": "schema.sql",
+      "template": "java-springboot/db_schema",
+      "filename": "'schema.sql'",
       "naming_convention": "lowercase"
     },
     {
+      "component": "schema",
       "option": "datastore",
       "rule": "datastoreValue == 'cassandra'",
-      "template": "java-springboot/cassandra_schema",
-      "filename": "schema.cql",
+      "template": "java-springboot/db_schema",
+      "filename": "'schema.cql'",
       "naming_convention": "lowercase"
-    },
-    {
-      "option": "package",
-      "rule": "datastoreValue == 'cassandra'",
-      "template": "java-springboot/dockerfile_cassandra",
-      "filename": "Dockerfile-datastore",
-      "naming_convention": "capitalize"
     },
     {
       "template": "java-springboot/environment_var",

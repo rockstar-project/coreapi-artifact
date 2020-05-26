@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coreapi-artifact
+  namespace: rockstar
+  labels:
+    app: coreapi-artifact
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coreapi-artifact
+  template:
+    metadata:
+      labels:
+        app: coreapi-artifact
+    spec:
+      containers:
+      - name: coreapi-artifact
+        image: docker-registry.default.svc:5000/rockstar/coreapi-artifact:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: docker
+        - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI
+          value: https://rockstar.auth0.com/
+        - name: AUTH0_AUDIENCE
+          value: https://api.rock-star.io/

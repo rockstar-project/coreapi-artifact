@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.7.RELEASE</version>
+		<version>2.2.4.RELEASE</version>
 		<relativePath/>
 	</parent>
 
@@ -26,19 +26,23 @@
         <swagger-parser.version>1.0.34</swagger-parser.version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-	            <groupId>org.springframework.cloud</groupId>
-	            <artifactId>spring-cloud-dependencies</artifactId>
-	            <version>Camden.SR5</version>
-	            <type>pom</type>
-            	<scope>import</scope>
-        	</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
 		<dependency>
 		    <groupId>io.swagger</groupId>
 		    <artifactId>swagger-parser</artifactId>
@@ -53,11 +57,7 @@
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
-		</dependency>
-        <dependency>
-			<groupId>com.auth0</groupId>
-		  	<artifactId>auth0-spring-security-api</artifactId>
-		  	<version>1.0.0-rc.3</version>
+		    <version>19.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.reprezen.kaizen</groupId>
@@ -81,11 +81,6 @@
 		  <artifactId>trimou-extension-gson</artifactId>
 		  <version>${trimou.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
-		</dependency>
 		<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
@@ -93,11 +88,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -118,6 +108,7 @@
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
+			<version>1</version>
 		</dependency>
 	
 		<dependency>

@@ -11,7 +11,7 @@ import com.rockstar.artifact.codegen.model.FieldDefinition;
 import io.swagger.models.properties.Property;
 
 @Component
-public class SwaggerPropertyFieldDefinition implements Converter<Property, FieldDefinition> {
+public class SwaggerPropertyToFieldDefinition implements Converter<Property, FieldDefinition> {
 
 	@Inject SwaggerPropertyTypeToFieldType swaggerPropertyTypeToFieldType;
 	

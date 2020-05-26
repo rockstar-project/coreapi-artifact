@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: artifact-api
+spec:
+  host: api.rock-star.io
+  path: "/artifacts"
+  to:
+    kind: Service
+    name: coreapi-artifact
+  tls:
+    termination: edge

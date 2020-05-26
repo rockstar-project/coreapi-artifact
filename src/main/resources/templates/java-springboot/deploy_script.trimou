@@ -9,6 +9,6 @@ mvn clean package -Dmaven.test.skip=true
 
 docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
 docker-compose up -d
-docker-compose logs --follow {{namespace}}api
+docker-compose logs --follow {{namespace}}-{{architecture}}
 
 set -e

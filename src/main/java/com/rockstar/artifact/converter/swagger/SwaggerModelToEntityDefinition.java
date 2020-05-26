@@ -23,7 +23,7 @@ import io.swagger.models.properties.RefProperty;
 @Component
 public class SwaggerModelToEntityDefinition implements Converter<Model, EntityDefinition>{
 
-	@Inject private SwaggerPropertyFieldDefinition swaggerPropertyToFieldDefinition;
+	@Inject private SwaggerPropertyToFieldDefinition swaggerPropertyToFieldDefinition;
 	
 	public EntityDefinition convert(Model schema) {
 		EntityDefinition entity = null;
